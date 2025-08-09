@@ -51,7 +51,8 @@ def predict_image():
         img = Image.open(io.BytesIO(file.read()))
         # CRITICAL FIX: Convert the image to RGB to ensure the correct channel format
         img = img.convert('RGB')
-        img = img.resize((150, 150))
+        # FIX: Resize the image to 224x224 to match the model's expected input shape
+        img = img.resize((224, 224))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
