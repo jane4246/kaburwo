@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaburwo Coffee Chatbot</title>
+    <!-- Use a CDN to load Tailwind CSS for simple, no-install styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for a cleaner look */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    </style>
+    <!-- Lucide Icons for the UI -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 to-green-100 antialiased h-screen">
+
+    <div class="flex flex-col h-full">
+
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-green-800 to-emerald-700 text-white p-4 shadow-xl flex items-center justify-between rounded-b-xl">
+            <div class="flex items-center">
+                <i data-lucide="bot" class="mr-2 animate-bounce w-6 h-6"></i>
+                <h1 class="text-xl font-bold">Kaburwo</h1>
+            </div>
+            <!-- Language Selector -->
+            <div class="flex items-center">
+                <i data-lucide="globe" class="mr-2 w-5 h-5"></i>
+                <select id="language-selector" class="bg-green-700 text-white p-1 rounded-md focus:outline-none cursor-pointer border-2 border-transparent focus:border-white transition-colors">
+                    <option value="en">English</option>
+                    <option value="nd">Nandi</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="flex flex-col md:flex-row flex-1 overflow-hidden p-4 space-y-4 md:space-y-0 md:space-x-4">
+            
+            <!-- Chatbot Panel -->
+            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl overflow-hidden">
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-hide">
+                    <!-- Chat messages will be dynamically added here -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 bg-white border-t border-gray-200 shadow-inner">
+                    <div class="flex items-center space-x-2">
+                        <input id="chat-input" type="text" placeholder="Ask about coffee diseases..." class="flex-1 p-3 border border-green-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+                        <button id="send-button" class="p-3 rounded-full text-white bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 transform active:scale-95 transition-all duration-200 shadow-lg">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Processing Panel -->
+            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4">
+                <h2 class="text-xl font-bold text-green-800 border-b pb-2">Image Analysis Tool</h2>
+                
+                <div class="border-4 border-dashed border-green-200 rounded-xl p-4 text-center cursor-pointer hover:bg-green-50 transition-colors" id="image-upload-area">
+                    <label for="image-upload" class="flex flex-col items-center justify-center h-full w-full">
+                        <div id="image-preview" class="hidden">
+                            <img alt="Uploaded photo" class="max-h-64 object-contain rounded-lg shadow-lg">
+                        </div>
+                        <div id="image-upload-placeholder" class="flex flex-col items-center p-4">
+                            <i data-lucide="image-icon" class="text-green-500 mb-2 w-12 h-12"></i>
+                            <span class="text-green-600 font-semibold">Click here to upload a photo</span>
+                            <span class="text-green-400 text-sm mt-1">PNG, JPG, or GIF</span>
+                        </div>
+                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                    </label>
+                </div>
+
+                <button id="analyze-button" class="w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-400 text-gray-600 cursor-not-allowed" disabled>
+                    <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
+                    Analyze photo
+                </button>
+                
+                <div id="analysis-result" class="hidden p-4 bg-emerald-50 rounded-lg border border-emerald-100 shadow-md">
+                    <h3 class="font-bold text-green-800 mb-2">Analysis Results:</h3>
+                    <p id="analysis-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The JavaScript logic for the chatbot -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Replaces the placeholder SVG tags with actual icons from Lucide
+            lucide.createIcons();
+
+            // DOM elements
+            const languageSelector = document.getElementById('language-selector');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            const imageUpload = document.getElementById('image-upload');
+            const imagePreview = document.getElementById('image-preview');
+            const imageUploadPlaceholder = document.getElementById('image-upload-placeholder');
+            const analyzeButton = document.getElementById('analyze-button');
+            const analysisResult = document.getElementById('analysis-result');
+            const analysisText = document.getElementById('analysis-text');
+            const imagePreviewImg = imagePreview.querySelector('img');
+
+            // State variables
+            let language = 'en';
+            let uploadedImageFile = null; // Store the file object, not the base64 string
+            
+            const initialMessages = {
+                en: "Hello! I'm your coffee disease expert. I can help you identify and manage common coffee plant diseases. How can I help you today?",
+                nd: "Takwenya! Anendet ng'amotioot nebo kawek. Amuchii aboruun tuguuk che iyaei asi iguiye myanwogikab kawek ak inai olekiriptoi simanam myanwogik. Tos mii kiy ne imeche atoretin rani?"
+            };
+
+            const localResponses = {
+                en: {
+                    chlorosis: {
+                        triggers: ['what causes coffee leaves to turn yellow?', 'yellow leaves', 'why are my coffee leaves yellow?', 'leaves turning yellow'],
+                        response: 'Disease/Condition Name: **Chlorosis**. Description: Chlorosis is a condition where leaves don\'t produce enough chlorophyll, the green pigment that helps the plant make food. This is usually caused by a **lack of nutrients**, poor soil drainage, or over-watering. Symptoms: Look for leaves that are entirely pale yellow or have green veins with yellow between them. Treatment: Check your soil drainage and consider using a balanced fertilizer that contains micronutrients like iron and magnesium.',
+                    },
+                    anthracnose: {
+                        triggers: ['why are there black spots on my coffee cherries?', 'black spots on cherries', 'what are the black spots on my coffee?'],
+                        response: 'Disease/Condition Name: **Anthracnose**. Description: This is a fungal disease that causes sunken black spots on coffee cherries, leaves, and stems. It can cause cherries to drop prematurely. Symptoms: Dark, sunken lesions on cherries, often with a ring pattern. Treatment: Prune and destroy affected parts of the plant. Apply a copper-based fungicide, and ensure the plants have good air circulation.',
+                    },
+                    wilting: {
+                        triggers: ['what does it mean if the leaves are curling or wilting?', 'leaves are wilting', 'curling leaves', 'drooping leaves'],
+                        response: 'Disease/Condition Name: **Root Rot or Water Stress**. Description: Leaf curling and wilting are often symptoms of either a lack of water (water stress) or too much water, which leads to Root Rot. Root Rot is a fungal disease that damages the roots, preventing them from absorbing water and nutrients. Symptoms: Leaves curl inward, droop, and may turn brown. The plant may appear weak and yellow. Treatment: If the soil is dry, water thoroughly. If the soil is waterlogged, improve drainage. You may need to remove and replant the tree if the root damage is severe.',
+                    },
+                    low_yield: {
+                        triggers: ['my coffee plant is not producing many cherries. what could be the problem?', 'low coffee production', 'few cherries on my tree', 'not many cherries'],
+                        response: 'Disease/Condition Name: **Poor Pollination or Nutrient Deficiency**. Description: Low cherry production can be due to several factors. It could be poor pollination, a lack of essential nutrients like potassium and phosphorus, or incorrect pruning that removes new growth. Symptoms: Few flowers or cherries on the tree. Treatment: Ensure there are enough pollinators (e.g., bees). Use a fertilizer high in potassium and phosphorus. Follow a proper pruning schedule to encourage new, fruit-bearing branches.',
+                    },
+                },
+                nd: {
+                    chlorosis: {
+                        triggers: ['tos nee neyae sokeekab kawek koek pisalyaa/bisaliin?', 'bisalyaa sokeek', 'pisaliik sakeek', 'bisaliin sokeek'],
+                        response: 'Myondo: **chlorosis** ako imuchi koek kabarunetab myando kityo. Tagunet: chlorosis kotakunee sakeek che makonyalileen kou ole maktaat kotugu. Kito ne yae kobiit chlorosis ko rerunetab keturek anan makutiikab kawek eng ng\'ung\'unyeek. Kabarunoiik che konin inai ile chlorosis: Ngotko nyalileen tikitik chebo sokeek lakini bisalyaa kimasta ake, ngotkowalak sokot komugul koek bisalyaa. Kanyaiseet: Riib beek matkotolil eng kapkelyenuutab minutik, machei kora ketes keturek che imuche kotes iron ak magnesium',
+                    },
+                    anthracnose: {
+                        triggers: ['tos nee neyaei kosich matundekab kawek tukun che tuen?', 'konam tukun che tuen logoeek', 'tuen logoek', 'tindoi tugun che tuen', 'kotuekitu'],
+                        response: 'Myondo:**Anthracnose**. Tagunet: ikerei tisonook che tueen eng logoekab kawek anan ko eng sakekab kawek anan ko ketit nebo kawek kora. Yaei myoni kobutyo logoekab kawek kora eng ketit amakonyo. Kabarunoik:tisook chetueen chemii logoek ako chopei kiy neu maringoit. Kanyaiseet:til kimasweek tugul che katiny myondo akiwirte. Kararan keisto ketinotok tugul ak kekol ake netili. Kinfoi kericheck chetindoi coper. Akichop mbaret kolapkeiit asi komuut koristo ne tilil minutik.',
+                    },
+                },
+            };
+
+            // Helper function to create a new chat message element
+            const createMessageElement = (role, content) => {
+                const messageContainer = document.createElement('div');
+                messageContainer.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `flex items-start max-w-xs sm:max-w-md ${role === 'user' ? 'flex-row-reverse' : ''}`;
+
+                const avatar = document.createElement('div');
+                avatar.className = `w-8 h-8 rounded-full flex items-center justify-center text-white flex-shrink-0 shadow-lg ${role === 'user' ? 'bg-emerald-500 ml-2' : 'bg-green-800 mr-2'}`;
+                avatar.innerHTML = `<i data-lucide="${role === 'user' ? 'user' : 'bot'}" class="w-4 h-4"></i>`;
+
+                const messageBubble = document.createElement('div');
+                messageBubble.className = `p-3 rounded-lg shadow-md text-sm transition-all duration-300 ${role === 'user' ? 'bg-emerald-400 text-white rounded-br-3xl rounded-tl-xl' : 'bg-white text-gray-800 rounded-bl-3xl rounded-tr-xl'}`;
+
+                // Convert markdown to HTML (basic implementation)
+                const markdownContent = content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+                messageBubble.innerHTML = markdownContent;
+
+                messageWrapper.appendChild(avatar);
+                messageWrapper.appendChild(messageBubble);
+                messageContainer.appendChild(messageWrapper);
+
+                // Re-initialize icons for the new element
+                lucide.createIcons();
+                
+                return messageContainer;
+            };
+
+            // Function to add a message to the chat and scroll to the bottom
+            const addMessage = (role, content) => {
+                const messageElement = createMessageElement(role, content);
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+            };
+
+            // Function to handle the bot's response
+            const getBotResponse = (userInput) => {
+                const lowerInput = userInput.toLowerCase().trim();
+                let botResponse = "Sorry, I don't have a specific answer for that question in my database yet. Please try asking about a different topic, or we can add more questions and answers!";
+                
+                const responsesForLang = localResponses[language];
+                if (responsesForLang) {
+                    for (const diseaseKey in responsesForLang) {
+                        const diseaseInfo = responsesForLang[diseaseKey];
+                        if (diseaseInfo.triggers.some(trigger => lowerInput.includes(trigger.toLowerCase()))) {
+                            botResponse = diseaseInfo.response;
+                            break;
+                        }
+                    }
+                }
+                setTimeout(() => addMessage('bot', botResponse), 500);
+            };
+
+            // Event handler for sending a message
+            const handleSendMessage = () => {
+                const userInput = chatInput.value.trim();
+                if (userInput) {
+                    addMessage('user', userInput);
+                    chatInput.value = '';
+                    getBotResponse(userInput);
+                }
+            };
+
+            // Event handler for language change
+            languageSelector.addEventListener('change', (e) => {
+                language = e.target.value;
+                chatMessages.innerHTML = ''; // Clear chat history
+                addMessage('bot', initialMessages[language]);
+            });
+
+            // Event listeners
+            sendButton.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+
+            // Image upload logic
+            imageUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        uploadedImageFile = file; // Store the file object for the server
+                        imageUploadPlaceholder.classList.add('hidden');
+                        imagePreview.classList.remove('hidden');
+                        imagePreviewImg.src = reader.result;
+                        analyzeButton.disabled = false;
+                        analyzeButton.className = 'w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // The function to send the image to the Python server for analysis
+            const runModelInference = async (imageFile) => {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+
+                try {
+                    // Send the image to the Python server's '/predict' endpoint
+                    // The URL is now a relative path, so it will work with Render's domain.
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Server returned an error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    // The server returns the predicted class and confidence
+                    const predictedClass = result.predicted_class;
+                    const confidence = result.confidence;
+                    
+                    return `**Predicted Disease:** ${predictedClass} with a confidence of **${confidence}**`;
+
+                } catch (error) {
+                    console.error('Prediction failed:', error);
+                    return 'An error occurred during prediction. Please make sure the Python server is running.';
+                }
+            };
+
+
+            analyzeButton.addEventListener('click', async () => {
+                if (!uploadedImageFile) return;
+
+                // Disable button and show loading state
+                const originalButtonContent = analyzeButton.innerHTML;
+                analyzeButton.disabled = true;
+                analyzeButton.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
+                lucide.createIcons();
+                
+                // Run the image through the server-side prediction
+                const analysisResponse = await runModelInference(uploadedImageFile);
+                
+                // Display the analysis result
+                analysisText.innerHTML = analysisResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                analysisResult.classList.remove('hidden');
+
+                // Reset button state
+                analyzeButton.innerHTML = originalButtonContent;
+                analyzeButton.disabled = false;
+                lucide.createIcons();
+            });
+
+            // Set initial message
+            addMessage('bot', initialMessages[language]);
+        });
+    </script>
+
+</body>
+</html>
