@@ -37,6 +37,8 @@ def predict_image():
     try:
         # Open and preprocess the image
         img = Image.open(io.BytesIO(file.read()))
+        # CRITICAL FIX: Convert the image to RGB to ensure the correct channel format
+        img = img.convert('RGB')
         img = img.resize((150, 150))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
