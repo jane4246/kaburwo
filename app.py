@@ -12,8 +12,16 @@ CORS(app) # Enable CORS for all routes
 
 # Define a path for the model and load it
 MODEL_PATH = os.path.join(os.getcwd(), 'coffee_disease.h5')
-model = load_model(MODEL_PATH)
-labels = ['Healthy', 'Leaf Rust'] # Make sure these labels match your model's output classes
+# Ensure the model loads correctly at startup
+try:
+    model = load_model(MODEL_PATH)
+    labels = ['Healthy', 'Leaf Rust'] # Make sure these labels match your model's output classes
+except Exception as e:
+    # Log an error if the model fails to load
+    print(f"Error loading model: {e}")
+    model = None
+    labels = []
+
 
 @app.route('/')
 def serve_index():
@@ -28,6 +36,10 @@ def predict_image():
     """
     Handles image prediction requests.
     """
+    # Check if the model was loaded successfully
+    if model is None:
+        return jsonify({'error': 'Machine learning model is not available.'}), 503
+
     # Check if an image was provided
     if 'image' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
@@ -55,6 +67,8 @@ def predict_image():
         })
 
     except Exception as e:
+        # Log the specific error to the console for debugging on Render
+        print(f"Prediction failed with an exception: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
