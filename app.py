@@ -19,14 +19,14 @@ try:
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
     labels = [
-    "coffee leaf trunk",
-    "coffee rust",
-    "healthy",
-    "leaf spot",
-    "nematodes",
-    "phoma",
-    "re_spider_mite"
-]  # Make sure this matches your model classes
+        "coffee leaf trunk",
+        "coffee rust",
+        "healthy",
+        "leaf spot",
+        "nematodes",
+        "phoma",
+        "re_spider_mite"
+    ]  # Must match your model's classes
     print(f"Model loaded successfully from {MODEL_PATH}")
 except Exception as e:
     print(f"Error loading TFLite model: {e}")
@@ -63,9 +63,19 @@ def predict_image():
 
         # Get output tensor
         prediction = interpreter.get_tensor(output_details[0]['index'])[0]
+
+        # Crash-proof check
+        if prediction.size == 0:
+            return jsonify({'error': 'Model returned empty prediction'}), 500
+
         predicted_class_index = int(np.argmax(prediction))
-        predicted_class = labels[predicted_class_index]
-        confidence = float(prediction[predicted_class_index])
+
+        if 0 <= predicted_class_index < len(labels):
+            predicted_class = labels[predicted_class_index]
+        else:
+            predicted_class = f"Unknown class {predicted_class_index}"
+
+        confidence = float(prediction[predicted_class_index]) if 0 <= predicted_class_index < len(prediction) else 0.0
 
         return jsonify({
             'predicted_class': predicted_class,
