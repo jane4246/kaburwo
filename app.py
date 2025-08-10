@@ -18,7 +18,15 @@ try:
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    labels = ["Healthy", "Leaf Rust"]  # Make sure this matches your model classes
+    labels = [
+    "coffee leaf trunk",
+    "coffee rust",
+    "healthy",
+    "leaf spot",
+    "nematodes",
+    "phoma",
+    "re_spider_mite"
+]  # Make sure this matches your model classes
     print(f"Model loaded successfully from {MODEL_PATH}")
 except Exception as e:
     print(f"Error loading TFLite model: {e}")
