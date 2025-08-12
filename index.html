@@ -18,6 +18,45 @@
             -ms-overflow-style: none; /* IE and Edge */
             scrollbar-width: none; /* Firefox */
         }
+
+        /* previews (multi) */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+            align-items: start;
+        }
+        .preview-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .preview-item img {
+            width: 100%;
+            max-height: 110px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .result-badge {
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+        .spinner-inline {
+            display:inline-block;
+            width:1rem;
+            height:1rem;
+            border:2px solid rgba(0,0,0,0.1);
+            border-left-color: rgba(0,0,0,0.6);
+            border-radius:50%;
+            animation:spin 0.8s linear infinite;
+            vertical-align:middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
     <!-- Lucide Icons for the UI -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -45,7 +84,7 @@
         <!-- Main Content Area -->
         <div class="flex flex-col md:flex-row flex-1 overflow-hidden p-4 space-y-4 md:space-y-0 md:space-x-4">
             
-            <!-- Chatbot Panel -->
+            <!-- Chatbot Panel (unchanged) -->
             <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl overflow-hidden">
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-hide">
                     <!-- Chat messages will be dynamically added here -->
@@ -62,49 +101,81 @@
                 </div>
             </div>
 
-            <!-- Image Processing Panel -->
+            <!-- Image Processing Panel (now contains BOTH single and multiple flows) -->
             <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4">
                 <h2 class="text-xl font-bold text-green-800 border-b pb-2">Image Analysis Tool</h2>
-                
-                <div class="border-4 border-dashed border-green-200 rounded-xl p-4 text-center cursor-pointer hover:bg-green-50 transition-colors" id="image-upload-area">
-                    <label for="image-upload" class="flex flex-col items-center justify-center h-full w-full">
-                        <div id="image-preview" class="hidden">
-                            <img alt="Uploaded photo" class="max-h-64 object-contain rounded-lg shadow-lg">
-                        </div>
-                        <div id="image-upload-placeholder" class="flex flex-col items-center p-4">
-                            <i data-lucide="image" class="text-green-500 mb-2 w-12 h-12"></i>
-                            <span class="text-green-600 font-semibold">Click here to upload a photo</span>
-                            <span class="text-green-400 text-sm mt-1">PNG, JPG, or GIF</span>
-                        </div>
-                        <input type="file" id="image-upload" accept="image/*" class="hidden">
-                    </label>
+
+                <!-- === PART A: Single Image (original UI preserved exactly) === -->
+                <div class="border rounded-lg p-3 bg-white shadow-sm">
+                    <h3 class="font-semibold mb-2">Single Image</h3>
+                    <div class="border-4 border-dashed border-green-200 rounded-xl p-4 text-center cursor-pointer hover:bg-green-50 transition-colors" id="image-upload-area-single">
+                        <label for="image-upload" class="flex flex-col items-center justify-center h-full w-full">
+                            <div id="image-preview" class="hidden">
+                                <img alt="Uploaded photo" class="max-h-64 object-contain rounded-lg shadow-lg">
+                            </div>
+                            <div id="image-upload-placeholder" class="flex flex-col items-center p-4">
+                                <i data-lucide="image" class="text-green-500 mb-2 w-12 h-12"></i>
+                                <span class="text-green-600 font-semibold">Click to upload a photo (single)</span>
+                                <span class="text-green-400 text-sm mt-1">PNG, JPG, or GIF</span>
+                            </div>
+                            <!-- KEEP original single-file input ID and attributes -->
+                            <input type="file" id="image-upload" accept="image/*" class="hidden">
+                        </label>
+                    </div>
+
+                    <button id="analyze-button" class="w-full mt-3 p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-400 text-gray-600 cursor-not-allowed" disabled>
+                        <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
+                        Analyze photo
+                    </button>
+                    
+                    <div id="analysis-result" class="hidden mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100 shadow-md">
+                        <h3 class="font-bold text-green-800 mb-2">Analysis Results:</h3>
+                        <p id="analysis-text"></p>
+                    </div>
                 </div>
 
-                <button id="analyze-button" class="w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-400 text-gray-600 cursor-not-allowed" disabled>
-                    <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
-                    Analyze photo
-                </button>
-                
-                <div id="analysis-result" class="hidden p-4 bg-emerald-50 rounded-lg border border-emerald-100 shadow-md">
-                    <h3 class="font-bold text-green-800 mb-2">Analysis Results:</h3>
-                    <p id="analysis-text"></p>
+                <!-- === PART B: Multiple Images (new UI) === -->
+                <div class="border rounded-lg p-3 bg-white shadow-sm">
+                    <h3 class="font-semibold mb-2">Multiple Images (batch)</h3>
+                    <div class="text-sm text-gray-600 mb-2">Select many images and click <strong>Analyze photos</strong>.</div>
+                    <div class="border-2 border-dashed rounded p-3 mb-2">
+                        <input type="file" id="image-upload-multi" accept="image/*" multiple class="block w-full" />
+                    </div>
+
+                    <div id="preview-grid-multi" class="preview-grid mb-3 hidden"></div>
+
+                    <button id="analyze-button-multi" class="w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-200 text-gray-600" disabled>
+                        <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
+                        Analyze photo(s)
+                    </button>
+
+                    <div id="analysis-result-multi" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
+                        <h4 class="font-medium text-green-800 mb-1">Batch Results</h4>
+                        <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- The JavaScript logic for the chatbot -->
+    <!-- The JavaScript logic for the chatbot and both upload flows -->
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // Replaces the placeholder SVG tags with actual icons from Lucide
             lucide.createIcons();
 
-            // DOM elements
+            /***********************
+             * Chatbot (unchanged) *
+             ***********************/
+            // DOM elements - chatbot
             const languageSelector = document.getElementById('language-selector');
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const sendButton = document.getElementById('send-button');
-            const imageUpload = document.getElementById('image-upload');
+
+            // Single-image DOM elements (original)
+            const imageUpload = document.getElementById('image-upload'); // original ID preserved
             const imagePreview = document.getElementById('image-preview');
             const imageUploadPlaceholder = document.getElementById('image-upload-placeholder');
             const analyzeButton = document.getElementById('analyze-button');
@@ -112,10 +183,18 @@
             const analysisText = document.getElementById('analysis-text');
             const imagePreviewImg = imagePreview.querySelector('img');
 
+            // Multi-image DOM elements (new)
+            const imageUploadMulti = document.getElementById('image-upload-multi');
+            const previewGridMulti = document.getElementById('preview-grid-multi');
+            const analyzeButtonMulti = document.getElementById('analyze-button-multi');
+            const analysisResultMulti = document.getElementById('analysis-result-multi');
+            const analysisTextMulti = document.getElementById('analysis-text-multi');
+
             // State variables
             let language = 'en';
-            let uploadedImageFile = null; // Store the file object, not the base64 string
-            
+            let uploadedImageFile = null; // single image (original)
+            let uploadedFilesMulti = [];  // multi-image array
+
             const initialMessages = {
                 en: "Hello! I'm your coffee disease expert. I can help you identify and manage common coffee plant diseases. How can I help you today?",
                 nd: "Takwenya! Anendet ng'amotioot nebo kawek. Amuchii aboruun tuguuk che iyaei asi iguiye myanwogikab kawek ak inai olekiriptoi simanam myanwogik. Tos mii kiy ne imeche atoretin rani?"
@@ -233,7 +312,11 @@
                 }
             });
 
-            // Image upload logic
+
+            /*******************************
+             * Single-image upload logic   *
+             * (keeps your original flow)  *
+             *******************************/
             imageUpload.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -244,20 +327,21 @@
                         imagePreview.classList.remove('hidden');
                         imagePreviewImg.src = reader.result;
                         analyzeButton.disabled = false;
-                        analyzeButton.className = 'w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white';
+                        analyzeButton.className = 'w-full mt-3 p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white';
+                        lucide.createIcons();
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            // The function to send the image to the Python server for analysis
+            // The function to send a single image to the Python server for analysis
             const runModelInference = async (imageFile) => {
                 const formData = new FormData();
+                // Original code used field name 'image'
                 formData.append('image', imageFile);
 
                 try {
-                    // Send the image to the Python server's '/predict' endpoint
-                    // The URL is now a relative path, so it will work with Render's domain.
+                    // Send the image to the Python server's '/predict' endpoint (your existing backend)
                     const response = await fetch('/predict', {
                         method: 'POST',
                         body: formData,
@@ -269,18 +353,26 @@
 
                     const result = await response.json();
                     
-                    // The server returns the predicted class and confidence
-                    const predictedClass = result.predicted_class;
-                    const confidence = result.confidence;
+                    // The server returns the predicted class and confidence (adapting to typical keys)
+                    const predictedClass = result.predicted_class || result.prediction || result.label || "Unknown";
+                    const confidence = result.confidence ?? result.score ?? null;
                     
-                    return `**Predicted Disease:** ${predictedClass} with a confidence of **${confidence}**`;
+                    // Format confidence nicely
+                    let confText = '';
+                    if (confidence !== null && confidence !== undefined) {
+                        let num = Number(confidence);
+                        if (num <= 1.01) num = (num * 100).toFixed(2) + '%';
+                        else num = (Number(confidence).toFixed(2)).toString().includes('%') ? confidence : `${Number(confidence).toFixed(2)}%`;
+                        confText = ` (confidence: ${num})`;
+                    }
+
+                    return `**Predicted Disease:** ${predictedClass}${confText}`;
 
                 } catch (error) {
                     console.error('Prediction failed:', error);
                     return 'An error occurred during prediction. Please make sure the Python server is running.';
                 }
             };
-
 
             analyzeButton.addEventListener('click', async () => {
                 if (!uploadedImageFile) return;
@@ -304,8 +396,158 @@
                 lucide.createIcons();
             });
 
-            // Set initial message
+
+            /*******************************
+             * Multi-image upload logic    *
+             *******************************/
+            imageUploadMulti.addEventListener('change', (e) => {
+                uploadedFilesMulti = Array.from(e.target.files);
+                previewGridMulti.innerHTML = '';
+
+                if (uploadedFilesMulti.length === 0) {
+                    previewGridMulti.classList.add('hidden');
+                    analyzeButtonMulti.disabled = true;
+                    analyzeButtonMulti.classList.add('bg-gray-200');
+                    return;
+                }
+
+                previewGridMulti.classList.remove('hidden');
+
+                uploadedFilesMulti.forEach((file, idx) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const item = document.createElement('div');
+                        item.className = 'preview-item';
+
+                        // create unique id for mapping results
+                        const resultId = `multi-result-${Date.now()}-${idx}`;
+
+                        item.innerHTML = `
+                            <img src="${ev.target.result}" alt="${file.name}" title="${file.name}">
+                            <div class="text-xs text-gray-600 truncate" style="max-width:120px;">${file.name}</div>
+                            <div id="${resultId}" class="result-badge bg-yellow-50 text-yellow-800">Ready</div>
+                        `;
+
+                        // store the resultId on the File object for lookup later
+                        file._resultId = resultId;
+
+                        previewGridMulti.appendChild(item);
+                    };
+                    reader.readAsDataURL(file);
+                });
+
+                analyzeButtonMulti.disabled = false;
+                analyzeButtonMulti.classList.remove('bg-gray-200');
+                analyzeButtonMulti.classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-800', 'text-white');
+                lucide.createIcons();
+            });
+
+            // Send all selected multi files to /predict as 'images'
+            const sendFilesForPrediction = async (filesArray) => {
+                const formData = new FormData();
+                // append under the same field name 'images' expected by backend
+                filesArray.forEach(f => formData.append('images', f));
+
+                try {
+                    const resp = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error(`Server error: ${resp.status} ${resp.statusText}`);
+                    }
+
+                    const data = await resp.json();
+                    // Support multiple response shapes:
+                    let preds = [];
+                    if (data.predictions && Array.isArray(data.predictions)) {
+                        preds = data.predictions;
+                    } else if (Array.isArray(data)) {
+                        preds = data;
+                    } else if (data.results && Array.isArray(data.results)) {
+                        preds = data.results;
+                    } else {
+                        analysisTextMulti.innerHTML = `<div class="text-red-600">Unexpected server response format.</div>`;
+                        analysisResultMulti.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Map predictions to preview items. Backend ideally returns original filename.
+                    preds.forEach((p, idx) => {
+                        const filename = p.filename || p.name || p.file || p.image_name || null;
+                        const predicted_class = p.predicted_class || p.prediction || p.label || p.predicted || p.class || null;
+                        const confidence = (p.confidence !== undefined) ? p.confidence : (p.score !== undefined ? p.score : null);
+
+                        // Try filename match
+                        let matched = null;
+                        if (filename) matched = uploadedFilesMulti.find(f => f.name === filename);
+
+                        // fallback to positional mapping
+                        if (!matched) {
+                            if (idx >= 0 && idx < uploadedFilesMulti.length) matched = uploadedFilesMulti[idx];
+                        }
+
+                        if (matched && matched._resultId) {
+                            const el = document.getElementById(matched._resultId);
+                            if (el) {
+                                let confText = '';
+                                if (confidence !== null && confidence !== undefined) {
+                                    let display = Number(confidence);
+                                    if (display <= 1.01) display = (display * 100).toFixed(2) + '%';
+                                    else display = (display).toString().includes('%') ? display : `${Number(display).toFixed(2)}%`;
+                                    confText = ` — ${display}`;
+                                }
+                                el.classList.remove('bg-yellow-50', 'text-yellow-800');
+                                el.classList.add('bg-emerald-100', 'text-green-800');
+                                el.textContent = predicted_class ? `${predicted_class}${confText}` : `Prediction done${confText}`;
+                            }
+                        }
+                    });
+
+                    analysisTextMulti.innerHTML = `<div class="text-sm text-gray-700">Processed ${preds.length} image(s).</div>`;
+                    analysisResultMulti.classList.remove('hidden');
+
+                } catch (err) {
+                    console.error(err);
+                    analysisTextMulti.innerHTML = `<div class="text-red-600">Prediction failed: ${err.message}</div>`;
+                    analysisResultMulti.classList.remove('hidden');
+                }
+            };
+
+            analyzeButtonMulti.addEventListener('click', async () => {
+                if (!uploadedFilesMulti || uploadedFilesMulti.length === 0) return;
+
+                // set badges to processing
+                uploadedFilesMulti.forEach(f => {
+                    if (f._resultId) {
+                        const el = document.getElementById(f._resultId);
+                        if (el) {
+                            el.textContent = '';
+                            el.className = 'result-badge bg-yellow-50 text-yellow-800';
+                            el.innerHTML = `<span class="spinner-inline"></span> Processing`;
+                        }
+                    }
+                });
+
+                // disable UI
+                const origHtml = analyzeButtonMulti.innerHTML;
+                analyzeButtonMulti.disabled = true;
+                analyzeButtonMulti.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
+                lucide.createIcons();
+
+                await sendFilesForPrediction(uploadedFilesMulti);
+
+                // restore UI
+                analyzeButtonMulti.innerHTML = origHtml;
+                analyzeButtonMulti.disabled = false;
+                lucide.createIcons();
+            });
+
+
+            // Set initial chat message
             addMessage('bot', initialMessages[language]);
+
         });
     </script>
 
