@@ -51,9 +51,9 @@ def predict_image():
         # Load and preprocess the image
         img = Image.open(io.BytesIO(file.read()))
         img = img.convert('RGB')
-        img = img.resize((224, 224))
+        img = img.resize((128, 128))
         img_array = np.array(img, dtype=np.float32) / 255.0
-        img_array = np.expand_dims(img_array, axis=0)  # shape (1, 224, 224, 3)
+        img_array = np.expand_dims(img_array, axis=0)  # shape (1, 128, 128, 3)
 
         # Set input tensor
         interpreter.set_tensor(input_details[0]['index'], img_array)
