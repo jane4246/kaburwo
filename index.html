@@ -45,6 +45,10 @@
             border-radius: 999px;
             text-align: center;
             min-height: 1.5rem;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .spinner-inline {
             display:inline-block;
@@ -461,54 +465,52 @@
                     }
 
                     const data = await resp.json();
-                    // Support multiple response shapes:
-                    let preds = [];
-                    if (data.predictions && Array.isArray(data.predictions)) {
-                        preds = data.predictions;
-                    } else if (Array.isArray(data)) {
-                        preds = data;
-                    } else if (data.results && Array.isArray(data.results)) {
-                        preds = data.results;
+                    
+                    // --- CORRECTION BEGINS HERE ---
+                    // The backend sends back an object with a 'predictions' key that holds an array of results.
+                    // We need to loop through this array and match each prediction to its corresponding image on the UI.
+                    if (data && data.predictions && Array.isArray(data.predictions)) {
+                        data.predictions.forEach((p, idx) => {
+                            // Find the original file object using its temporary _resultId
+                            const fileToUpdate = uploadedFilesMulti.find(f => f.name === p.filename);
+                            
+                            if (fileToUpdate && fileToUpdate._resultId) {
+                                const el = document.getElementById(fileToUpdate._resultId);
+                                if (el) {
+                                    // Construct the display message from the prediction object
+                                    const predicted_class = p.predicted_class || 'Unknown';
+                                    const confidence = (p.confidence !== undefined) ? p.confidence : null;
+                                    
+                                    let confText = '';
+                                    if (confidence !== null) {
+                                        let display = Number(confidence);
+                                        // Check if the confidence is a decimal (e.g., 0.95) and format it as a percentage
+                                        if (display <= 1.01) {
+                                            display = (display * 100).toFixed(2) + '%';
+                                        } else {
+                                            display = `${display.toFixed(2)}%`;
+                                        }
+                                        confText = ` — ${display}`;
+                                    }
+                                    
+                                    // Update the badge with the correct prediction name and confidence
+                                    el.classList.remove('bg-yellow-50', 'text-yellow-800');
+                                    el.classList.add('bg-emerald-100', 'text-green-800');
+                                    el.innerHTML = predicted_class ? `${predicted_class}${confText}` : `Prediction done${confText}`;
+                                }
+                            }
+                        });
+                        
+                        // Update the overall batch results summary
+                        analysisTextMulti.innerHTML = `<div class="text-sm text-gray-700">Processed ${data.predictions.length} image(s).</div>`;
+                        analysisResultMulti.classList.remove('hidden');
+                        
                     } else {
+                        // Handle unexpected response format
                         analysisTextMulti.innerHTML = `<div class="text-red-600">Unexpected server response format.</div>`;
                         analysisResultMulti.classList.remove('hidden');
-                        return;
                     }
-
-                    // Map predictions to preview items. Backend ideally returns original filename.
-                    preds.forEach((p, idx) => {
-                        const filename = p.filename || p.name || p.file || p.image_name || null;
-                        const predicted_class = p.predicted_class || p.prediction || p.label || p.predicted || p.class || null;
-                        const confidence = (p.confidence !== undefined) ? p.confidence : (p.score !== undefined ? p.score : null);
-
-                        // Try filename match
-                        let matched = null;
-                        if (filename) matched = uploadedFilesMulti.find(f => f.name === filename);
-
-                        // fallback to positional mapping
-                        if (!matched) {
-                            if (idx >= 0 && idx < uploadedFilesMulti.length) matched = uploadedFilesMulti[idx];
-                        }
-
-                        if (matched && matched._resultId) {
-                            const el = document.getElementById(matched._resultId);
-                            if (el) {
-                                let confText = '';
-                                if (confidence !== null && confidence !== undefined) {
-                                    let display = Number(confidence);
-                                    if (display <= 1.01) display = (display * 100).toFixed(2) + '%';
-                                    else display = (display).toString().includes('%') ? display : `${Number(display).toFixed(2)}%`;
-                                    confText = ` — ${display}`;
-                                }
-                                el.classList.remove('bg-yellow-50', 'text-yellow-800');
-                                el.classList.add('bg-emerald-100', 'text-green-800');
-                                el.textContent = predicted_class ? `${predicted_class}${confText}` : `Prediction done${confText}`;
-                            }
-                        }
-                    });
-
-                    analysisTextMulti.innerHTML = `<div class="text-sm text-gray-700">Processed ${preds.length} image(s).</div>`;
-                    analysisResultMulti.classList.remove('hidden');
+                    // --- CORRECTION ENDS HERE ---
 
                 } catch (err) {
                     console.error(err);
