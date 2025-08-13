@@ -206,6 +206,14 @@
             transform: scale(1.05);
             box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3);
         }
+        
+        .cold-start-info {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -312,6 +320,18 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+                    
+                    <!-- Cold Start Information -->
+                    <div class="cold-start-info mt-4">
+                        <h4 class="font-bold text-amber-800 flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            About Render Cold Starts
+                        </h4>
+                        <p class="text-sm text-amber-700 mt-2">
+                            If you're using Render's free tier, your server might take 30-60 seconds to start up after 
+                            being idle. This is normal behavior. The model will be available shortly.
+                        </p>
                     </div>
                 </div>
                 
@@ -523,7 +543,7 @@
                 "red_spider_mite"
             ];
             
-            // Improved model connection check
+            // Check model connection with retry logic
             async function checkModelConnection() {
                 connectionStatus.classList.remove('hidden');
                 connectionStatus.className = "connection-status bg-yellow-100 text-yellow-800";
@@ -532,51 +552,53 @@
                 // Try multiple times to account for cold starts
                 let attempts = 0;
                 const maxAttempts = 5;
+                let connected = false;
                 
-                while (attempts < maxAttempts) {
+                while (attempts < maxAttempts && !connected) {
                     try {
-                        const response = await fetch('/health', {
-                            method: 'GET'
-                        });
+                        const response = await fetch('/health');
                         
                         if (response.ok) {
-                            modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span><span class="text-sm">Model status: Connected and ready</span>';
-                            connectionStatus.className = "connection-status bg-green-100 text-green-800";
-                            connectionStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Model connected successfully!';
-                            modelAvailable = true;
-                            retryButton.classList.add('hidden');
-                            connectionError.classList.add('hidden');
-                            analysisSection.classList.remove('hidden');
-                            
-                            // Hide status after 5 seconds
-                            setTimeout(() => {
-                                connectionStatus.classList.add('hidden');
-                            }, 5000);
-                            
-                            return;
+                            const data = await response.json();
+                            if (data.status === "available") {
+                                modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span><span class="text-sm">Model status: Connected and ready</span>';
+                                connectionStatus.className = "connection-status bg-green-100 text-green-800";
+                                connectionStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Model connected successfully!';
+                                modelAvailable = true;
+                                retryButton.classList.add('hidden');
+                                connectionError.classList.add('hidden');
+                                analysisSection.classList.remove('hidden');
+                                connected = true;
+                            } else {
+                                throw new Error(data.message || 'Model not ready');
+                            }
+                        } else {
+                            throw new Error('Health check failed');
                         }
                     } catch (error) {
-                        // Continue to next attempt
+                        attempts++;
+                        if (attempts < maxAttempts) {
+                            // Wait 2 seconds before next attempt
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                        }
                     }
-                    
-                    attempts++;
-                    // Wait 2 seconds before next attempt
-                    await new Promise(resolve => setTimeout(resolve, 2000));
                 }
                 
-                // If all attempts fail
-                modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Model status: Connection failed</span>';
-                connectionStatus.className = "connection-status bg-red-100 text-red-800";
-                connectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model';
-                modelAvailable = false;
-                retryButton.classList.remove('hidden');
-                connectionError.classList.remove('hidden');
-                analysisSection.classList.add('hidden');
+                if (!connected) {
+                    // If all attempts fail
+                    modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Model status: Connection failed</span>';
+                    connectionStatus.className = "connection-status bg-red-100 text-red-800";
+                    connectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model';
+                    modelAvailable = false;
+                    retryButton.classList.remove('hidden');
+                    connectionError.classList.remove('hidden');
+                    analysisSection.classList.add('hidden');
+                }
                 
-                // Hide status after 10 seconds
+                // Hide status after 5 seconds if connected, 10 seconds if failed
                 setTimeout(() => {
                     connectionStatus.classList.add('hidden');
-                }, 10000);
+                }, connected ? 5000 : 10000);
             }
             
             // Helper function to create a chat message element
