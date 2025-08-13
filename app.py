@@ -97,3 +97,19 @@ def predict():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
+# Health check endpoint for Render cold starts
+@app.route('/health', methods=['GET'])
+def health_check():
+    if interpreter is None:
+        return jsonify({
+            "status": "unavailable",
+            "message": "Model not loaded",
+            "classes": []
+        }), 503
+    
+    return jsonify({
+        "status": "available",
+        "message": "Model loaded and ready",
+        "classes": labels
+    }), 200
