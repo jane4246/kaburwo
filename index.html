@@ -26,13 +26,6 @@
             gap: 0.5rem;
             align-items: start;
         }
-        /* NEW: keep batch previews from growing too tall */
-        .preview-grid-scroll {
-            max-height: 260px;          /* adjust to taste */
-            overflow-y: auto;
-            padding-right: 2px;         /* room for scrollbar */
-        }
-
         .preview-item {
             display: flex;
             flex-direction: column;
@@ -64,13 +57,6 @@
             vertical-align:middle;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* NEW: dedicated scrolling space for batch results below previews */
-        .results-block {
-            min-height: 180px;          /* ensures visible space even with few results */
-            max-height: 320px;          /* keeps panel neat */
-            overflow-y: auto;
-        }
     </style>
     <!-- Lucide Icons for the UI -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -115,9 +101,8 @@
                 </div>
             </div>
 
-            <!-- Image Processing Panel (BOTH single and multiple flows) -->
-            <!-- NEW: make this panel scrollable within the page and allow children to size correctly -->
-            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4 overflow-y-auto min-h-0">
+            <!-- Image Processing Panel (now contains BOTH single and multiple flows) -->
+            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4">
                 <h2 class="text-xl font-bold text-green-800 border-b pb-2">Image Analysis Tool</h2>
 
                 <!-- === PART A: Single Image (original UI preserved exactly) === -->
@@ -149,24 +134,22 @@
                     </div>
                 </div>
 
-                <!-- === PART B: Multiple Images (batch) === -->
-                <div class="border rounded-lg p-3 bg-white shadow-sm flex flex-col min-h-[380px]">
+                <!-- === PART B: Multiple Images (new UI) === -->
+                <div class="border rounded-lg p-3 bg-white shadow-sm">
                     <h3 class="font-semibold mb-2">Multiple Images (batch)</h3>
                     <div class="text-sm text-gray-600 mb-2">Select many images and click <strong>Analyze photos</strong>.</div>
                     <div class="border-2 border-dashed rounded p-3 mb-2">
                         <input type="file" id="image-upload-multi" accept="image/*" multiple class="block w-full" />
                     </div>
 
-                    <!-- NEW: preview grid is now scroll-limited so results below stay visible -->
-                    <div id="preview-grid-multi" class="preview-grid preview-grid-scroll mb-3 hidden"></div>
+                    <div id="preview-grid-multi" class="preview-grid mb-3 hidden"></div>
 
                     <button id="analyze-button-multi" class="w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-200 text-gray-600" disabled>
                         <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
                         Analyze photo(s)
                     </button>
 
-                    <!-- NEW: results area has guaranteed space and its own scroll -->
-                    <div id="analysis-result-multi" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm results-block">
+                    <div id="analysis-result-multi" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
                         <h4 class="font-medium text-green-800 mb-1">Batch Results</h4>
                         <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
                     </div>
@@ -243,7 +226,7 @@
                     },
                     anthracnose: {
                         triggers: ['tos nee neyaei kosich matundekab kawek tukun che tuen?', 'konam tukun che tuen logoeek', 'tuen logoek', 'tindoi tugun che tuen', 'kotuekitu'],
-                        response: 'Myondo:**Anthracnose**. Tagunet: ikerei tisonook che tueen eng logoekab kawek anan ko eng sakekab kawek anan ko ketit nebo kawek kora. Yaei myoni kobutyo logoekab kawek kora eng ketit amakonyo. Kabarunoik:tisook chetueen chemii logoek ako chopei kiy neu maringoit. Kanyaiseet:til kimasweek tugul che katiny myondo akiwirte. Kararan keisto ketinotok tugul ak kekol ake netili. Kinfoi kericheck chetindoi coper. Akichop mbaret kolapkeiit asi komuut koristo ne tilil minutik.',
+                        response: 'Myondo:**Anthracnose**. Tagunet: ikerei tisonook che tueen eng logoekab kawek anan ko eng sakekab kawek anan ko ketit nebo kawek kora. Yaei myoni kobutyo logoekab kawek kora eng ketit amakonyo. Kabarunoiik:tisook chetueen chemii logoek ako chopei kiy neu maringoit. Kanyaiseet:til kimasweek tugul che katiny myondo akiwirte. Kararan keisto ketinotok tugul ak kekol ake netili. Kinfoi kericheck chetindoi coper. Akichop mbaret kolapkeiit asi komuut koristo ne tilil minutik.',
                     },
                 },
             };
@@ -358,8 +341,8 @@
                 formData.append('image', imageFile);
 
                 try {
-                    // Send the image to the Python server's '/predict' endpoint (your existing backend)
-                    const response = await fetch('/predict', {
+                    // Send the image to the Python server's '/predict_single' endpoint
+                    const response = await fetch('/predict_single', {
                         method: 'POST',
                         body: formData,
                     });
@@ -372,7 +355,7 @@
                     
                     // The server returns the predicted class and confidence (adapting to typical keys)
                     const predictedClass = result.predicted_class || result.prediction || result.label || "Unknown";
-                    const confidence = result.confidence ?? result.score ?? null;
+                    const confidence = (result.confidence !== undefined) ? result.confidence : (result.score !== undefined ? result.score : null);
                     
                     // Format confidence nicely
                     let confText = '';
@@ -466,7 +449,8 @@
                 filesArray.forEach(f => formData.append('images', f));
 
                 try {
-                    const resp = await fetch('/predict', {
+                    // Corrected fetch call: use the /predict_batch endpoint
+                    const resp = await fetch('/predict_batch', {
                         method: 'POST',
                         body: formData
                     });
