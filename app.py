@@ -18,14 +18,14 @@ try:
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    labels = [
-        "coffee leaf trunk",
-        "coffee rust",
+   labels = [
+        "cescospora_leaf_sport",
+        "coffee_canker",
+        "coffee_leaf_rust",
         "healthy",
-        "leaf spot",
         "nematodes",
-        "phoma",
-        "re_spider_mite"
+        "phoma_leaf_sport",
+        "red_spider_mite"
     ]  # Must match your model's classes
     print(f"Model loaded successfully from {MODEL_PATH}")
 except Exception as e:
