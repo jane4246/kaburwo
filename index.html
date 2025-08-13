@@ -26,6 +26,13 @@
             gap: 0.5rem;
             align-items: start;
         }
+        /* NEW: keep batch previews from growing too tall */
+        .preview-grid-scroll {
+            max-height: 260px;          /* adjust to taste */
+            overflow-y: auto;
+            padding-right: 2px;         /* room for scrollbar */
+        }
+
         .preview-item {
             display: flex;
             flex-direction: column;
@@ -45,10 +52,6 @@
             border-radius: 999px;
             text-align: center;
             min-height: 1.5rem;
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         .spinner-inline {
             display:inline-block;
@@ -61,6 +64,13 @@
             vertical-align:middle;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* NEW: dedicated scrolling space for batch results below previews */
+        .results-block {
+            min-height: 180px;          /* ensures visible space even with few results */
+            max-height: 320px;          /* keeps panel neat */
+            overflow-y: auto;
+        }
     </style>
     <!-- Lucide Icons for the UI -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -85,12 +95,11 @@
             </div>
         </header>
 
-        <!-- Main Content Area - removed overflow-hidden to allow children to scroll -->
-        <div class="flex flex-col md:flex-row flex-1 p-4 space-y-4 md:space-y-0 md:space-x-4">
+        <!-- Main Content Area -->
+        <div class="flex flex-col md:flex-row flex-1 overflow-hidden p-4 space-y-4 md:space-y-0 md:space-x-4">
             
-            <!-- Chatbot Panel - removed overflow-hidden and added overflow-y-auto to this container itself -->
-            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl overflow-y-auto">
-                <!-- Chat messages container, correctly has overflow-y-auto -->
+            <!-- Chatbot Panel (unchanged) -->
+            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl overflow-hidden">
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-hide">
                     <!-- Chat messages will be dynamically added here -->
                 </div>
@@ -106,8 +115,9 @@
                 </div>
             </div>
 
-            <!-- Image Processing Panel - added overflow-y-auto to this container -->
-            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4 overflow-y-auto">
+            <!-- Image Processing Panel (BOTH single and multiple flows) -->
+            <!-- NEW: make this panel scrollable within the page and allow children to size correctly -->
+            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4 overflow-y-auto min-h-0">
                 <h2 class="text-xl font-bold text-green-800 border-b pb-2">Image Analysis Tool</h2>
 
                 <!-- === PART A: Single Image (original UI preserved exactly) === -->
@@ -139,22 +149,24 @@
                     </div>
                 </div>
 
-                <!-- === PART B: Multiple Images (new UI) === -->
-                <div class="border rounded-lg p-3 bg-white shadow-sm">
+                <!-- === PART B: Multiple Images (batch) === -->
+                <div class="border rounded-lg p-3 bg-white shadow-sm flex flex-col min-h-[380px]">
                     <h3 class="font-semibold mb-2">Multiple Images (batch)</h3>
                     <div class="text-sm text-gray-600 mb-2">Select many images and click <strong>Analyze photos</strong>.</div>
                     <div class="border-2 border-dashed rounded p-3 mb-2">
                         <input type="file" id="image-upload-multi" accept="image/*" multiple class="block w-full" />
                     </div>
 
-                    <div id="preview-grid-multi" class="preview-grid mb-3 hidden"></div>
+                    <!-- NEW: preview grid is now scroll-limited so results below stay visible -->
+                    <div id="preview-grid-multi" class="preview-grid preview-grid-scroll mb-3 hidden"></div>
 
                     <button id="analyze-button-multi" class="w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-200 text-gray-600" disabled>
                         <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
                         Analyze photo(s)
                     </button>
 
-                    <div id="analysis-result-multi" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm">
+                    <!-- NEW: results area has guaranteed space and its own scroll -->
+                    <div id="analysis-result-multi" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm results-block">
                         <h4 class="font-medium text-green-800 mb-1">Batch Results</h4>
                         <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
                     </div>
@@ -169,10 +181,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Replaces the placeholder SVG tags with actual icons from Lucide
             lucide.createIcons();
-
-            // API key for Gemini API (provided by the environment)
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
             /***********************
              * Chatbot (unchanged) *
@@ -235,7 +243,7 @@
                     },
                     anthracnose: {
                         triggers: ['tos nee neyaei kosich matundekab kawek tukun che tuen?', 'konam tukun che tuen logoeek', 'tuen logoek', 'tindoi tugun che tuen', 'kotuekitu'],
-                        response: 'Myondo:**Anthracnose**. Tagunet: ikerei tisonook che tueen eng logoekab kawek anan ko eng sakekab kawek anan ko ketit nebo kawek kora. Yaei myoni kobutyo logoekab kawek kora eng ketit amakonyo. Kabarunoiik:tisook chetueen chemii logoek ako chopei kiy neu maringoit. Kanyaiseet:til kimasweek tugul che katiny myondo akiwirte. Kararan keisto ketinotok tugul ak kekol ake netili. Kinfoi kericheck chetindoi coper. Akichop mbaret kolapkeiit asi komuut koristo ne tilil minutik.',
+                        response: 'Myondo:**Anthracnose**. Tagunet: ikerei tisonook che tueen eng logoekab kawek anan ko eng sakekab kawek anan ko ketit nebo kawek kora. Yaei myoni kobutyo logoekab kawek kora eng ketit amakonyo. Kabarunoik:tisook chetueen chemii logoek ako chopei kiy neu maringoit. Kanyaiseet:til kimasweek tugul che katiny myondo akiwirte. Kararan keisto ketinotok tugul ak kekol ake netili. Kinfoi kericheck chetindoi coper. Akichop mbaret kolapkeiit asi komuut koristo ne tilil minutik.',
                     },
                 },
             };
@@ -322,65 +330,16 @@
             });
 
 
-            /*************************************************
-             * New Unified Image Analysis Logic (Gemini API) *
-             *************************************************/
-            
-            // Re-usable function to call the Gemini API for image analysis
-            const analyzeImageWithGemini = async (prompt, base64Data) => {
-                let chatHistory = [];
-                chatHistory.push({
-                    role: "user",
-                    parts: [
-                        { text: prompt },
-                        {
-                            inlineData: {
-                                mimeType: "image/jpeg",
-                                data: base64Data
-                            }
-                        }
-                    ]
-                });
-                
-                const payload = { contents: chatHistory };
-                
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`API error: ${response.status} ${response.statusText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        return result.candidates[0].content.parts[0].text;
-                    } else {
-                        return "I could not analyze the image. The response format was unexpected.";
-                    }
-                } catch (error) {
-                    console.error('Gemini API call failed:', error);
-                    return `An error occurred during analysis: ${error.message}`;
-                }
-            };
-            
             /*******************************
              * Single-image upload logic   *
-             * (now uses Gemini API)       *
+             * (keeps your original flow)  *
              *******************************/
             imageUpload.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    uploadedImageFile = file;
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                        uploadedImageFile.base64Data = reader.result.split(',')[1]; // Store base64 data
+                        uploadedImageFile = file; // Store the file object for the server
                         imageUploadPlaceholder.classList.add('hidden');
                         imagePreview.classList.remove('hidden');
                         imagePreviewImg.src = reader.result;
@@ -392,17 +351,57 @@
                 }
             });
 
+            // The function to send a single image to the Python server for analysis
+            const runModelInference = async (imageFile) => {
+                const formData = new FormData();
+                // Original code used field name 'image'
+                formData.append('image', imageFile);
+
+                try {
+                    // Send the image to the Python server's '/predict' endpoint (your existing backend)
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Server returned an error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    // The server returns the predicted class and confidence (adapting to typical keys)
+                    const predictedClass = result.predicted_class || result.prediction || result.label || "Unknown";
+                    const confidence = result.confidence ?? result.score ?? null;
+                    
+                    // Format confidence nicely
+                    let confText = '';
+                    if (confidence !== null && confidence !== undefined) {
+                        let num = Number(confidence);
+                        if (num <= 1.01) num = (num * 100).toFixed(2) + '%';
+                        else num = (Number(confidence).toFixed(2)).toString().includes('%') ? confidence : `${Number(confidence).toFixed(2)}%`;
+                        confText = ` (confidence: ${num})`;
+                    }
+
+                    return `**Predicted Disease:** ${predictedClass}${confText}`;
+
+                } catch (error) {
+                    console.error('Prediction failed:', error);
+                    return 'An error occurred during prediction. Please make sure the Python server is running.';
+                }
+            };
+
             analyzeButton.addEventListener('click', async () => {
-                if (!uploadedImageFile || !uploadedImageFile.base64Data) return;
+                if (!uploadedImageFile) return;
 
                 // Disable button and show loading state
                 const originalButtonContent = analyzeButton.innerHTML;
                 analyzeButton.disabled = true;
                 analyzeButton.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
                 lucide.createIcons();
-
-                const analysisPrompt = "Describe any diseases or issues you see on this coffee plant leaf. Be concise and provide a diagnosis and recommendation if possible. Respond in a friendly, conversational tone.";
-                const analysisResponse = await analyzeImageWithGemini(analysisPrompt, uploadedImageFile.base64Data);
+                
+                // Run the image through the server-side prediction
+                const analysisResponse = await runModelInference(uploadedImageFile);
                 
                 // Display the analysis result
                 analysisText.innerHTML = analysisResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -417,18 +416,15 @@
 
             /*******************************
              * Multi-image upload logic    *
-             * (now uses Gemini API)       *
              *******************************/
             imageUploadMulti.addEventListener('change', (e) => {
                 uploadedFilesMulti = Array.from(e.target.files);
                 previewGridMulti.innerHTML = '';
-                analysisResultMulti.classList.add('hidden');
 
                 if (uploadedFilesMulti.length === 0) {
                     previewGridMulti.classList.add('hidden');
                     analyzeButtonMulti.disabled = true;
-                    analyzeButtonMulti.classList.remove('bg-gradient-to-r', 'from-green-600', 'to-green-800', 'text-white');
-                    analyzeButtonMulti.classList.add('bg-gray-200', 'text-gray-600');
+                    analyzeButtonMulti.classList.add('bg-gray-200');
                     return;
                 }
 
@@ -437,33 +433,105 @@
                 uploadedFilesMulti.forEach((file, idx) => {
                     const reader = new FileReader();
                     reader.onload = (ev) => {
-                        // Store the base64 data on the file object
-                        file.base64Data = ev.target.result.split(',')[1];
-
                         const item = document.createElement('div');
                         item.className = 'preview-item';
 
                         // create unique id for mapping results
                         const resultId = `multi-result-${Date.now()}-${idx}`;
-                        file._resultId = resultId;
 
                         item.innerHTML = `
                             <img src="${ev.target.result}" alt="${file.name}" title="${file.name}">
                             <div class="text-xs text-gray-600 truncate" style="max-width:120px;">${file.name}</div>
                             <div id="${resultId}" class="result-badge bg-yellow-50 text-yellow-800">Ready</div>
                         `;
+
+                        // store the resultId on the File object for lookup later
+                        file._resultId = resultId;
+
                         previewGridMulti.appendChild(item);
                     };
                     reader.readAsDataURL(file);
                 });
 
                 analyzeButtonMulti.disabled = false;
-                analyzeButtonMulti.classList.remove('bg-gray-200', 'text-gray-600');
+                analyzeButtonMulti.classList.remove('bg-gray-200');
                 analyzeButtonMulti.classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-800', 'text-white');
                 lucide.createIcons();
             });
 
-            // The multi-image analysis is now handled directly by the browser
+            // Send all selected multi files to /predict as 'images'
+            const sendFilesForPrediction = async (filesArray) => {
+                const formData = new FormData();
+                // append under the same field name 'images' expected by backend
+                filesArray.forEach(f => formData.append('images', f));
+
+                try {
+                    const resp = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error(`Server error: ${resp.status} ${resp.statusText}`);
+                    }
+
+                    const data = await resp.json();
+                    // Support multiple response shapes:
+                    let preds = [];
+                    if (data.predictions && Array.isArray(data.predictions)) {
+                        preds = data.predictions;
+                    } else if (Array.isArray(data)) {
+                        preds = data;
+                    } else if (data.results && Array.isArray(data.results)) {
+                        preds = data.results;
+                    } else {
+                        analysisTextMulti.innerHTML = `<div class="text-red-600">Unexpected server response format.</div>`;
+                        analysisResultMulti.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Map predictions to preview items. Backend ideally returns original filename.
+                    preds.forEach((p, idx) => {
+                        const filename = p.filename || p.name || p.file || p.image_name || null;
+                        const predicted_class = p.predicted_class || p.prediction || p.label || p.predicted || p.class || null;
+                        const confidence = (p.confidence !== undefined) ? p.confidence : (p.score !== undefined ? p.score : null);
+
+                        // Try filename match
+                        let matched = null;
+                        if (filename) matched = uploadedFilesMulti.find(f => f.name === filename);
+
+                        // fallback to positional mapping
+                        if (!matched) {
+                            if (idx >= 0 && idx < uploadedFilesMulti.length) matched = uploadedFilesMulti[idx];
+                        }
+
+                        if (matched && matched._resultId) {
+                            const el = document.getElementById(matched._resultId);
+                            if (el) {
+                                let confText = '';
+                                if (confidence !== null && confidence !== undefined) {
+                                    let display = Number(confidence);
+                                    if (display <= 1.01) display = (display * 100).toFixed(2) + '%';
+                                    else display = (display).toString().includes('%') ? display : `${Number(display).toFixed(2)}%`;
+                                    confText = ` — ${display}`;
+                                }
+                                el.classList.remove('bg-yellow-50', 'text-yellow-800');
+                                el.classList.add('bg-emerald-100', 'text-green-800');
+                                el.textContent = predicted_class ? `${predicted_class}${confText}` : `Prediction done${confText}`;
+                            }
+                        }
+                    });
+
+                    analysisTextMulti.innerHTML = `<div class="text-sm text-gray-700">Processed ${preds.length} image(s).</div>`;
+                    analysisResultMulti.classList.remove('hidden');
+
+                } catch (err) {
+                    console.error(err);
+                    analysisTextMulti.innerHTML = `<div class="text-red-600">Prediction failed: ${err.message}</div>`;
+                    analysisResultMulti.classList.remove('hidden');
+                }
+            };
+
             analyzeButtonMulti.addEventListener('click', async () => {
                 if (!uploadedFilesMulti || uploadedFilesMulti.length === 0) return;
 
@@ -484,24 +552,8 @@
                 analyzeButtonMulti.disabled = true;
                 analyzeButtonMulti.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
                 lucide.createIcons();
-                
-                const analysisPrompt = "Analyze this image of a coffee plant leaf. What disease or issue is present? Provide a concise one-sentence summary for the diagnosis and a one-sentence recommendation for treatment. Don't include markdown headers like 'Diagnosis' or 'Recommendation'.";
-                const promises = uploadedFilesMulti.map(f => analyzeImageWithGemini(analysisPrompt, f.base64Data));
-                const results = await Promise.all(promises);
 
-                // Update UI with results
-                results.forEach((result, idx) => {
-                    const file = uploadedFilesMulti[idx];
-                    const el = document.getElementById(file._resultId);
-                    if (el) {
-                        el.textContent = result;
-                        el.classList.remove('bg-yellow-50', 'text-yellow-800');
-                        el.classList.add('bg-emerald-100', 'text-green-800');
-                    }
-                });
-                
-                analysisTextMulti.innerHTML = `Analysis complete for ${results.length} image(s). Check the badges for individual results.`;
-                analysisResultMulti.classList.remove('hidden');
+                await sendFilesForPrediction(uploadedFilesMulti);
 
                 // restore UI
                 analyzeButtonMulti.innerHTML = origHtml;
