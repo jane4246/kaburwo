@@ -170,6 +170,10 @@
             // Replaces the placeholder SVG tags with actual icons from Lucide
             lucide.createIcons();
 
+            // API key for Gemini API (provided by the environment)
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
             /***********************
              * Chatbot (unchanged) *
              ***********************/
@@ -318,16 +322,65 @@
             });
 
 
+            /*************************************************
+             * New Unified Image Analysis Logic (Gemini API) *
+             *************************************************/
+            
+            // Re-usable function to call the Gemini API for image analysis
+            const analyzeImageWithGemini = async (prompt, base64Data) => {
+                let chatHistory = [];
+                chatHistory.push({
+                    role: "user",
+                    parts: [
+                        { text: prompt },
+                        {
+                            inlineData: {
+                                mimeType: "image/jpeg",
+                                data: base64Data
+                            }
+                        }
+                    ]
+                });
+                
+                const payload = { contents: chatHistory };
+                
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return "I could not analyze the image. The response format was unexpected.";
+                    }
+                } catch (error) {
+                    console.error('Gemini API call failed:', error);
+                    return `An error occurred during analysis: ${error.message}`;
+                }
+            };
+            
             /*******************************
              * Single-image upload logic   *
-             * (keeps your original flow)  *
+             * (now uses Gemini API)       *
              *******************************/
             imageUpload.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
+                    uploadedImageFile = file;
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                        uploadedImageFile = file; // Store the file object for the server
+                        uploadedImageFile.base64Data = reader.result.split(',')[1]; // Store base64 data
                         imageUploadPlaceholder.classList.add('hidden');
                         imagePreview.classList.remove('hidden');
                         imagePreviewImg.src = reader.result;
@@ -339,57 +392,17 @@
                 }
             });
 
-            // The function to send a single image to the Python server for analysis
-            const runModelInference = async (imageFile) => {
-                const formData = new FormData();
-                // Original code used field name 'image'
-                formData.append('image', imageFile);
-
-                try {
-                    // Send the image to the Python server's '/predict_single' endpoint
-                    const response = await fetch('/predict_single', {
-                        method: 'POST',
-                        body: formData,
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Server returned an error: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    // The server returns the predicted class and confidence (adapting to typical keys)
-                    const predictedClass = result.predicted_class || result.prediction || result.label || "Unknown";
-                    const confidence = (result.confidence !== undefined) ? result.confidence : (result.score !== undefined ? result.score : null);
-                    
-                    // Format confidence nicely
-                    let confText = '';
-                    if (confidence !== null && confidence !== undefined) {
-                        let num = Number(confidence);
-                        if (num <= 1.01) num = (num * 100).toFixed(2) + '%';
-                        else num = (Number(confidence).toFixed(2)).toString().includes('%') ? confidence : `${Number(confidence).toFixed(2)}%`;
-                        confText = ` (confidence: ${num})`;
-                    }
-
-                    return `**Predicted Disease:** ${predictedClass}${confText}`;
-
-                } catch (error) {
-                    console.error('Prediction failed:', error);
-                    return 'An error occurred during prediction. Please make sure the Python server is running.';
-                }
-            };
-
             analyzeButton.addEventListener('click', async () => {
-                if (!uploadedImageFile) return;
+                if (!uploadedImageFile || !uploadedImageFile.base64Data) return;
 
                 // Disable button and show loading state
                 const originalButtonContent = analyzeButton.innerHTML;
                 analyzeButton.disabled = true;
                 analyzeButton.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
                 lucide.createIcons();
-                
-                // Run the image through the server-side prediction
-                const analysisResponse = await runModelInference(uploadedImageFile);
+
+                const analysisPrompt = "Describe any diseases or issues you see on this coffee plant leaf. Be concise and provide a diagnosis and recommendation if possible. Respond in a friendly, conversational tone.";
+                const analysisResponse = await analyzeImageWithGemini(analysisPrompt, uploadedImageFile.base64Data);
                 
                 // Display the analysis result
                 analysisText.innerHTML = analysisResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -404,15 +417,18 @@
 
             /*******************************
              * Multi-image upload logic    *
+             * (now uses Gemini API)       *
              *******************************/
             imageUploadMulti.addEventListener('change', (e) => {
                 uploadedFilesMulti = Array.from(e.target.files);
                 previewGridMulti.innerHTML = '';
+                analysisResultMulti.classList.add('hidden');
 
                 if (uploadedFilesMulti.length === 0) {
                     previewGridMulti.classList.add('hidden');
                     analyzeButtonMulti.disabled = true;
-                    analyzeButtonMulti.classList.add('bg-gray-200');
+                    analyzeButtonMulti.classList.remove('bg-gradient-to-r', 'from-green-600', 'to-green-800', 'text-white');
+                    analyzeButtonMulti.classList.add('bg-gray-200', 'text-gray-600');
                     return;
                 }
 
@@ -421,104 +437,33 @@
                 uploadedFilesMulti.forEach((file, idx) => {
                     const reader = new FileReader();
                     reader.onload = (ev) => {
+                        // Store the base64 data on the file object
+                        file.base64Data = ev.target.result.split(',')[1];
+
                         const item = document.createElement('div');
                         item.className = 'preview-item';
 
                         // create unique id for mapping results
                         const resultId = `multi-result-${Date.now()}-${idx}`;
+                        file._resultId = resultId;
 
                         item.innerHTML = `
                             <img src="${ev.target.result}" alt="${file.name}" title="${file.name}">
                             <div class="text-xs text-gray-600 truncate" style="max-width:120px;">${file.name}</div>
                             <div id="${resultId}" class="result-badge bg-yellow-50 text-yellow-800">Ready</div>
                         `;
-
-                        // store the resultId on the File object for lookup later
-                        file._resultId = resultId;
-
                         previewGridMulti.appendChild(item);
                     };
                     reader.readAsDataURL(file);
                 });
 
                 analyzeButtonMulti.disabled = false;
-                analyzeButtonMulti.classList.remove('bg-gray-200');
+                analyzeButtonMulti.classList.remove('bg-gray-200', 'text-gray-600');
                 analyzeButtonMulti.classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-800', 'text-white');
                 lucide.createIcons();
             });
 
-            // Send all selected multi files to /predict as 'images'
-            const sendFilesForPrediction = async (filesArray) => {
-                const formData = new FormData();
-                // append under the same field name 'images' expected by backend
-                filesArray.forEach(f => formData.append('images', f));
-
-                try {
-                    // Corrected fetch call: use the /predict_batch endpoint
-                    const resp = await fetch('/predict_batch', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error(`Server error: ${resp.status} ${resp.statusText}`);
-                    }
-
-                    const data = await resp.json();
-                    
-                    // --- CORRECTION BEGINS HERE ---
-                    // The backend sends back an object with a 'predictions' key that holds an array of results.
-                    // We need to loop through this array and match each prediction to its corresponding image on the UI.
-                    if (data && data.predictions && Array.isArray(data.predictions)) {
-                        data.predictions.forEach((p, idx) => {
-                            // Find the original file object using its temporary _resultId
-                            const fileToUpdate = uploadedFilesMulti.find(f => f.name === p.filename);
-                            
-                            if (fileToUpdate && fileToUpdate._resultId) {
-                                const el = document.getElementById(fileToUpdate._resultId);
-                                if (el) {
-                                    // Construct the display message from the prediction object
-                                    const predicted_class = p.predicted_class || 'Unknown';
-                                    const confidence = (p.confidence !== undefined) ? p.confidence : null;
-                                    
-                                    let confText = '';
-                                    if (confidence !== null) {
-                                        let display = Number(confidence);
-                                        // Check if the confidence is a decimal (e.g., 0.95) and format it as a percentage
-                                        if (display <= 1.01) {
-                                            display = (display * 100).toFixed(2) + '%';
-                                        } else {
-                                            display = `${display.toFixed(2)}%`;
-                                        }
-                                        confText = ` — ${display}`;
-                                    }
-                                    
-                                    // Update the badge with the correct prediction name and confidence
-                                    el.classList.remove('bg-yellow-50', 'text-yellow-800');
-                                    el.classList.add('bg-emerald-100', 'text-green-800');
-                                    el.innerHTML = predicted_class ? `${predicted_class}${confText}` : `Prediction done${confText}`;
-                                }
-                            }
-                        });
-                        
-                        // Update the overall batch results summary
-                        analysisTextMulti.innerHTML = `<div class="text-sm text-gray-700">Processed ${data.predictions.length} image(s).</div>`;
-                        analysisResultMulti.classList.remove('hidden');
-                        
-                    } else {
-                        // Handle unexpected response format
-                        analysisTextMulti.innerHTML = `<div class="text-red-600">Unexpected server response format.</div>`;
-                        analysisResultMulti.classList.remove('hidden');
-                    }
-                    // --- CORRECTION ENDS HERE ---
-
-                } catch (err) {
-                    console.error(err);
-                    analysisTextMulti.innerHTML = `<div class="text-red-600">Prediction failed: ${err.message}</div>`;
-                    analysisResultMulti.classList.remove('hidden');
-                }
-            };
-
+            // The multi-image analysis is now handled directly by the browser
             analyzeButtonMulti.addEventListener('click', async () => {
                 if (!uploadedFilesMulti || uploadedFilesMulti.length === 0) return;
 
@@ -539,8 +484,24 @@
                 analyzeButtonMulti.disabled = true;
                 analyzeButtonMulti.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
                 lucide.createIcons();
+                
+                const analysisPrompt = "Analyze this image of a coffee plant leaf. What disease or issue is present? Provide a concise one-sentence summary for the diagnosis and a one-sentence recommendation for treatment. Don't include markdown headers like 'Diagnosis' or 'Recommendation'.";
+                const promises = uploadedFilesMulti.map(f => analyzeImageWithGemini(analysisPrompt, f.base64Data));
+                const results = await Promise.all(promises);
 
-                await sendFilesForPrediction(uploadedFilesMulti);
+                // Update UI with results
+                results.forEach((result, idx) => {
+                    const file = uploadedFilesMulti[idx];
+                    const el = document.getElementById(file._resultId);
+                    if (el) {
+                        el.textContent = result;
+                        el.classList.remove('bg-yellow-50', 'text-yellow-800');
+                        el.classList.add('bg-emerald-100', 'text-green-800');
+                    }
+                });
+                
+                analysisTextMulti.innerHTML = `Analysis complete for ${results.length} image(s). Check the badges for individual results.`;
+                analysisResultMulti.classList.remove('hidden');
 
                 // restore UI
                 analyzeButtonMulti.innerHTML = origHtml;
