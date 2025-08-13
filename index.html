@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaburwo Coffee Disease Assistant</title>
+    <title>Kaburwo Coffee Disease Detection</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
+        :root {
+            --primary: #065f46;
+            --primary-light: #047857;
+            --secondary: #0e7490;
+            --light: #f0fdf4;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            min-height: 100vh;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
         }
         
         .chat-bubble {
@@ -20,10 +32,11 @@
             max-width: 80%;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             animation: fadeIn 0.3s ease-out;
+            position: relative;
         }
         
         .user-bubble {
-            background: linear-gradient(135deg, #059669, #047857);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
             color: white;
             border-bottom-right-radius: 5px;
         }
@@ -46,6 +59,7 @@
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
         }
         
         .preview-item img {
@@ -54,6 +68,11 @@
             object-fit: cover;
             border-radius: 0.75rem;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .preview-item:hover img {
+            transform: scale(1.05);
         }
         
         .result-badge {
@@ -62,6 +81,7 @@
             border-radius: 999px;
             text-align: center;
             min-height: 1.5rem;
+            transition: all 0.3s ease;
         }
         
         .spinner {
@@ -83,27 +103,29 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .gradient-header {
-            background: linear-gradient(135deg, #065f46, #047857);
-        }
-        
         .upload-area {
             transition: all 0.3s ease;
+            border: 2px dashed #a7f3d0;
+            background-color: #f0fdf4;
         }
         
         .upload-area:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15);
+            border-color: var(--primary-light);
+            background-color: #ecfdf5;
         }
         
         .analyze-btn {
             transition: all 0.2s ease;
             box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
         }
         
         .analyze-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(5, 150, 105, 0.3);
+            opacity: 0.95;
         }
         
         .analyze-btn:active {
@@ -115,18 +137,28 @@
             border-radius: 999px;
             font-size: 0.8rem;
             font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .disease-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .coffee-leaf-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23047a57' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col coffee-leaf-pattern">
     <!-- Header -->
-    <header class="gradient-header text-white p-4 shadow-lg">
+    <header class="header-gradient text-white p-4 shadow-lg">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center">
                 <div class="bg-white/20 p-2 rounded-full mr-3">
-                    <i class="fas fa-seedling text-xl"></i>
+                    <i class="fas fa-coffee text-xl"></i>
                 </div>
-                <h1 class="text-2xl font-bold">Kaburwo Coffee Assistant</h1>
+                <h1 class="text-2xl font-bold">Kaburwo Coffee Disease Detection</h1>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="flex items-center bg-white/10 px-3 py-1 rounded-full">
@@ -151,13 +183,12 @@
                 <div class="p-4 border-b">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center">
                         <i class="fas fa-comments text-emerald-600 mr-2"></i>
-                        Coffee Disease Chat
+                        Coffee Disease Chat Assistant
                     </h2>
                     <p class="text-sm text-gray-500 mt-1">Ask about coffee diseases and get expert advice</p>
                 </div>
                 
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                    <!-- Chat messages will appear here -->
                     <div class="flex justify-start">
                         <div class="chat-bubble bot-bubble">
                             <div class="font-medium">Hello! I'm your coffee disease expert.</div>
@@ -181,18 +212,21 @@
             <div class="bg-white rounded-xl shadow-xl p-6 flex flex-col">
                 <div class="pb-4 border-b">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-camera text-emerald-600 mr-2"></i>
+                        <i class="fas fa-leaf text-emerald-600 mr-2"></i>
                         Coffee Disease Image Analysis
                     </h2>
-                    <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases</p>
+                    <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases using our model</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <!-- Single Image Upload -->
-                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50">
-                        <h3 class="font-semibold text-lg text-emerald-800 mb-3">Single Image Analysis</h3>
+                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50 shadow-sm">
+                        <h3 class="font-semibold text-lg text-emerald-800 mb-3 flex items-center">
+                            <i class="fas fa-image mr-2"></i>
+                            Single Image Analysis
+                        </h3>
                         
-                        <div class="upload-area border-2 border-dashed border-emerald-200 rounded-xl p-6 text-center cursor-pointer mb-4" id="image-upload-area-single">
+                        <div class="upload-area rounded-xl p-6 text-center cursor-pointer mb-4" id="image-upload-area-single">
                             <input type="file" id="image-upload" accept="image/*" class="hidden">
                             <div id="image-preview" class="hidden">
                                 <img alt="Uploaded photo" class="max-h-64 mx-auto rounded-lg shadow-md">
@@ -204,8 +238,8 @@
                             </div>
                         </div>
                         
-                        <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            <i class="fas fa-search mr-2"></i> Analyze Image
+                        <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            <i class="fas fa-search mr-2"></i> Analyze with Model
                         </button>
                         
                         <div id="analysis-result" class="hidden mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
@@ -218,15 +252,18 @@
                     </div>
                     
                     <!-- Batch Image Upload -->
-                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-blue-50">
-                        <h3 class="font-semibold text-lg text-blue-800 mb-3">Batch Image Analysis</h3>
+                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-blue-50 shadow-sm">
+                        <h3 class="font-semibold text-lg text-blue-800 mb-3 flex items-center">
+                            <i class="fas fa-layer-group mr-2"></i>
+                            Batch Image Analysis
+                        </h3>
                         
                         <div class="mb-4">
-                            <div class="upload-area border-2 border-dashed border-blue-200 rounded-xl p-4 text-center cursor-pointer mb-3" id="image-upload-area-multi">
+                            <div class="upload-area rounded-xl p-4 text-center cursor-pointer mb-3" id="image-upload-area-multi">
                                 <input type="file" id="image-upload-multi" accept="image/*" multiple class="hidden">
                                 <div class="flex flex-col items-center py-4">
                                     <i class="fas fa-images text-blue-500 text-3xl mb-2"></i>
-                                    <span class="text-blue-700 font-medium">Upload multiple images</span>
+                                    <span class="text-blue-700 font-medium">Upload multiple coffee leaf images</span>
                                     <span class="text-blue-500 text-sm mt-1">Click to browse files</span>
                                 </div>
                             </div>
@@ -234,8 +271,8 @@
                             <div id="preview-grid-multi" class="preview-grid mt-3 hidden"></div>
                         </div>
                         
-                        <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i class="fas fa-tasks mr-2"></i> Analyze All Images
+                        <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-tasks mr-2"></i> Analyze All with Model
                         </button>
                         
                         <div id="analysis-result-multi" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100 max-h-60 overflow-y-auto">
@@ -248,17 +285,27 @@
                     </div>
                 </div>
                 
-                <!-- Common Coffee Diseases -->
+                <!-- Model Information -->
                 <div class="mt-8 pt-4 border-t">
                     <h3 class="font-semibold text-lg text-gray-800 mb-3 flex items-center">
-                        <i class="fas fa-leaf mr-2 text-emerald-600"></i>
-                        Common Coffee Diseases
+                        <i class="fas fa-brain mr-2 text-emerald-600"></i>
+                        Disease Detection Model
                     </h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <div class="disease-tag bg-red-100 text-red-800">Coffee Rust</div>
-                        <div class="disease-tag bg-amber-100 text-amber-800">Berry Disease</div>
-                        <div class="disease-tag bg-emerald-100 text-emerald-800">Leaf Miner</div>
-                        <div class="disease-tag bg-purple-100 text-purple-800">Root Rot</div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-3">
+                            <div class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></div>
+                            <span class="font-medium">Model Status:</span>
+                            <span class="ml-2 text-emerald-600 font-bold">Connected</span>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            <p class="mb-2">Our model can detect the following coffee diseases:</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="disease-tag bg-red-100 text-red-800">Coffee Rust</div>
+                                <div class="disease-tag bg-amber-100 text-amber-800">Berry Disease</div>
+                                <div class="disease-tag bg-emerald-100 text-emerald-800">Leaf Miner</div>
+                                <div class="disease-tag bg-purple-100 text-purple-800">Root Rot</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -274,8 +321,8 @@
                 <a href="#" class="hover:text-emerald-400 transition-colors"><i class="fab fa-facebook"></i></a>
                 <a href="#" class="hover:text-emerald-400 transition-colors"><i class="fab fa-instagram"></i></a>
             </div>
-            <p class="text-sm text-gray-400">© 2023 Kaburwo Coffee Assistant. All rights reserved.</p>
-            <p class="text-xs text-gray-500 mt-2">Helping coffee farmers detect diseases early and protect their crops.</p>
+            <p class="text-sm text-gray-400">© 2023 Kaburwo Coffee Disease Detection. All rights reserved.</p>
+            <p class="text-xs text-gray-500 mt-2">Using advanced machine learning to protect coffee crops</p>
         </div>
     </footer>
 
@@ -464,29 +511,50 @@
                 return `(${confidence})`;
             }
             
-            // Simulate API call to backend
-            function simulateApiCall(imageFile, isBatch = false) {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        // Simulating different response formats
-                        const responseFormats = [
-                            { predicted_class: "Coffee Rust", confidence: 0.92 },
-                            { prediction: "Leaf Miner", score: 0.87 },
-                            { label: "Healthy", confidence: 0.95 },
-                            { result: { class: "Berry Disease", confidence: 0.89 } },
-                            { data: { class: "Root Rot", confidence: 0.83 } }
-                        ];
-                        
-                        const randomResponse = responseFormats[Math.floor(Math.random() * responseFormats.length)];
-                        
-                        if (isBatch) {
-                            // For batch, add filename
-                            randomResponse.filename = imageFile.name;
-                        }
-                        
-                        resolve(randomResponse);
-                    }, 1500);
-                });
+            // Function to send image to your model
+            async function predictImage(imageFile) {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+                
+                try {
+                    // Send the image to your model endpoint
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Model returned an error: ${response.statusText}`);
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error('Prediction failed:', error);
+                    return { error: error.message };
+                }
+            }
+            
+            // Function to send batch images to your model
+            async function predictBatchImages(imageFiles) {
+                const formData = new FormData();
+                imageFiles.forEach(file => formData.append('images', file));
+                
+                try {
+                    // Send the images to your model endpoint
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Model returned an error: ${response.statusText}`);
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error('Batch prediction failed:', error);
+                    return { error: error.message };
+                }
             }
             
             // Single image upload handling
@@ -514,21 +582,26 @@
                 analyzeButton.innerHTML = '<div class="spinner mr-2"></div> Analyzing...';
                 analyzeButton.disabled = true;
                 
-                // Simulate API call
-                const response = await simulateApiCall(uploadedImageFile);
-                const parsed = parsePredictionResponse(response);
+                // Call your model
+                const response = await predictImage(uploadedImageFile);
                 
-                // Display result
-                analysisText.innerHTML = `
-                    <div class="font-bold text-lg mb-1">${parsed.class}</div>
-                    <div class="flex items-center mb-2">
-                        <div class="text-sm text-gray-600">Confidence: ${formatConfidence(parsed.confidence)}</div>
-                    </div>
-                    <div class="mt-3">
-                        <div class="font-medium text-emerald-700">Recommended Action:</div>
-                        <p class="text-sm mt-1">Apply copper-based fungicide and remove affected leaves. Improve air circulation around plants.</p>
-                    </div>
-                `;
+                if (response.error) {
+                    analysisText.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
+                } else {
+                    const parsed = parsePredictionResponse(response);
+                    
+                    // Display result
+                    analysisText.innerHTML = `
+                        <div class="font-bold text-lg mb-1">${parsed.class}</div>
+                        <div class="flex items-center mb-2">
+                            <div class="text-sm text-gray-600">Confidence: ${formatConfidence(parsed.confidence)}</div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="font-medium text-emerald-700">Recommended Action:</div>
+                            <p class="text-sm mt-1">Apply copper-based fungicide and remove affected leaves. Improve air circulation around plants.</p>
+                        </div>
+                    `;
+                }
                 
                 analysisResult.classList.remove('hidden');
                 
@@ -595,35 +668,44 @@
                     }
                 });
                 
-                // Process each file
-                for (const file of uploadedFilesMulti) {
-                    // Simulate API call for each file
-                    const response = await simulateApiCall(file, true);
-                    const parsed = parsePredictionResponse(response);
-                    
-                    // Update badge for this file
-                    const badge = document.getElementById(file.resultId);
-                    if (badge) {
-                        badge.textContent = `${parsed.class} ${formatConfidence(parsed.confidence)}`;
-                        badge.className = 'result-badge bg-emerald-100 text-emerald-800';
-                    }
-                    
-                    // Add to results list
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'flex items-center py-2 border-b border-blue-100 last:border-0';
-                    resultItem.innerHTML = `
-                        <div class="font-medium flex-1 truncate mr-2">${file.name}</div>
-                        <div class="font-semibold text-emerald-700">${parsed.class}</div>
-                        <div class="text-sm text-gray-500 ml-2">${formatConfidence(parsed.confidence)}</div>
-                    `;
-                    analysisTextMulti.appendChild(resultItem);
-                }
+                // Call your model with batch images
+                const response = await predictBatchImages(uploadedFilesMulti);
                 
-                // Add summary
-                const summary = document.createElement('div');
-                summary.className = 'mt-3 pt-3 border-t border-blue-200 font-medium';
-                summary.textContent = `Processed ${uploadedFilesMulti.length} images`;
-                analysisTextMulti.appendChild(summary);
+                if (response.error) {
+                    analysisTextMulti.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
+                } else {
+                    // The response should be an array of results
+                    const results = Array.isArray(response) ? response : [response];
+                    
+                    // Process each result
+                    results.forEach((result, index) => {
+                        const file = uploadedFilesMulti[index];
+                        const parsed = parsePredictionResponse(result);
+                        
+                        // Update badge for this file
+                        const badge = document.getElementById(file.resultId);
+                        if (badge) {
+                            badge.textContent = `${parsed.class} ${formatConfidence(parsed.confidence)}`;
+                            badge.className = 'result-badge bg-emerald-100 text-emerald-800';
+                        }
+                        
+                        // Add to results list
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'flex items-center py-2 border-b border-blue-100 last:border-0';
+                        resultItem.innerHTML = `
+                            <div class="font-medium flex-1 truncate mr-2">${file.name}</div>
+                            <div class="font-semibold text-emerald-700">${parsed.class}</div>
+                            <div class="text-sm text-gray-500 ml-2">${formatConfidence(parsed.confidence)}</div>
+                        `;
+                        analysisTextMulti.appendChild(resultItem);
+                    });
+                    
+                    // Add summary
+                    const summary = document.createElement('div');
+                    summary.className = 'mt-3 pt-3 border-t border-blue-200 font-medium';
+                    summary.textContent = `Processed ${uploadedFilesMulti.length} images`;
+                    analysisTextMulti.appendChild(summary);
+                }
                 
                 // Reset button
                 analyzeButtonMulti.innerHTML = originalText;
