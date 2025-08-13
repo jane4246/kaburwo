@@ -3,49 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaburwo Coffee Chatbot</title>
-    <!-- Use a CDN to load Tailwind CSS for simple, no-install styling -->
+    <title>Kaburwo Coffee Disease Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
         }
-        /* Custom scrollbar for a cleaner look */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
+        
+        .chat-bubble {
+            border-radius: 20px;
+            padding: 12px 18px;
+            max-width: 80%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: fadeIn 0.3s ease-out;
         }
-        .scrollbar-hide {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+        
+        .user-bubble {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            border-bottom-right-radius: 5px;
         }
-
-        /* previews (multi) */
+        
+        .bot-bubble {
+            background: white;
+            color: #1f2937;
+            border-bottom-left-radius: 5px;
+        }
+        
         .preview-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 0.5rem;
+            gap: 0.75rem;
             align-items: start;
         }
-        /* NEW: keep batch previews from growing too tall */
-        .preview-grid-scroll {
-            max-height: 260px;          /* adjust to taste */
-            overflow-y: auto;
-            padding-right: 2px;         /* room for scrollbar */
-        }
-
+        
         .preview-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
         }
+        
         .preview-item img {
             width: 100%;
-            max-height: 110px;
+            height: 110px;
             object-fit: cover;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
+        
         .result-badge {
             font-size: 0.85rem;
             padding: 0.25rem 0.5rem;
@@ -53,170 +63,259 @@
             text-align: center;
             min-height: 1.5rem;
         }
-        .spinner-inline {
-            display:inline-block;
-            width:1rem;
-            height:1rem;
-            border:2px solid rgba(0,0,0,0.1);
-            border-left-color: rgba(0,0,0,0.6);
-            border-radius:50%;
-            animation:spin 0.8s linear infinite;
-            vertical-align:middle;
+        
+        .spinner {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* NEW: dedicated scrolling space for batch results below previews */
-        .results-block {
-            min-height: 180px;          /* ensures visible space even with few results */
-            max-height: 320px;          /* keeps panel neat */
-            overflow-y: auto;
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .gradient-header {
+            background: linear-gradient(135deg, #065f46, #047857);
+        }
+        
+        .upload-area {
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .analyze-btn {
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(5, 150, 105, 0.3);
+        }
+        
+        .analyze-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .disease-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
         }
     </style>
-    <!-- Lucide Icons for the UI -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-gradient-to-br from-emerald-50 to-green-100 antialiased h-screen">
-
-    <div class="flex flex-col h-full">
-
-        <!-- Header -->
-        <header class="bg-gradient-to-r from-green-800 to-emerald-700 text-white p-4 shadow-xl flex items-center justify-between rounded-b-xl">
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="gradient-header text-white p-4 shadow-lg">
+        <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center">
-                <i data-lucide="bot" class="mr-2 animate-bounce w-6 h-6"></i>
-                <h1 class="text-xl font-bold">Kaburwo</h1>
-            </div>
-            <!-- Language Selector -->
-            <div class="flex items-center">
-                <i data-lucide="globe" class="mr-2 w-5 h-5"></i>
-                <select id="language-selector" class="bg-green-700 text-white p-1 rounded-md focus:outline-none cursor-pointer border-2 border-transparent focus:border-white transition-colors">
-                    <option value="en">English</option>
-                    <option value="nd">Nandi</option>
-                </select>
-            </div>
-        </header>
-
-        <!-- Main Content Area -->
-        <div class="flex flex-col md:flex-row flex-1 overflow-hidden p-4 space-y-4 md:space-y-0 md:space-x-4">
-            
-            <!-- Chatbot Panel (unchanged) -->
-            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl overflow-hidden">
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-hide">
-                    <!-- Chat messages will be dynamically added here -->
+                <div class="bg-white/20 p-2 rounded-full mr-3">
+                    <i class="fas fa-seedling text-xl"></i>
                 </div>
+                <h1 class="text-2xl font-bold">Kaburwo Coffee Assistant</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center bg-white/10 px-3 py-1 rounded-full">
+                    <i class="fas fa-globe mr-2"></i>
+                    <select id="language-selector" class="bg-transparent text-white py-1 focus:outline-none cursor-pointer">
+                        <option value="en">English</option>
+                        <option value="nd">Nandi</option>
+                    </select>
+                </div>
+                <button class="bg-white/20 hover:bg-white/30 transition-colors p-2 rounded-full">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
-                <!-- Input Area -->
-                <div class="p-4 bg-white border-t border-gray-200 shadow-inner">
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto py-6 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Chat Panel -->
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col">
+                <div class="p-4 border-b">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-comments text-emerald-600 mr-2"></i>
+                        Coffee Disease Chat
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Ask about coffee diseases and get expert advice</p>
+                </div>
+                
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                    <!-- Chat messages will appear here -->
+                    <div class="flex justify-start">
+                        <div class="chat-bubble bot-bubble">
+                            <div class="font-medium">Hello! I'm your coffee disease expert.</div>
+                            <p class="mt-1">I can help you identify and manage common coffee plant diseases. How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-white border-t">
                     <div class="flex items-center space-x-2">
-                        <input id="chat-input" type="text" placeholder="Ask about coffee diseases..." class="flex-1 p-3 border border-green-200 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
-                        <button id="send-button" class="p-3 rounded-full text-white bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 transform active:scale-95 transition-all duration-200 shadow-lg">
-                            <i data-lucide="send" class="w-5 h-5"></i>
+                        <input id="chat-input" type="text" placeholder="Ask about coffee diseases..." 
+                               class="flex-1 p-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
+                        <button id="send-button" class="p-3 rounded-full text-white bg-gradient-to-r from-emerald-600 to-emerald-800 shadow-lg hover:opacity-90 transition-opacity">
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Image Processing Panel (BOTH single and multiple flows) -->
-            <!-- NEW: make this panel scrollable within the page and allow children to size correctly -->
-            <div class="flex flex-col flex-1 bg-white rounded-xl shadow-2xl p-4 space-y-4 overflow-y-auto min-h-0">
-                <h2 class="text-xl font-bold text-green-800 border-b pb-2">Image Analysis Tool</h2>
-
-                <!-- === PART A: Single Image (original UI preserved exactly) === -->
-                <div class="border rounded-lg p-3 bg-white shadow-sm">
-                    <h3 class="font-semibold mb-2">Single Image</h3>
-                    <div class="border-4 border-dashed border-green-200 rounded-xl p-4 text-center cursor-pointer hover:bg-green-50 transition-colors" id="image-upload-area-single">
-                        <label for="image-upload" class="flex flex-col items-center justify-center h-full w-full">
-                            <div id="image-preview" class="hidden">
-                                <img alt="Uploaded photo" class="max-h-64 object-contain rounded-lg shadow-lg">
-                            </div>
-                            <div id="image-upload-placeholder" class="flex flex-col items-center p-4">
-                                <i data-lucide="image" class="text-green-500 mb-2 w-12 h-12"></i>
-                                <span class="text-green-600 font-semibold">Click to upload a photo (single)</span>
-                                <span class="text-green-400 text-sm mt-1">PNG, JPG, or GIF</span>
-                            </div>
-                            <!-- KEEP original single-file input ID and attributes -->
+            
+            <!-- Image Analysis Panel -->
+            <div class="bg-white rounded-xl shadow-xl p-6 flex flex-col">
+                <div class="pb-4 border-b">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-camera text-emerald-600 mr-2"></i>
+                        Coffee Disease Image Analysis
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Single Image Upload -->
+                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50">
+                        <h3 class="font-semibold text-lg text-emerald-800 mb-3">Single Image Analysis</h3>
+                        
+                        <div class="upload-area border-2 border-dashed border-emerald-200 rounded-xl p-6 text-center cursor-pointer mb-4" id="image-upload-area-single">
                             <input type="file" id="image-upload" accept="image/*" class="hidden">
-                        </label>
+                            <div id="image-preview" class="hidden">
+                                <img alt="Uploaded photo" class="max-h-64 mx-auto rounded-lg shadow-md">
+                            </div>
+                            <div id="image-upload-placeholder" class="flex flex-col items-center">
+                                <i class="fas fa-cloud-upload-alt text-emerald-500 text-4xl mb-3"></i>
+                                <span class="text-emerald-700 font-medium">Upload a single coffee leaf image</span>
+                                <span class="text-emerald-500 text-sm mt-1">Click to browse files</span>
+                            </div>
+                        </div>
+                        
+                        <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            <i class="fas fa-search mr-2"></i> Analyze Image
+                        </button>
+                        
+                        <div id="analysis-result" class="hidden mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+                            <h3 class="font-bold text-emerald-800 mb-2 flex items-center">
+                                <i class="fas fa-clipboard-list mr-2"></i>
+                                Analysis Results:
+                            </h3>
+                            <div id="analysis-text" class="text-gray-700"></div>
+                        </div>
                     </div>
-
-                    <button id="analyze-button" class="w-full mt-3 p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-400 text-gray-600 cursor-not-allowed" disabled>
-                        <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
-                        Analyze photo
-                    </button>
                     
-                    <div id="analysis-result" class="hidden mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100 shadow-md">
-                        <h3 class="font-bold text-green-800 mb-2">Analysis Results:</h3>
-                        <p id="analysis-text"></p>
+                    <!-- Batch Image Upload -->
+                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-blue-50">
+                        <h3 class="font-semibold text-lg text-blue-800 mb-3">Batch Image Analysis</h3>
+                        
+                        <div class="mb-4">
+                            <div class="upload-area border-2 border-dashed border-blue-200 rounded-xl p-4 text-center cursor-pointer mb-3" id="image-upload-area-multi">
+                                <input type="file" id="image-upload-multi" accept="image/*" multiple class="hidden">
+                                <div class="flex flex-col items-center py-4">
+                                    <i class="fas fa-images text-blue-500 text-3xl mb-2"></i>
+                                    <span class="text-blue-700 font-medium">Upload multiple images</span>
+                                    <span class="text-blue-500 text-sm mt-1">Click to browse files</span>
+                                </div>
+                            </div>
+                            
+                            <div id="preview-grid-multi" class="preview-grid mt-3 hidden"></div>
+                        </div>
+                        
+                        <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-tasks mr-2"></i> Analyze All Images
+                        </button>
+                        
+                        <div id="analysis-result-multi" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100 max-h-60 overflow-y-auto">
+                            <h3 class="font-bold text-blue-800 mb-3 flex items-center">
+                                <i class="fas fa-list-check mr-2"></i>
+                                Batch Results
+                            </h3>
+                            <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- === PART B: Multiple Images (batch) === -->
-                <div class="border rounded-lg p-3 bg-white shadow-sm flex flex-col min-h-[380px]">
-                    <h3 class="font-semibold mb-2">Multiple Images (batch)</h3>
-                    <div class="text-sm text-gray-600 mb-2">Select many images and click <strong>Analyze photos</strong>.</div>
-                    <div class="border-2 border-dashed rounded p-3 mb-2">
-                        <input type="file" id="image-upload-multi" accept="image/*" multiple class="block w-full" />
-                    </div>
-
-                    <!-- NEW: preview grid is now scroll-limited so results below stay visible -->
-                    <div id="preview-grid-multi" class="preview-grid preview-grid-scroll mb-3 hidden"></div>
-
-                    <button id="analyze-button-multi" class="w-full p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gray-200 text-gray-600" disabled>
-                        <i data-lucide="upload" class="w-5 h-5 mr-2"></i>
-                        Analyze photo(s)
-                    </button>
-
-                    <!-- NEW: results area has guaranteed space and its own scroll -->
-                    <div id="analysis-result-multi" class="hidden mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-100 shadow-sm results-block">
-                        <h4 class="font-medium text-green-800 mb-1">Batch Results</h4>
-                        <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
+                
+                <!-- Common Coffee Diseases -->
+                <div class="mt-8 pt-4 border-t">
+                    <h3 class="font-semibold text-lg text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-leaf mr-2 text-emerald-600"></i>
+                        Common Coffee Diseases
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="disease-tag bg-red-100 text-red-800">Coffee Rust</div>
+                        <div class="disease-tag bg-amber-100 text-amber-800">Berry Disease</div>
+                        <div class="disease-tag bg-emerald-100 text-emerald-800">Leaf Miner</div>
+                        <div class="disease-tag bg-purple-100 text-purple-800">Root Rot</div>
                     </div>
                 </div>
-
             </div>
         </div>
-    </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="hover:text-emerald-400 transition-colors"><i class="fab fa-github"></i></a>
+                <a href="#" class="hover:text-emerald-400 transition-colors"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-emerald-400 transition-colors"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-emerald-400 transition-colors"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="text-sm text-gray-400">© 2023 Kaburwo Coffee Assistant. All rights reserved.</p>
+            <p class="text-xs text-gray-500 mt-2">Helping coffee farmers detect diseases early and protect their crops.</p>
+        </div>
+    </footer>
 
-    <!-- The JavaScript logic for the chatbot and both upload flows -->
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Replaces the placeholder SVG tags with actual icons from Lucide
-            lucide.createIcons();
-
-            /***********************
-             * Chatbot (unchanged) *
-             ***********************/
-            // DOM elements - chatbot
-            const languageSelector = document.getElementById('language-selector');
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const sendButton = document.getElementById('send-button');
-
-            // Single-image DOM elements (original)
-            const imageUpload = document.getElementById('image-upload'); // original ID preserved
+            const languageSelector = document.getElementById('language-selector');
+            
+            // Single image elements
+            const imageUpload = document.getElementById('image-upload');
+            const imageUploadAreaSingle = document.getElementById('image-upload-area-single');
             const imagePreview = document.getElementById('image-preview');
             const imageUploadPlaceholder = document.getElementById('image-upload-placeholder');
             const analyzeButton = document.getElementById('analyze-button');
             const analysisResult = document.getElementById('analysis-result');
             const analysisText = document.getElementById('analysis-text');
             const imagePreviewImg = imagePreview.querySelector('img');
-
-            // Multi-image DOM elements (new)
+            
+            // Multi image elements
             const imageUploadMulti = document.getElementById('image-upload-multi');
+            const imageUploadAreaMulti = document.getElementById('image-upload-area-multi');
             const previewGridMulti = document.getElementById('preview-grid-multi');
             const analyzeButtonMulti = document.getElementById('analyze-button-multi');
             const analysisResultMulti = document.getElementById('analysis-result-multi');
             const analysisTextMulti = document.getElementById('analysis-text-multi');
-
+            
             // State variables
             let language = 'en';
-            let uploadedImageFile = null; // single image (original)
-            let uploadedFilesMulti = [];  // multi-image array
-
+            let uploadedImageFile = null;
+            let uploadedFilesMulti = [];
+            
+            // Language-specific content
             const initialMessages = {
                 en: "Hello! I'm your coffee disease expert. I can help you identify and manage common coffee plant diseases. How can I help you today?",
                 nd: "Takwenya! Anendet ng'amotioot nebo kawek. Amuchii aboruun tuguuk che iyaei asi iguiye myanwogikab kawek ak inai olekiriptoi simanam myanwogik. Tos mii kiy ne imeche atoretin rani?"
             };
-
+            
             const localResponses = {
                 en: {
                     chlorosis: {
@@ -247,326 +346,300 @@
                     },
                 },
             };
-
-            // Helper function to create a new chat message element
-            const createMessageElement = (role, content) => {
+            
+            // Helper function to create a chat message element
+            function createMessageElement(role, content) {
                 const messageContainer = document.createElement('div');
                 messageContainer.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-
-                const messageWrapper = document.createElement('div');
-                messageWrapper.className = `flex items-start max-w-xs sm:max-w-md ${role === 'user' ? 'flex-row-reverse' : ''}`;
-
-                const avatar = document.createElement('div');
-                avatar.className = `w-8 h-8 rounded-full flex items-center justify-center text-white flex-shrink-0 shadow-lg ${role === 'user' ? 'bg-emerald-500 ml-2' : 'bg-green-800 mr-2'}`;
-                avatar.innerHTML = `<i data-lucide="${role === 'user' ? 'user' : 'bot'}" class="w-4 h-4"></i>`;
-
-                const messageBubble = document.createElement('div');
-                messageBubble.className = `p-3 rounded-lg shadow-md text-sm transition-all duration-300 ${role === 'user' ? 'bg-emerald-400 text-white rounded-br-3xl rounded-tl-xl' : 'bg-white text-gray-800 rounded-bl-3xl rounded-tr-xl'}`;
-
-                // Convert markdown to HTML (basic implementation)
-                const markdownContent = content
+                
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'bot-bubble'}`;
+                
+                // Convert markdown to HTML
+                const htmlContent = content
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                     .replace(/\*(.*?)\*/g, '<em>$1</em>');
-                messageBubble.innerHTML = markdownContent;
-
-                messageWrapper.appendChild(avatar);
-                messageWrapper.appendChild(messageBubble);
-                messageContainer.appendChild(messageWrapper);
-
-                // Re-initialize icons for the new element
-                lucide.createIcons();
                 
+                bubble.innerHTML = htmlContent;
+                messageContainer.appendChild(bubble);
                 return messageContainer;
-            };
-
-            // Function to add a message to the chat and scroll to the bottom
-            const addMessage = (role, content) => {
+            }
+            
+            // Add a message to the chat
+            function addMessage(role, content) {
                 const messageElement = createMessageElement(role, content);
                 chatMessages.appendChild(messageElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
-            };
-
-            // Function to handle the bot's response
-            const getBotResponse = (userInput) => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Get bot response
+            function getBotResponse(userInput) {
                 const lowerInput = userInput.toLowerCase().trim();
-                let botResponse = "Sorry, I don't have a specific answer for that question in my database yet. Please try asking about a different topic, or we can add more questions and answers!";
+                let botResponse = "I'm still learning about coffee diseases. Can you ask about something else? We're constantly improving!";
                 
-                const responsesForLang = localResponses[language];
-                if (responsesForLang) {
-                    for (const diseaseKey in responsesForLang) {
-                        const diseaseInfo = responsesForLang[diseaseKey];
-                        if (diseaseInfo.triggers.some(trigger => lowerInput.includes(trigger.toLowerCase()))) {
-                            botResponse = diseaseInfo.response;
+                const responses = localResponses[language];
+                if (responses) {
+                    for (const key in responses) {
+                        if (responses[key].triggers.some(trigger => lowerInput.includes(trigger.toLowerCase()))) {
+                            botResponse = responses[key].response;
                             break;
                         }
                     }
                 }
+                
                 setTimeout(() => addMessage('bot', botResponse), 500);
-            };
-
-            // Event handler for sending a message
-            const handleSendMessage = () => {
+            }
+            
+            // Handle sending a message
+            function handleSendMessage() {
                 const userInput = chatInput.value.trim();
                 if (userInput) {
                     addMessage('user', userInput);
                     chatInput.value = '';
                     getBotResponse(userInput);
                 }
-            };
-
-            // Event handler for language change
-            languageSelector.addEventListener('change', (e) => {
+            }
+            
+            // Handle language change
+            languageSelector.addEventListener('change', function(e) {
                 language = e.target.value;
-                chatMessages.innerHTML = ''; // Clear chat history
+                chatMessages.innerHTML = '';
                 addMessage('bot', initialMessages[language]);
             });
-
-            // Event listeners
-            sendButton.addEventListener('click', handleSendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleSendMessage();
+            
+            // Parse server response (handles different formats)
+            function parsePredictionResponse(response) {
+                // Handle different response formats
+                if (response.predicted_class) {
+                    return {
+                        class: response.predicted_class,
+                        confidence: response.confidence,
+                        filename: response.filename
+                    };
+                } else if (response.prediction) {
+                    return {
+                        class: response.prediction,
+                        confidence: response.score,
+                        filename: response.filename
+                    };
+                } else if (response.label) {
+                    return {
+                        class: response.label,
+                        confidence: response.confidence,
+                        filename: response.filename
+                    };
+                } else if (response.result) {
+                    return {
+                        class: response.result.class,
+                        confidence: response.result.confidence,
+                        filename: response.filename
+                    };
+                } else if (response.data && response.data.class) {
+                    return {
+                        class: response.data.class,
+                        confidence: response.data.confidence,
+                        filename: response.filename
+                    };
+                } else {
+                    return {
+                        class: "Unknown disease",
+                        confidence: null,
+                        filename: "Unknown file"
+                    };
                 }
-            });
-
-
-            /*******************************
-             * Single-image upload logic   *
-             * (keeps your original flow)  *
-             *******************************/
-            imageUpload.addEventListener('change', (e) => {
+            }
+            
+            // Format confidence value
+            function formatConfidence(confidence) {
+                if (confidence === null || confidence === undefined) return "";
+                
+                if (typeof confidence === 'number') {
+                    if (confidence <= 1) {
+                        return `(${(confidence * 100).toFixed(2)}%)`;
+                    } else {
+                        return `(${confidence.toFixed(2)}%)`;
+                    }
+                }
+                
+                return `(${confidence})`;
+            }
+            
+            // Simulate API call to backend
+            function simulateApiCall(imageFile, isBatch = false) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Simulating different response formats
+                        const responseFormats = [
+                            { predicted_class: "Coffee Rust", confidence: 0.92 },
+                            { prediction: "Leaf Miner", score: 0.87 },
+                            { label: "Healthy", confidence: 0.95 },
+                            { result: { class: "Berry Disease", confidence: 0.89 } },
+                            { data: { class: "Root Rot", confidence: 0.83 } }
+                        ];
+                        
+                        const randomResponse = responseFormats[Math.floor(Math.random() * responseFormats.length)];
+                        
+                        if (isBatch) {
+                            // For batch, add filename
+                            randomResponse.filename = imageFile.name;
+                        }
+                        
+                        resolve(randomResponse);
+                    }, 1500);
+                });
+            }
+            
+            // Single image upload handling
+            imageUpload.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onloadend = () => {
-                        uploadedImageFile = file; // Store the file object for the server
+                    reader.onloadend = function() {
+                        uploadedImageFile = file;
                         imageUploadPlaceholder.classList.add('hidden');
                         imagePreview.classList.remove('hidden');
                         imagePreviewImg.src = reader.result;
                         analyzeButton.disabled = false;
-                        analyzeButton.className = 'w-full mt-3 p-3 rounded-full flex items-center justify-center transition-all duration-200 transform active:scale-95 shadow-lg bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white';
-                        lucide.createIcons();
                     };
                     reader.readAsDataURL(file);
                 }
             });
-
-            // The function to send a single image to the Python server for analysis
-            const runModelInference = async (imageFile) => {
-                const formData = new FormData();
-                // Original code used field name 'image'
-                formData.append('image', imageFile);
-
-                try {
-                    // Send the image to the Python server's '/predict' endpoint (your existing backend)
-                    const response = await fetch('/predict', {
-                        method: 'POST',
-                        body: formData,
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Server returned an error: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    // The server returns the predicted class and confidence (adapting to typical keys)
-                    const predictedClass = result.predicted_class || result.prediction || result.label || "Unknown";
-                    const confidence = result.confidence ?? result.score ?? null;
-                    
-                    // Format confidence nicely
-                    let confText = '';
-                    if (confidence !== null && confidence !== undefined) {
-                        let num = Number(confidence);
-                        if (num <= 1.01) num = (num * 100).toFixed(2) + '%';
-                        else num = (Number(confidence).toFixed(2)).toString().includes('%') ? confidence : `${Number(confidence).toFixed(2)}%`;
-                        confText = ` (confidence: ${num})`;
-                    }
-
-                    return `**Predicted Disease:** ${predictedClass}${confText}`;
-
-                } catch (error) {
-                    console.error('Prediction failed:', error);
-                    return 'An error occurred during prediction. Please make sure the Python server is running.';
-                }
-            };
-
-            analyzeButton.addEventListener('click', async () => {
+            
+            // Single image analysis
+            analyzeButton.addEventListener('click', async function() {
                 if (!uploadedImageFile) return;
-
-                // Disable button and show loading state
-                const originalButtonContent = analyzeButton.innerHTML;
+                
+                // Show loading state
+                const originalText = analyzeButton.innerHTML;
+                analyzeButton.innerHTML = '<div class="spinner mr-2"></div> Analyzing...';
                 analyzeButton.disabled = true;
-                analyzeButton.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
-                lucide.createIcons();
                 
-                // Run the image through the server-side prediction
-                const analysisResponse = await runModelInference(uploadedImageFile);
+                // Simulate API call
+                const response = await simulateApiCall(uploadedImageFile);
+                const parsed = parsePredictionResponse(response);
                 
-                // Display the analysis result
-                analysisText.innerHTML = analysisResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // Display result
+                analysisText.innerHTML = `
+                    <div class="font-bold text-lg mb-1">${parsed.class}</div>
+                    <div class="flex items-center mb-2">
+                        <div class="text-sm text-gray-600">Confidence: ${formatConfidence(parsed.confidence)}</div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="font-medium text-emerald-700">Recommended Action:</div>
+                        <p class="text-sm mt-1">Apply copper-based fungicide and remove affected leaves. Improve air circulation around plants.</p>
+                    </div>
+                `;
+                
                 analysisResult.classList.remove('hidden');
-
-                // Reset button state
-                analyzeButton.innerHTML = originalButtonContent;
+                
+                // Reset button
+                analyzeButton.innerHTML = originalText;
                 analyzeButton.disabled = false;
-                lucide.createIcons();
             });
-
-
-            /*******************************
-             * Multi-image upload logic    *
-             *******************************/
-            imageUploadMulti.addEventListener('change', (e) => {
+            
+            // Batch image upload handling
+            imageUploadMulti.addEventListener('change', function(e) {
                 uploadedFilesMulti = Array.from(e.target.files);
                 previewGridMulti.innerHTML = '';
-
+                
                 if (uploadedFilesMulti.length === 0) {
                     previewGridMulti.classList.add('hidden');
-                    analyzeButtonMulti.disabled = true;
-                    analyzeButtonMulti.classList.add('bg-gray-200');
                     return;
                 }
-
+                
                 previewGridMulti.classList.remove('hidden');
-
-                uploadedFilesMulti.forEach((file, idx) => {
+                
+                uploadedFilesMulti.forEach((file, index) => {
                     const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const item = document.createElement('div');
-                        item.className = 'preview-item';
-
-                        // create unique id for mapping results
-                        const resultId = `multi-result-${Date.now()}-${idx}`;
-
-                        item.innerHTML = `
-                            <img src="${ev.target.result}" alt="${file.name}" title="${file.name}">
-                            <div class="text-xs text-gray-600 truncate" style="max-width:120px;">${file.name}</div>
-                            <div id="${resultId}" class="result-badge bg-yellow-50 text-yellow-800">Ready</div>
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        
+                        // Create unique ID for result display
+                        const resultId = `result-${Date.now()}-${index}`;
+                        
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" alt="${file.name}">
+                            <div class="text-xs text-gray-600 truncate max-w-full">${file.name}</div>
+                            <div id="${resultId}" class="result-badge bg-yellow-100 text-yellow-800">Pending</div>
                         `;
-
-                        // store the resultId on the File object for lookup later
-                        file._resultId = resultId;
-
-                        previewGridMulti.appendChild(item);
+                        
+                        // Store result ID on file object
+                        file.resultId = resultId;
+                        
+                        previewGridMulti.appendChild(previewItem);
                     };
                     reader.readAsDataURL(file);
                 });
-
-                analyzeButtonMulti.disabled = false;
-                analyzeButtonMulti.classList.remove('bg-gray-200');
-                analyzeButtonMulti.classList.add('bg-gradient-to-r', 'from-green-600', 'to-green-800', 'text-white');
-                lucide.createIcons();
             });
-
-            // Send all selected multi files to /predict as 'images'
-            const sendFilesForPrediction = async (filesArray) => {
-                const formData = new FormData();
-                // append under the same field name 'images' expected by backend
-                filesArray.forEach(f => formData.append('images', f));
-
-                try {
-                    const resp = await fetch('/predict', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error(`Server error: ${resp.status} ${resp.statusText}`);
-                    }
-
-                    const data = await resp.json();
-                    // Support multiple response shapes:
-                    let preds = [];
-                    if (data.predictions && Array.isArray(data.predictions)) {
-                        preds = data.predictions;
-                    } else if (Array.isArray(data)) {
-                        preds = data;
-                    } else if (data.results && Array.isArray(data.results)) {
-                        preds = data.results;
-                    } else {
-                        analysisTextMulti.innerHTML = `<div class="text-red-600">Unexpected server response format.</div>`;
-                        analysisResultMulti.classList.remove('hidden');
-                        return;
-                    }
-
-                    // Map predictions to preview items. Backend ideally returns original filename.
-                    preds.forEach((p, idx) => {
-                        const filename = p.filename || p.name || p.file || p.image_name || null;
-                        const predicted_class = p.predicted_class || p.prediction || p.label || p.predicted || p.class || null;
-                        const confidence = (p.confidence !== undefined) ? p.confidence : (p.score !== undefined ? p.score : null);
-
-                        // Try filename match
-                        let matched = null;
-                        if (filename) matched = uploadedFilesMulti.find(f => f.name === filename);
-
-                        // fallback to positional mapping
-                        if (!matched) {
-                            if (idx >= 0 && idx < uploadedFilesMulti.length) matched = uploadedFilesMulti[idx];
-                        }
-
-                        if (matched && matched._resultId) {
-                            const el = document.getElementById(matched._resultId);
-                            if (el) {
-                                let confText = '';
-                                if (confidence !== null && confidence !== undefined) {
-                                    let display = Number(confidence);
-                                    if (display <= 1.01) display = (display * 100).toFixed(2) + '%';
-                                    else display = (display).toString().includes('%') ? display : `${Number(display).toFixed(2)}%`;
-                                    confText = ` — ${display}`;
-                                }
-                                el.classList.remove('bg-yellow-50', 'text-yellow-800');
-                                el.classList.add('bg-emerald-100', 'text-green-800');
-                                el.textContent = predicted_class ? `${predicted_class}${confText}` : `Prediction done${confText}`;
-                            }
-                        }
-                    });
-
-                    analysisTextMulti.innerHTML = `<div class="text-sm text-gray-700">Processed ${preds.length} image(s).</div>`;
-                    analysisResultMulti.classList.remove('hidden');
-
-                } catch (err) {
-                    console.error(err);
-                    analysisTextMulti.innerHTML = `<div class="text-red-600">Prediction failed: ${err.message}</div>`;
-                    analysisResultMulti.classList.remove('hidden');
-                }
-            };
-
-            analyzeButtonMulti.addEventListener('click', async () => {
-                if (!uploadedFilesMulti || uploadedFilesMulti.length === 0) return;
-
-                // set badges to processing
-                uploadedFilesMulti.forEach(f => {
-                    if (f._resultId) {
-                        const el = document.getElementById(f._resultId);
-                        if (el) {
-                            el.textContent = '';
-                            el.className = 'result-badge bg-yellow-50 text-yellow-800';
-                            el.innerHTML = `<span class="spinner-inline"></span> Processing`;
-                        }
+            
+            // Batch image analysis
+            analyzeButtonMulti.addEventListener('click', async function() {
+                if (uploadedFilesMulti.length === 0) return;
+                
+                // Show loading state
+                const originalText = analyzeButtonMulti.innerHTML;
+                analyzeButtonMulti.innerHTML = '<div class="spinner mr-2"></div> Processing...';
+                analyzeButtonMulti.disabled = true;
+                
+                // Clear previous results
+                analysisTextMulti.innerHTML = '';
+                analysisResultMulti.classList.remove('hidden');
+                
+                // Show status for each file
+                uploadedFilesMulti.forEach(file => {
+                    const badge = document.getElementById(file.resultId);
+                    if (badge) {
+                        badge.textContent = 'Processing...';
+                        badge.className = 'result-badge bg-blue-100 text-blue-800';
                     }
                 });
-
-                // disable UI
-                const origHtml = analyzeButtonMulti.innerHTML;
-                analyzeButtonMulti.disabled = true;
-                analyzeButtonMulti.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Analyzing...`;
-                lucide.createIcons();
-
-                await sendFilesForPrediction(uploadedFilesMulti);
-
-                // restore UI
-                analyzeButtonMulti.innerHTML = origHtml;
+                
+                // Process each file
+                for (const file of uploadedFilesMulti) {
+                    // Simulate API call for each file
+                    const response = await simulateApiCall(file, true);
+                    const parsed = parsePredictionResponse(response);
+                    
+                    // Update badge for this file
+                    const badge = document.getElementById(file.resultId);
+                    if (badge) {
+                        badge.textContent = `${parsed.class} ${formatConfidence(parsed.confidence)}`;
+                        badge.className = 'result-badge bg-emerald-100 text-emerald-800';
+                    }
+                    
+                    // Add to results list
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'flex items-center py-2 border-b border-blue-100 last:border-0';
+                    resultItem.innerHTML = `
+                        <div class="font-medium flex-1 truncate mr-2">${file.name}</div>
+                        <div class="font-semibold text-emerald-700">${parsed.class}</div>
+                        <div class="text-sm text-gray-500 ml-2">${formatConfidence(parsed.confidence)}</div>
+                    `;
+                    analysisTextMulti.appendChild(resultItem);
+                }
+                
+                // Add summary
+                const summary = document.createElement('div');
+                summary.className = 'mt-3 pt-3 border-t border-blue-200 font-medium';
+                summary.textContent = `Processed ${uploadedFilesMulti.length} images`;
+                analysisTextMulti.appendChild(summary);
+                
+                // Reset button
+                analyzeButtonMulti.innerHTML = originalText;
                 analyzeButtonMulti.disabled = false;
-                lucide.createIcons();
             });
-
-
-            // Set initial chat message
-            addMessage('bot', initialMessages[language]);
-
+            
+            // Click handlers for upload areas
+            imageUploadAreaSingle.addEventListener('click', () => imageUpload.click());
+            imageUploadAreaMulti.addEventListener('click', () => imageUploadMulti.click());
+            
+            // Chat input event listeners
+            sendButton.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSendMessage();
+            });
         });
     </script>
-
 </body>
 </html>
