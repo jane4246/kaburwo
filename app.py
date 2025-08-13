@@ -18,7 +18,7 @@ try:
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-   labels = [
+    labels = [
         "cescospora_leaf_sport",
         "coffee_canker",
         "coffee_leaf_rust",
@@ -33,9 +33,11 @@ except Exception as e:
     interpreter = None
     labels = []
 
+
 @app.route('/')
 def serve_index():
     return send_from_directory(os.getcwd(), 'index.html')
+
 
 @app.route('/predict', methods=['POST'])
 def predict_image():
@@ -85,6 +87,7 @@ def predict_image():
     except Exception as e:
         print(f"Prediction failed with exception: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
