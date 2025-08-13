@@ -10,10 +10,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --primary: #065f46;
-            --primary-light: #047857;
-            --secondary: #0e7490;
-            --light: #f0fdf4;
+            --rust: #B7410E;
+            --canker: #8B4513;
+            --healthy: #4CAF50;
+            --nematodes: #9C27B0;
+            --phoma: #FF9800;
+            --mite: #F44336;
+            --cescospora: #2196F3;
         }
         
         body {
@@ -23,7 +26,7 @@
         }
         
         .header-gradient {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: linear-gradient(135deg, #065f46, #047857);
         }
         
         .chat-bubble {
@@ -36,7 +39,7 @@
         }
         
         .user-bubble {
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            background: linear-gradient(135deg, #047857, #065f46);
             color: white;
             border-bottom-right-radius: 5px;
         }
@@ -112,14 +115,14 @@
         .upload-area:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15);
-            border-color: var(--primary-light);
+            border-color: #047857;
             background-color: #ecfdf5;
         }
         
         .analyze-btn {
             transition: all 0.2s ease;
             box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            background: linear-gradient(135deg, #047857, #065f46);
         }
         
         .analyze-btn:hover {
@@ -145,18 +148,30 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .coffee-leaf-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23047a57' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        .cescospora { background-color: #dbeafe; color: #1d4ed8; }
+        .canker { background-color: #ede9fe; color: #5b21b6; }
+        .rust { background-color: #ffedd5; color: #9a3412; }
+        .healthy { background-color: #dcfce7; color: #166534; }
+        .nematodes { background-color: #f3e8fd; color: #7e22ce; }
+        .phoma { background-color: #fffbeb; color: #a16207; }
+        .mite { background-color: #fee2e2; color: #b91c1c; }
+        
+        .disease-description {
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #047857;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col coffee-leaf-pattern">
+<body class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="header-gradient text-white p-4 shadow-lg">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center">
                 <div class="bg-white/20 p-2 rounded-full mr-3">
-                    <i class="fas fa-coffee text-xl"></i>
+                    <i class="fas fa-seedling text-xl"></i>
                 </div>
                 <h1 class="text-2xl font-bold">Kaburwo Coffee Disease Detection</h1>
             </div>
@@ -215,7 +230,7 @@
                         <i class="fas fa-leaf text-emerald-600 mr-2"></i>
                         Coffee Disease Image Analysis
                     </h2>
-                    <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases using our model</p>
+                    <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases using our AI model</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -285,26 +300,20 @@
                     </div>
                 </div>
                 
-                <!-- Model Information -->
+                <!-- Disease Information -->
                 <div class="mt-8 pt-4 border-t">
                     <h3 class="font-semibold text-lg text-gray-800 mb-3 flex items-center">
-                        <i class="fas fa-brain mr-2 text-emerald-600"></i>
-                        Disease Detection Model
+                        <i class="fas fa-book-medical mr-2 text-emerald-600"></i>
+                        Coffee Disease Guide
                     </h3>
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="flex items-center mb-3">
-                            <div class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></div>
-                            <span class="font-medium">Model Status:</span>
-                            <span class="ml-2 text-emerald-600 font-bold">Connected</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="disease-description">
+                            <div class="font-bold text-lg disease-tag rust inline-block">Coffee Leaf Rust</div>
+                            <p class="text-sm mt-2">Fungal disease causing orange powdery spots on leaves. Reduces photosynthesis and yield.</p>
                         </div>
-                        <div class="text-sm text-gray-600">
-                            <p class="mb-2">Our model can detect the following coffee diseases:</p>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <div class="disease-tag bg-red-100 text-red-800">Coffee Rust</div>
-                                <div class="disease-tag bg-amber-100 text-amber-800">Berry Disease</div>
-                                <div class="disease-tag bg-emerald-100 text-emerald-800">Leaf Miner</div>
-                                <div class="disease-tag bg-purple-100 text-purple-800">Root Rot</div>
-                            </div>
+                        <div class="disease-description">
+                            <div class="font-bold text-lg disease-tag healthy inline-block">Healthy</div>
+                            <p class="text-sm mt-2">Normal coffee plant with vibrant green leaves and no signs of disease or stress.</p>
                         </div>
                     </div>
                 </div>
@@ -454,61 +463,34 @@
                 addMessage('bot', initialMessages[language]);
             });
             
-            // Parse server response (handles different formats)
-            function parsePredictionResponse(response) {
-                // Handle different response formats
-                if (response.predicted_class) {
-                    return {
-                        class: response.predicted_class,
-                        confidence: response.confidence,
-                        filename: response.filename
-                    };
-                } else if (response.prediction) {
-                    return {
-                        class: response.prediction,
-                        confidence: response.score,
-                        filename: response.filename
-                    };
-                } else if (response.label) {
-                    return {
-                        class: response.label,
-                        confidence: response.confidence,
-                        filename: response.filename
-                    };
-                } else if (response.result) {
-                    return {
-                        class: response.result.class,
-                        confidence: response.result.confidence,
-                        filename: response.filename
-                    };
-                } else if (response.data && response.data.class) {
-                    return {
-                        class: response.data.class,
-                        confidence: response.data.confidence,
-                        filename: response.filename
-                    };
-                } else {
-                    return {
-                        class: "Unknown disease",
-                        confidence: null,
-                        filename: "Unknown file"
-                    };
-                }
+            // Function to get disease class styling
+            function getDiseaseClassStyle(diseaseClass) {
+                const classMap = {
+                    'cescospora_leaf_sport': 'cescospora',
+                    'coffee_canker': 'canker',
+                    'coffee_leaf_rust': 'rust',
+                    'healthy': 'healthy',
+                    'nematodes': 'nematodes',
+                    'phoma_leaf_sport': 'phoma',
+                    'red_spider_mite': 'mite'
+                };
+                
+                return classMap[diseaseClass] || 'healthy';
             }
             
-            // Format confidence value
-            function formatConfidence(confidence) {
-                if (confidence === null || confidence === undefined) return "";
+            // Function to get disease display name
+            function getDiseaseDisplayName(diseaseClass) {
+                const nameMap = {
+                    'cescospora_leaf_sport': 'Cescopora Leaf Spot',
+                    'coffee_canker': 'Coffee Canker',
+                    'coffee_leaf_rust': 'Coffee Leaf Rust',
+                    'healthy': 'Healthy',
+                    'nematodes': 'Nematodes',
+                    'phoma_leaf_sport': 'Phoma Leaf Spot',
+                    'red_spider_mite': 'Red Spider Mite'
+                };
                 
-                if (typeof confidence === 'number') {
-                    if (confidence <= 1) {
-                        return `(${(confidence * 100).toFixed(2)}%)`;
-                    } else {
-                        return `(${confidence.toFixed(2)}%)`;
-                    }
-                }
-                
-                return `(${confidence})`;
+                return nameMap[diseaseClass] || diseaseClass;
             }
             
             // Function to send image to your model
@@ -588,13 +570,18 @@
                 if (response.error) {
                     analysisText.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
                 } else {
-                    const parsed = parsePredictionResponse(response);
+                    const prediction = response.prediction;
+                    const diseaseClass = prediction.predicted_class;
+                    const confidence = prediction.confidence;
+                    
+                    const diseaseStyle = getDiseaseClassStyle(diseaseClass);
+                    const displayName = getDiseaseDisplayName(diseaseClass);
                     
                     // Display result
                     analysisText.innerHTML = `
-                        <div class="font-bold text-lg mb-1">${parsed.class}</div>
-                        <div class="flex items-center mb-2">
-                            <div class="text-sm text-gray-600">Confidence: ${formatConfidence(parsed.confidence)}</div>
+                        <div class="font-bold text-lg ${diseaseStyle} disease-tag">${displayName}</div>
+                        <div class="flex items-center my-2">
+                            <div class="text-sm text-gray-600">Confidence: ${confidence}%</div>
                         </div>
                         <div class="mt-3">
                             <div class="font-medium text-emerald-700">Recommended Action:</div>
@@ -675,18 +662,33 @@
                     analysisTextMulti.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
                 } else {
                     // The response should be an array of results
-                    const results = Array.isArray(response) ? response : [response];
+                    let results = [];
+                    if (response.results) {
+                        results = response.results;
+                    } else if (Array.isArray(response)) {
+                        results = response;
+                    } else {
+                        // If it's a single result in batch mode
+                        results = [response];
+                    }
                     
                     // Process each result
                     results.forEach((result, index) => {
                         const file = uploadedFilesMulti[index];
-                        const parsed = parsePredictionResponse(result);
+                        if (!file) return;
+                        
+                        const prediction = result.prediction;
+                        const diseaseClass = prediction.predicted_class;
+                        const confidence = prediction.confidence;
+                        
+                        const diseaseStyle = getDiseaseClassStyle(diseaseClass);
+                        const displayName = getDiseaseDisplayName(diseaseClass);
                         
                         // Update badge for this file
                         const badge = document.getElementById(file.resultId);
                         if (badge) {
-                            badge.textContent = `${parsed.class} ${formatConfidence(parsed.confidence)}`;
-                            badge.className = 'result-badge bg-emerald-100 text-emerald-800';
+                            badge.textContent = `${displayName} (${confidence}%)`;
+                            badge.className = `result-badge ${diseaseStyle}`;
                         }
                         
                         // Add to results list
@@ -694,8 +696,8 @@
                         resultItem.className = 'flex items-center py-2 border-b border-blue-100 last:border-0';
                         resultItem.innerHTML = `
                             <div class="font-medium flex-1 truncate mr-2">${file.name}</div>
-                            <div class="font-semibold text-emerald-700">${parsed.class}</div>
-                            <div class="text-sm text-gray-500 ml-2">${formatConfidence(parsed.confidence)}</div>
+                            <div class="font-semibold disease-tag ${diseaseStyle}">${displayName}</div>
+                            <div class="text-sm text-gray-500 ml-2">${confidence}%</div>
                         `;
                         analysisTextMulti.appendChild(resultItem);
                     });
