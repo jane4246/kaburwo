@@ -217,12 +217,10 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <!-- Connection Status Indicator -->
     <div id="connection-status" class="connection-status bg-yellow-100 text-yellow-800 hidden">
         <i class="fas fa-circle-notch fa-spin mr-2"></i> Connecting to model...
     </div>
     
-    <!-- Header -->
     <header class="header-gradient text-white p-4 shadow-lg">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center">
@@ -246,10 +244,8 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-1 container mx-auto py-6 px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Chat Panel -->
             <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col">
                 <div class="p-4 border-b">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center">
@@ -260,13 +256,7 @@
                 </div>
                 
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                    <div class="flex justify-start">
-                        <div class="chat-bubble bot-bubble">
-                            <div class="font-medium">Hello! I'm your coffee disease expert.</div>
-                            <p class="mt-1">I can help you identify and manage common coffee plant diseases. How can I help you today?</p>
-                        </div>
                     </div>
-                </div>
                 
                 <div class="p-4 bg-white border-t">
                     <div class="flex items-center space-x-2">
@@ -279,7 +269,6 @@
                 </div>
             </div>
             
-            <!-- Image Analysis Panel -->
             <div class="bg-white rounded-xl shadow-xl p-6 flex flex-col">
                 <div class="pb-4 border-b">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center">
@@ -288,7 +277,6 @@
                     </h2>
                     <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases using our AI model</p>
                     
-                    <!-- Model Status -->
                     <div class="mt-3 flex items-center">
                         <div id="model-status" class="flex items-center">
                             <span class="w-3 h-3 rounded-full bg-gray-400 mr-2"></span>
@@ -300,7 +288,6 @@
                     </div>
                 </div>
                 
-                <!-- Connection Error Banner -->
                 <div id="connection-error" class="hidden mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
                     <div class="flex items-start">
                         <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
@@ -322,7 +309,6 @@
                         </div>
                     </div>
                     
-                    <!-- Cold Start Information -->
                     <div class="cold-start-info mt-4">
                         <h4 class="font-bold text-amber-800 flex items-center">
                             <i class="fas fa-info-circle mr-2"></i>
@@ -336,7 +322,6 @@
                 </div>
                 
                 <div id="analysis-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <!-- Single Image Upload -->
                     <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50 shadow-sm">
                         <h3 class="font-semibold text-lg text-emerald-800 mb-3 flex items-center">
                             <i class="fas fa-image mr-2"></i>
@@ -368,7 +353,6 @@
                         </div>
                     </div>
                     
-                    <!-- Batch Image Upload -->
                     <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-blue-50 shadow-sm">
                         <h3 class="font-semibold text-lg text-blue-800 mb-3 flex items-center">
                             <i class="fas fa-layer-group mr-2"></i>
@@ -402,7 +386,6 @@
                     </div>
                 </div>
                 
-                <!-- Disease Information - Showing all 7 classes -->
                 <div class="mt-8 pt-4 border-t">
                     <h3 class="font-semibold text-lg text-gray-800 mb-3 flex items-center">
                         <i class="fas fa-book-medical mr-2 text-emerald-600"></i>
@@ -443,7 +426,6 @@
         </div>
     </main>
     
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white py-6 mt-8">
         <div class="container mx-auto px-4 text-center">
             <div class="flex justify-center space-x-6 mb-4">
@@ -496,11 +478,7 @@
             let modelAvailable = false;
             
             // Language-specific content
-            const initialMessages = {
-                en: "Hello! I'm your coffee disease expert. I can help you identify and manage common coffee plant diseases. How can I help you today?",
-                nd: "Takwenya! Anendet ng'amotioot nebo kawek. Amuchii aboruun tuguuk che iyaei asi iguiye myanwogikab kawek ak inai olekiriptoi simanam myanwogik. Tos mii kiy ne imeche atoretin rani?"
-            };
-            
+            // The initialMessages object has been removed since the message is already added dynamically.
             const localResponses = {
                 en: {
                     chlorosis: {
@@ -588,406 +566,271 @@
                     // If all attempts fail
                     modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Model status: Connection failed</span>';
                     connectionStatus.className = "connection-status bg-red-100 text-red-800";
-                    connectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model';
-                    modelAvailable = false;
+                    connectionStatus.innerHTML = '<i class="fas fa-times-circle mr-2"></i> Could not connect to model.';
                     retryButton.classList.remove('hidden');
                     connectionError.classList.remove('hidden');
-                    analysisSection.classList.add('hidden');
+                    modelAvailable = false;
+                    analyzeButton.disabled = true;
+                    analyzeButtonMulti.disabled = true;
                 }
                 
-                // Hide status after 5 seconds if connected, 10 seconds if failed
                 setTimeout(() => {
                     connectionStatus.classList.add('hidden');
-                }, connected ? 5000 : 10000);
+                }, 5000); // Hide status message after 5 seconds
             }
-            
-            // Helper function to create a chat message element
-            function createMessageElement(role, content) {
-                const messageContainer = document.createElement('div');
-                messageContainer.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            // Function to add a message to the chat
+            function addMessage(text, sender) {
+                const messageElement = document.createElement('div');
+                messageElement.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
                 
                 const bubble = document.createElement('div');
-                bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'bot-bubble'}`;
+                bubble.className = `chat-bubble ${sender === 'user' ? 'user-bubble' : 'bot-bubble'}`;
+                bubble.innerHTML = text; // Use innerHTML to allow for bolding
                 
-                // Convert markdown to HTML
-                const htmlContent = content
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
-                
-                bubble.innerHTML = htmlContent;
-                messageContainer.appendChild(bubble);
-                return messageContainer;
-            }
-            
-            // Add a message to the chat
-            function addMessage(role, content) {
-                const messageElement = createMessageElement(role, content);
+                messageElement.appendChild(bubble);
                 chatMessages.appendChild(messageElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the latest message
             }
-            
-            // Get bot response
-            function getBotResponse(userInput) {
-                const lowerInput = userInput.toLowerCase().trim();
-                let botResponse = "I'm still learning about coffee diseases. Can you ask about something else? We're constantly improving!";
+
+            // Handle user chat messages
+            function handleUserMessage() {
+                const message = chatInput.value.trim();
+                if (message === '') return;
                 
-                const responses = localResponses[language];
-                if (responses) {
-                    for (const key in responses) {
-                        if (responses[key].triggers.some(trigger => lowerInput.includes(trigger.toLowerCase()))) {
-                            botResponse = responses[key].response;
+                addMessage(message, 'user');
+                chatInput.value = '';
+                
+                let foundResponse = false;
+                for (const key in localResponses[language]) {
+                    const triggers = localResponses[language][key].triggers;
+                    for (const trigger of triggers) {
+                        if (message.toLowerCase().includes(trigger)) {
+                            setTimeout(() => {
+                                addMessage(localResponses[language][key].response, 'bot');
+                            }, 500); // Simulate a small delay
+                            foundResponse = true;
                             break;
                         }
                     }
+                    if (foundResponse) break;
                 }
                 
-                setTimeout(() => addMessage('bot', botResponse), 500);
-            }
-            
-            // Handle sending a message
-            function handleSendMessage() {
-                const userInput = chatInput.value.trim();
-                if (userInput) {
-                    addMessage('user', userInput);
-                    chatInput.value = '';
-                    getBotResponse(userInput);
+                if (!foundResponse) {
+                    setTimeout(() => {
+                        const defaultResponse = language === 'en'
+                            ? "I'm sorry, I don't have information on that specific topic. Please try asking about common coffee plant diseases or upload an image for analysis."
+                            : "Maamuteet, mamii tebutok eng chiitok. Oretet kora myanwogikab kawek che kaimut kot otebechi kora ng'ot otebechi kora myanwogikab kapek che kiyoo. Ingoi kiy kogomuchi keeetut. Oretet kora ak image nebo sokeet neo kotogoi."
+                        addMessage(defaultResponse, 'bot');
+                    }, 500);
                 }
             }
-            
-            // Handle language change
-            languageSelector.addEventListener('change', function(e) {
-                language = e.target.value;
-                chatMessages.innerHTML = '';
-                addMessage('bot', initialMessages[language]);
+
+            // Event listeners for chat
+            sendButton.addEventListener('click', handleUserMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleUserMessage();
+                }
             });
             
-            // Function to get disease class styling
-            function getDiseaseClassStyle(diseaseClass) {
-                const classMap = {
-                    'cescospora_leaf_sport': 'cescospora',
-                    'coffee_canker': 'canker',
-                    'coffee_leaf_rust': 'rust',
-                    'healthy': 'healthy',
-                    'nematodes': 'nematodes',
-                    'phoma_leaf_sport': 'phoma',
-                    'red_spider_mite': 'mite'
-                };
+            // Language selector
+            languageSelector.addEventListener('change', function() {
+                language = this.value;
+                // Add an initial greeting message based on the selected language
+                const initialGreeting = language === 'en'
+                    ? "Hello! I'm your coffee disease expert. How can I help you?"
+                    : "Takwenya! Anendet ng'amotioot nebo kawek. Tos mii kiy ne imeche atoretin rani?";
                 
-                return classMap[diseaseClass] || 'healthy';
-            }
+                chatMessages.innerHTML = ''; // Clear previous messages
+                addMessage(initialGreeting, 'bot');
+            });
             
-            // Function to get disease display name
-            function getDiseaseDisplayName(diseaseClass) {
-                const nameMap = {
-                    'cescospora_leaf_sport': 'Cercospora Leaf Spot',
-                    'coffee_canker': 'Coffee Canker',
-                    'coffee_leaf_rust': 'Coffee Leaf Rust',
-                    'healthy': 'Healthy',
-                    'nematodes': 'Nematodes',
-                    'phoma_leaf_sport': 'Phoma Leaf Spot',
-                    'red_spider_mite': 'Red Spider Mite'
-                };
-                
-                return nameMap[diseaseClass] || diseaseClass;
-            }
+            // Single image upload logic
+            imageUploadAreaSingle.addEventListener('click', () => {
+                imageUpload.click();
+            });
             
-            // Function to send image to your model
-            async function predictImage(imageFile) {
-                const formData = new FormData();
-                formData.append('image', imageFile);
-                
-                try {
-                    // Show connection status
-                    connectionStatus.classList.remove('hidden');
-                    connectionStatus.className = "connection-status bg-blue-100 text-blue-800";
-                    connectionStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing image...';
-                    
-                    // Send the image to your model endpoint
-                    const response = await fetch('/predict', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || `Model returned status ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    // Hide status
-                    setTimeout(() => {
-                        connectionStatus.classList.add('hidden');
-                    }, 3000);
-                    
-                    return result;
-                } catch (error) {
-                    console.error('Prediction failed:', error);
-                    connectionStatus.className = "connection-status bg-red-100 text-red-800";
-                    connectionStatus.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> ${error.message || 'Prediction failed'}`;
-                    
-                    // Hide status after 5 seconds
-                    setTimeout(() => {
-                        connectionStatus.classList.add('hidden');
-                    }, 5000);
-                    
-                    return { error: error.message };
-                }
-            }
-            
-            // Function to send batch images to your model
-            async function predictBatchImages(imageFiles) {
-                const formData = new FormData();
-                imageFiles.forEach(file => formData.append('images', file));
-                
-                try {
-                    // Show connection status
-                    connectionStatus.classList.remove('hidden');
-                    connectionStatus.className = "connection-status bg-blue-100 text-blue-800";
-                    connectionStatus.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing ${imageFiles.length} images...`;
-                    
-                    // Send the images to your model endpoint
-                    const response = await fetch('/predict', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || `Model returned status ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    // Hide status
-                    setTimeout(() => {
-                        connectionStatus.classList.add('hidden');
-                    }, 3000);
-                    
-                    return result;
-                } catch (error) {
-                    console.error('Batch prediction failed:', error);
-                    connectionStatus.className = "connection-status bg-red-100 text-red-800";
-                    connectionStatus.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> ${error.message || 'Batch prediction failed'}`;
-                    
-                    // Hide status after 5 seconds
-                    setTimeout(() => {
-                        connectionStatus.classList.add('hidden');
-                    }, 5000);
-                    
-                    return { error: error.message };
-                }
-            }
-            
-            // Single image upload handling
-            imageUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
+            imageUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
                 if (file) {
+                    uploadedImageFile = file;
                     const reader = new FileReader();
-                    reader.onloadend = function() {
-                        uploadedImageFile = file;
-                        imageUploadPlaceholder.classList.add('hidden');
+                    reader.onload = (e) => {
+                        imagePreviewImg.src = e.target.result;
                         imagePreview.classList.remove('hidden');
-                        imagePreviewImg.src = reader.result;
-                        analyzeButton.disabled = !modelAvailable;
+                        imageUploadPlaceholder.classList.add('hidden');
+                        if (modelAvailable) {
+                            analyzeButton.disabled = false;
+                        }
                     };
                     reader.readAsDataURL(file);
                 }
             });
             
-            // Single image analysis
-            analyzeButton.addEventListener('click', async function() {
+            // Batch image upload logic
+            imageUploadAreaMulti.addEventListener('click', () => {
+                imageUploadMulti.click();
+            });
+            
+            imageUploadMulti.addEventListener('change', (event) => {
+                uploadedFilesMulti = Array.from(event.target.files);
+                if (uploadedFilesMulti.length > 0) {
+                    previewGridMulti.innerHTML = '';
+                    previewGridMulti.classList.remove('hidden');
+                    
+                    uploadedFilesMulti.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'preview-item';
+                            previewItem.innerHTML = `<img src="${e.target.result}" alt="Uploaded photo" class="w-full h-24 object-cover rounded-lg shadow-md">
+                                                     <div class="result-badge bg-gray-200 text-gray-800">Pending</div>`;
+                            previewGridMulti.appendChild(previewItem);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    if (modelAvailable) {
+                        analyzeButtonMulti.disabled = false;
+                    }
+                }
+            });
+            
+            // Analyze single image
+            analyzeButton.addEventListener('click', async () => {
                 if (!uploadedImageFile || !modelAvailable) return;
                 
-                // Show loading state
-                const originalText = analyzeButton.innerHTML;
-                analyzeButton.innerHTML = '<div class="spinner mr-2"></div> Analyzing...';
+                analyzeButton.innerHTML = '<span class="spinner mr-2"></span> Analyzing...';
                 analyzeButton.disabled = true;
                 
-                // Call your model
-                const response = await predictImage(uploadedImageFile);
+                const formData = new FormData();
+                formData.append('file', uploadedImageFile);
                 
-                if (response.error) {
-                    analysisText.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
-                } else {
-                    // Handle response format - single image returns an object
-                    const prediction = response.prediction || response;
-                    const diseaseClass = prediction.predicted_class;
+                try {
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
                     
-                    if (!diseaseClass) {
-                        analysisText.innerHTML = `<div class="text-red-600">Error: Invalid response from model</div>`;
-                    } else {
-                        const confidence = prediction.confidence;
-                        const diseaseStyle = getDiseaseClassStyle(diseaseClass);
-                        const displayName = getDiseaseDisplayName(diseaseClass);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        const prediction = data.prediction;
+                        const confidence = (data.confidence * 100).toFixed(2);
                         
-                        // Display result
+                        let formattedPrediction = prediction.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        
+                        let diseaseDescription = "No information found for this disease.";
+                        
+                        // Find the corresponding disease description from the static guide
+                        const diseaseGuideCards = document.querySelectorAll('.disease-card');
+                        diseaseGuideCards.forEach(card => {
+                            const tag = card.querySelector('.disease-tag');
+                            if (tag && tag.textContent.trim().toLowerCase() === formattedPrediction.toLowerCase()) {
+                                const description = card.querySelector('p').textContent;
+                                diseaseDescription = `**${formattedPrediction}**: ${description}`;
+                            }
+                        });
+                        
                         analysisText.innerHTML = `
-                            <div class="font-bold text-lg ${diseaseStyle} disease-tag">${displayName}</div>
-                            <div class="flex items-center my-2">
-                                <div class="text-sm text-gray-600">Confidence: ${parseFloat(confidence) * 100}%</div>
-                            </div>
-                            <div class="mt-3">
-                                <div class="font-medium text-emerald-700">Recommended Action:</div>
-                                <p class="text-sm mt-1">Apply appropriate treatment based on the detected disease. Remove affected leaves to prevent spread.</p>
+                            <p><b>Prediction:</b> <span class="font-bold text-lg text-emerald-600">${formattedPrediction}</span></p>
+                            <p class="text-sm text-gray-500">Confidence: ${confidence}%</p>
+                            <div class="mt-2 text-gray-700">
+                                <h4 class="font-bold">Description:</h4>
+                                <p class="mt-1">${diseaseDescription}</p>
                             </div>
                         `;
+                        analysisResult.classList.remove('hidden');
+                    } else {
+                        analysisText.textContent = `Error: ${data.error || 'Prediction failed.'}`;
+                        analysisResult.classList.remove('hidden');
                     }
+                } catch (error) {
+                    analysisText.textContent = `Connection error: ${error.message}`;
+                    analysisResult.classList.remove('hidden');
+                } finally {
+                    analyzeButton.innerHTML = '<i class="fas fa-search mr-2"></i> Analyze with Model';
+                    analyzeButton.disabled = !modelAvailable;
                 }
-                
-                analysisResult.classList.remove('hidden');
-                
-                // Reset button
-                analyzeButton.innerHTML = originalText;
-                analyzeButton.disabled = !modelAvailable;
             });
             
-            // Batch image upload handling
-            imageUploadMulti.addEventListener('change', function(e) {
-                uploadedFilesMulti = Array.from(e.target.files);
-                previewGridMulti.innerHTML = '';
-                
-                if (uploadedFilesMulti.length === 0) {
-                    previewGridMulti.classList.add('hidden');
-                    analyzeButtonMulti.disabled = true;
-                    return;
-                }
-                
-                previewGridMulti.classList.remove('hidden');
-                analyzeButtonMulti.disabled = !modelAvailable;
-                
-                uploadedFilesMulti.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const previewItem = document.createElement('div');
-                        previewItem.className = 'preview-item';
-                        
-                        // Create unique ID for result display
-                        const resultId = `result-${Date.now()}-${index}`;
-                        
-                        previewItem.innerHTML = `
-                            <img src="${e.target.result}" alt="${file.name}">
-                            <div class="text-xs text-gray-600 truncate max-w-full">${file.name}</div>
-                            <div id="${resultId}" class="result-badge bg-yellow-100 text-yellow-800">Pending</div>
-                        `;
-                        
-                        // Store result ID on file object
-                        file.resultId = resultId;
-                        
-                        previewGridMulti.appendChild(previewItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
-            
-            // Batch image analysis
-            analyzeButtonMulti.addEventListener('click', async function() {
+            // Analyze multiple images
+            analyzeButtonMulti.addEventListener('click', async () => {
                 if (uploadedFilesMulti.length === 0 || !modelAvailable) return;
                 
-                // Show loading state
-                const originalText = analyzeButtonMulti.innerHTML;
-                analyzeButtonMulti.innerHTML = '<div class="spinner mr-2"></div> Processing...';
+                analyzeButtonMulti.innerHTML = '<span class="spinner mr-2"></span> Analyzing All...';
                 analyzeButtonMulti.disabled = true;
                 
-                // Clear previous results
                 analysisTextMulti.innerHTML = '';
                 analysisResultMulti.classList.remove('hidden');
                 
-                // Show status for each file
-                uploadedFilesMulti.forEach(file => {
-                    const badge = document.getElementById(file.resultId);
-                    if (badge) {
-                        badge.textContent = 'Processing...';
-                        badge.className = 'result-badge bg-blue-100 text-blue-800';
-                    }
-                });
-                
-                // Call your model with batch images
-                const response = await predictBatchImages(uploadedFilesMulti);
-                
-                if (response.error) {
-                    analysisTextMulti.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
-                } else {
-                    // The response should be an object with 'results' array
-                    let results = [];
-                    if (response.results && Array.isArray(response.results)) {
-                        results = response.results;
-                    } else if (Array.isArray(response)) {
-                        results = response;
-                    } else {
-                        // If it's a single result in batch mode
-                        results = [response];
-                    }
+                for (let i = 0; i < uploadedFilesMulti.length; i++) {
+                    const file = uploadedFilesMulti[i];
+                    const formData = new FormData();
+                    formData.append('file', file);
                     
-                    // Process each result
-                    results.forEach((result, index) => {
-                        const file = uploadedFilesMulti[index];
-                        if (!file) return;
-                        
-                        // Handle both formats: result.prediction or direct result
-                        const prediction = result.prediction || result;
-                        const diseaseClass = prediction.predicted_class;
-                        
-                        if (!diseaseClass) {
-                            const badge = document.getElementById(file.resultId);
-                            if (badge) {
-                                badge.textContent = 'Error';
-                                badge.className = 'result-badge bg-red-100 text-red-800';
-                            }
-                            return;
-                        }
-                        
-                        const confidence = prediction.confidence;
-                        const diseaseStyle = getDiseaseClassStyle(diseaseClass);
-                        const displayName = getDiseaseDisplayName(diseaseClass);
-                        
-                        // Update badge for this file
-                        const badge = document.getElementById(file.resultId);
-                        if (badge) {
-                            badge.textContent = `${displayName} (${parseFloat(confidence) * 100}%)`;
-                            badge.className = `result-badge ${diseaseStyle}`;
-                        }
-                        
-                        // Add to results list
-                        const resultItem = document.createElement('div');
-                        resultItem.className = 'flex items-center py-2 border-b border-blue-100 last:border-0';
-                        resultItem.innerHTML = `
-                            <div class="font-medium flex-1 truncate mr-2">${file.name}</div>
-                            <div class="font-semibold disease-tag ${diseaseStyle}">${displayName}</div>
-                            <div class="text-sm text-gray-500 ml-2">${parseFloat(confidence) * 100}%</div>
-                        `;
-                        analysisTextMulti.appendChild(resultItem);
-                    });
+                    const previewItem = previewGridMulti.children[i];
+                    const resultBadge = previewItem.querySelector('.result-badge');
                     
-                    // Add summary
-                    const summary = document.createElement('div');
-                    summary.className = 'mt-3 pt-3 border-t border-blue-200 font-medium';
-                    summary.textContent = `Processed ${results.length} images`;
-                    analysisTextMulti.appendChild(summary);
+                    resultBadge.textContent = 'Analyzing...';
+                    resultBadge.className = 'result-badge bg-yellow-200 text-yellow-800';
+                    
+                    try {
+                        const response = await fetch('/predict', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            const prediction = data.prediction;
+                            const confidence = (data.confidence * 100).toFixed(2);
+                            
+                            let formattedPrediction = prediction.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                            
+                            // Update the badge
+                            let badgeClass = 'bg-gray-200 text-gray-800';
+                            if (prediction === 'healthy') badgeClass = 'bg-green-200 text-green-800';
+                            else if (prediction === 'coffee_leaf_rust') badgeClass = 'bg-yellow-200 text-yellow-800';
+                            else badgeClass = 'bg-red-200 text-red-800';
+                            
+                            resultBadge.textContent = formattedPrediction;
+                            resultBadge.className = `result-badge ${badgeClass}`;
+                            
+                            analysisTextMulti.innerHTML += `
+                                <div class="p-2 border-b last:border-b-0">
+                                    <p class="font-semibold text-gray-800">Image ${i + 1}: ${formattedPrediction}</p>
+                                    <p class="text-xs text-gray-500">Confidence: ${confidence}%</p>
+                                </div>
+                            `;
+                        } else {
+                            resultBadge.textContent = 'Error';
+                            resultBadge.className = 'result-badge bg-red-200 text-red-800';
+                            analysisTextMulti.innerHTML += `<p class="text-sm p-2 text-red-600">Image ${i + 1}: Error - ${data.error || 'Prediction failed.'}</p>`;
+                        }
+                    } catch (error) {
+                        resultBadge.textContent = 'Error';
+                        resultBadge.className = 'result-badge bg-red-200 text-red-800';
+                        analysisTextMulti.innerHTML += `<p class="text-sm p-2 text-red-600">Image ${i + 1}: Connection Error</p>`;
+                    }
                 }
                 
-                // Reset button
-                analyzeButtonMulti.innerHTML = originalText;
+                analyzeButtonMulti.innerHTML = '<i class="fas fa-tasks mr-2"></i> Analyze All with Model';
                 analyzeButtonMulti.disabled = !modelAvailable;
             });
-            
-            // Click handlers for upload areas
-            imageUploadAreaSingle.addEventListener('click', () => imageUpload.click());
-            imageUploadAreaMulti.addEventListener('click', () => imageUploadMulti.click());
-            
-            // Chat input event listeners
-            sendButton.addEventListener('click', handleSendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleSendMessage();
-            });
-            
-            // Retry connection buttons
+
+            // Initial check
+            checkModelConnection();
             retryButton.addEventListener('click', checkModelConnection);
             retryFullButton.addEventListener('click', checkModelConnection);
-            
-            // Initialize
-            addMessage('bot', initialMessages[language]);
-            checkModelConnection();
+
+            // Initial message
+            const initialGreeting = language === 'en'
+                ? "Hello! I'm your coffee disease expert. How can I help you today?"
+                : "Takwenya! Anendet ng'amotioot nebo kawek. Tos mii kiy ne imeche atoretin rani?";
+            addMessage(initialGreeting, 'bot');
         });
     </script>
 </body>
