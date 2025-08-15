@@ -24,7 +24,6 @@
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
             min-height: 100vh;
-            color: #1f2937;
         }
         
         .header-gradient {
@@ -112,7 +111,6 @@
             transition: all 0.3s ease;
             border: 2px dashed #a7f3d0;
             background-color: #f0fdf4;
-            cursor: pointer;
         }
         
         .upload-area:hover {
@@ -126,8 +124,6 @@
             transition: all 0.2s ease;
             box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
             background: linear-gradient(135deg, #047857, #065f46);
-            color: white;
-            font-weight: 500;
         }
         
         .analyze-btn:hover {
@@ -146,7 +142,6 @@
             font-size: 0.8rem;
             font-weight: 500;
             transition: all 0.2s ease;
-            display: inline-block;
         }
         
         .disease-tag:hover {
@@ -193,8 +188,6 @@
             border-radius: 0.75rem;
             padding: 1rem;
             transition: all 0.3s ease;
-            background: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
         
         .disease-card:hover {
@@ -209,9 +202,6 @@
             border-radius: 9999px;
             font-weight: 500;
             transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
         .retry-btn:hover {
@@ -466,256 +456,15 @@
             cursor: pointer;
             transition: all 0.2s;
             margin-top: 10px;
-            gap: 0.5rem;
         }
         
         .vikoba-share-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(58, 123, 213, 0.3);
         }
-        
-        /* New Auth Modal Styles */
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .auth-modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .auth-content {
-            background: white;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-        
-        .auth-modal.active .auth-content {
-            transform: translateY(0);
-        }
-        
-        .auth-header {
-            background: linear-gradient(135deg, #047857, #065f46);
-            color: white;
-            padding: 20px;
-            border-radius: 12px 12px 0 0;
-            position: relative;
-        }
-        
-        .close-auth {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-        
-        .auth-tabs {
-            display: flex;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 4px;
-            margin-top: 10px;
-        }
-        
-        .auth-tab {
-            flex: 1;
-            padding: 8px;
-            text-align: center;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .auth-tab.active {
-            background: white;
-            color: #047857;
-        }
-        
-        .auth-body {
-            padding: 20px;
-        }
-        
-        .auth-form {
-            display: none;
-        }
-        
-        .auth-form.active {
-            display: block;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #444;
-        }
-        
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-        
-        .form-group input:focus {
-            border-color: #047857;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1);
-        }
-        
-        .auth-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #047857, #065f46);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .auth-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-        
-        .auth-footer {
-            text-align: center;
-            padding: 15px 0;
-            border-top: 1px solid #eee;
-        }
-        
-        .switch-auth {
-            color: #047857;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .vikoba-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #3a7bd5;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .grid-cols-1.lg\:grid-cols-2 {
-                grid-template-columns: 1fr;
-            }
-            
-            .preview-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            }
-            
-            .tabs {
-                flex-direction: column;
-            }
-            
-            .disease-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <!-- Auth Modal -->
-    <div class="auth-modal" id="auth-modal">
-        <div class="auth-content">
-            <div class="auth-header">
-                <button class="close-auth" id="close-auth">
-                    <i class="fas fa-times"></i>
-                </button>
-                <h2 class="text-xl font-bold text-center">Welcome to Kaburwo</h2>
-                <div class="auth-tabs">
-                    <div class="auth-tab active" data-tab="login">Login</div>
-                    <div class="auth-tab" data-tab="signup">Sign Up</div>
-                </div>
-            </div>
-            <div class="auth-body">
-                <!-- Login Form -->
-                <form class="auth-form active" id="login-form">
-                    <div class="form-group">
-                        <label for="login-phone">Phone Number</label>
-                        <input type="tel" id="login-phone" placeholder="2547XXXXXXXX" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" placeholder="Enter your password" required>
-                    </div>
-                    <button type="submit" class="auth-btn">Login to Account</button>
-                </form>
-                
-                <!-- Signup Form -->
-                <form class="auth-form" id="signup-form">
-                    <div class="form-group">
-                        <label for="signup-name">Full Name</label>
-                        <input type="text" id="signup-name" placeholder="John Doe" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-phone">Phone Number</label>
-                        <input type="tel" id="signup-phone" placeholder="2547XXXXXXXX" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-region">Region</label>
-                        <select id="signup-region" required>
-                            <option value="">Select your region</option>
-                            <option value="nandi_north">Nandi North</option>
-                            <option value="nandi_south">Nandi South</option>
-                            <option value="nandi_east">Nandi East</option>
-                            <option value="nandi_west">Nandi West</option>
-                            <option value="nandi_central">Nandi Central</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-password">Password</label>
-                        <input type="password" id="signup-password" placeholder="Create a password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-confirm">Confirm Password</label>
-                        <input type="password" id="signup-confirm" placeholder="Confirm your password" required>
-                    </div>
-                    <button type="submit" class="auth-btn">Create Account</button>
-                </form>
-            </div>
-            <div class="auth-footer">
-                <p id="auth-footer-text">Don't have an account? <span class="switch-auth" data-target="signup">Sign Up</span></p>
-            </div>
-        </div>
-    </div>
-
     <!-- Connection Status Indicator -->
     <div id="connection-status" class="connection-status bg-yellow-100 text-yellow-800 hidden">
         <i class="fas fa-circle-notch fa-spin mr-2"></i> Connecting to model...
@@ -738,13 +487,7 @@
                         <option value="nd">Nandi</option>
                     </select>
                 </div>
-                <div id="user-profile" class="hidden">
-                    <div class="flex items-center">
-                        <img id="user-avatar" src="https://ui-avatars.com/api/?background=random&name=F" alt="User Profile" class="w-8 h-8 rounded-full border-2 border-white">
-                        <span id="user-name" class="ml-2"></span>
-                    </div>
-                </div>
-                <button id="auth-button" class="bg-white/20 hover:bg-white/30 transition-colors p-2 rounded-full">
+                <button class="bg-white/20 hover:bg-white/30 transition-colors p-2 rounded-full">
                     <i class="fas fa-user"></i>
                 </button>
             </div>
@@ -772,10 +515,10 @@
                         <p class="text-sm text-gray-500 mt-1">Get expert advice</p>
                     </div>
                     
-                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 min-h-[300px]">
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
                         <div class="flex justify-start">
                             <div class="chat-bubble bot-bubble">
-                                <div class="font-medium">Hello! I'm your coffee disease expert. How can I help you today?</div>
+                                <div class="font-medium">Greetings of the day</div>
                             </div>
                         </div>
                     </div>
@@ -803,13 +546,51 @@
                         <!-- Model Status -->
                         <div class="mt-3 flex items-center">
                             <div id="model-status" class="flex items-center">
-                                <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
-                                <span class="text-sm">Model status: Connected and ready</span>
+                                <span class="w-3 h-3 rounded-full bg-gray-400 mr-2"></span>
+                                <span class="text-sm">Model status: Checking...</span>
                             </div>
+                            <button id="retry-connection" class="ml-4 text-sm text-emerald-600 hover:underline hidden">
+                                <i class="fas fa-sync-alt mr-1"></i> Retry connection
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Connection Error Banner -->
+                    <div id="connection-error" class="hidden mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
+                            <div>
+                                <h3 class="font-bold text-red-700">Model Connection Failed</h3>
+                                <p class="text-sm text-red-600 mt-1">
+                                    Unable to connect to the disease detection model. This could be due to:
+                                </p>
+                                <ul class="list-disc list-inside text-sm text-red-600 mt-2 pl-4">
+                                    <li>Server starting up (cold start on Render)</li>
+                                    <li>Model loading taking longer than expected</li>
+                                    <li>Network connectivity issues</li>
+                                </ul>
+                                <div class="mt-3">
+                                    <button id="retry-full" class="retry-btn">
+                                        <i class="fas fa-sync-alt mr-2"></i> Retry Connection
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cold Start Information -->
+                        <div class="cold-start-info mt-4">
+                            <h4 class="font-bold text-amber-800 flex items-center">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                About Render Cold Starts
+                            </h4>
+                            <p class="text-sm text-amber-700 mt-2">
+                                If you're using Render's free tier, your server might take 30-60 seconds to start up after 
+                                being idle. This is normal behavior. The model will be available shortly.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="analysis-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <!-- Single Image Upload -->
                         <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50 shadow-sm">
                             <h3 class="font-semibold text-lg text-emerald-800 mb-3 flex items-center">
@@ -824,12 +605,12 @@
                                 </div>
                                 <div id="image-upload-placeholder" class="flex flex-col items-center">
                                     <i class="fas fa-cloud-upload-alt text-emerald-500 text-4xl mb-3"></i>
-                                    <span class="text-emerald-700 font-medium">Upload a coffee leaf image</span>
+                                    <span class="text-emerald-700 font-medium">Upload a single coffee leaf image</span>
                                     <span class="text-emerald-500 text-sm mt-1">Click to browse files</span>
                                 </div>
                             </div>
                             
-                            <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full text-white font-medium">
+                            <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                                 <i class="fas fa-search mr-2"></i> Analyze with Model
                             </button>
                             
@@ -841,7 +622,7 @@
                                 <div id="analysis-text" class="text-gray-700"></div>
                                 <!-- Vikoba share button -->
                                 <div class="vikoba-share-btn hidden" id="vikoba-share-btn">
-                                    <i class="fas fa-share-alt"></i> Share with Vikoba Group
+                                    <i class="fas fa-share-alt mr-2"></i> Share with Vikoba Group
                                 </div>
                             </div>
                         </div>
@@ -866,7 +647,7 @@
                                 <div id="preview-grid-multi" class="preview-grid mt-3 hidden"></div>
                             </div>
                             
-                            <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full text-white font-medium">
+                            <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                                 <i class="fas fa-tasks mr-2"></i> Analyze All with Model
                             </button>
                             
@@ -929,30 +710,111 @@
                         <i class="fas fa-users text-blue-500 mr-2"></i>
                         Vikoba Groups
                     </h2>
-                    <button id="create-vikoba" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
                         <i class="fas fa-plus mr-2"></i> Create New Vikoba
                     </button>
                 </div>
+                <p class="text-gray-600 mt-2">Join farmer groups for collaboration, funding, and shared learning</p>
                 
-                <div id="vikoba-info" class="mt-4">
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                        <h3 class="font-bold text-blue-700 flex items-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Your Regional Vikoba Group
-                        </h3>
-                        <p class="text-blue-600 mt-2">
-                            You've been automatically assigned to a Vikoba group based on your region. 
-                            Farmers in your region collaborate to share knowledge and resources.
-                        </p>
+                <div class="vikoba-container">
+                    <!-- Vikoba Group 1 -->
+                    <div class="vikoba-card">
+                        <div class="vikoba-header">
+                            <h3 class="text-lg font-bold">Green Growers</h3>
+                            <p class="text-sm opacity-90">VK-001 | 4/5 members</p>
+                        </div>
+                        <div class="vikoba-members">
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar more-members">
+                                +1
+                            </div>
+                        </div>
+                        <div class="vikoba-stats">
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">KES 23,500</div>
+                                <div class="text-gray-600">Group Funds</div>
+                            </div>
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">3</div>
+                                <div class="text-gray-600">Projects</div>
+                            </div>
+                        </div>
+                        <div class="vikoba-actions">
+                            <div class="vikoba-btn">
+                                <i class="fas fa-comment mr-1"></i> Chat
+                            </div>
+                            <div class="vikoba-btn">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </div>
+                        </div>
                     </div>
                     
-                    <div id="vikoba-container" class="mt-6">
-                        <!-- Vikoba group will be dynamically inserted here -->
+                    <!-- Vikoba Group 2 -->
+                    <div class="vikoba-card">
+                        <div class="vikoba-header">
+                            <h3 class="text-lg font-bold">Harvest Heroes</h3>
+                            <p class="text-sm opacity-90">VK-002 | 5/5 members</p>
+                        </div>
+                        <div class="vikoba-members">
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/23.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/64.jpg" alt="Member">
+                            </div>
+                        </div>
+                        <div class="vikoba-stats">
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">KES 42,300</div>
+                                <div class="text-gray-600">Group Funds</div>
+                            </div>
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">5</div>
+                                <div class="text-gray-600">Projects</div>
+                            </div>
+                        </div>
+                        <div class="vikoba-actions">
+                            <div class="vikoba-btn">
+                                <i class="fas fa-comment mr-1"></i> Chat
+                            </div>
+                            <div class="vikoba-btn">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Create New Vikoba -->
+                    <div class="vikoba-card">
+                        <div class="create-vikoba">
+                            <i class="fas fa-plus-circle text-blue-500 text-5xl mb-4"></i>
+                            <h3 class="text-xl font-bold text-blue-500 mb-2">Create New Vikoba</h3>
+                            <p class="text-gray-600 text-center">Start a new farmer group for collaboration and funding</p>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Training Section -->
-                <div class="vikoba-tab mt-8">
+                <div class="vikoba-tab">
                     <h3><i class="fas fa-graduation-cap"></i> Group Training Programs</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         <div class="vikoba-training-card">
@@ -1010,7 +872,7 @@
                 </div>
                 
                 <!-- Funding Section -->
-                <div class="vikoba-tab mt-8">
+                <div class="vikoba-tab">
                     <h3><i class="fas fa-money-bill-wave"></i> Group Funding Opportunities</h3>
                     <div class="mt-4 p-4 bg-blue-50 rounded-lg">
                         <div class="flex items-start">
@@ -1058,349 +920,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM elements
-            const authModal = document.getElementById('auth-modal');
-            const closeAuth = document.getElementById('close-auth');
-            const authButton = document.getElementById('auth-button');
-            const authTabs = document.querySelectorAll('.auth-tab');
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const switchAuth = document.querySelectorAll('.switch-auth');
-            const authFooterText = document.getElementById('auth-footer-text');
-            const userProfile = document.getElementById('user-profile');
-            const userName = document.getElementById('user-name');
-            const userAvatar = document.getElementById('user-avatar');
-            const vikobaContainer = document.getElementById('vikoba-container');
-            const createVikobaBtn = document.getElementById('create-vikoba');
-            
-            // User state
-            let currentUser = null;
-            const regions = {
-                nandi_north: "Nandi North",
-                nandi_south: "Nandi South",
-                nandi_east: "Nandi East",
-                nandi_west: "Nandi West",
-                nandi_central: "Nandi Central"
-            };
-            
-            // Sample Vikoba groups data
-            const vikobaGroups = {
-                nandi_north: {
-                    id: "VK-001",
-                    name: "Nandi North Growers",
-                    members: [
-                        { name: "Kipchoge Keino", phone: "254712345678" },
-                        { name: "Pamela Jelimo", phone: "254723456789" },
-                        { name: "David Rudisha", phone: "254734567890" },
-                        { name: "Eliud Kipchoge", phone: "254745678901" },
-                        { name: "Vivian Cheruiyot", phone: "254756789012" }
-                    ],
-                    funds: 42300,
-                    projects: 3
-                },
-                nandi_south: {
-                    id: "VK-002",
-                    name: "Nandi South Farmers",
-                    members: [
-                        { name: "Samuel Wanjiru", phone: "254712345679" },
-                        { name: "Catherine Ndereba", phone: "254723456780" },
-                        { name: "Paul Tergat", phone: "254734567891" },
-                        { name: "Tegla Loroupe", phone: "254745678902" },
-                        { name: "John Ngugi", phone: "254756789013" }
-                    ],
-                    funds: 38500,
-                    projects: 2
-                },
-                nandi_east: {
-                    id: "VK-003",
-                    name: "Nandi East Cooperative",
-                    members: [
-                        { name: "Asbel Kiprop", phone: "254712345680" },
-                        { name: "Faith Kipyegon", phone: "254723456791" },
-                        { name: "Wilson Kipsang", phone: "254734567802" },
-                        { name: "Edna Kiplagat", phone: "254745678913" },
-                        { name: "Geoffrey Kamworor", phone: "254756789024" }
-                    ],
-                    funds: 56700,
-                    projects: 4
-                },
-                nandi_west: {
-                    id: "VK-004",
-                    name: "Nandi West Producers",
-                    members: [
-                        { name: "Hellen Obiri", phone: "254712345691" },
-                        { name: "Conseslus Kipruto", phone: "254723456802" },
-                        { name: "Janeth Jepkosgei", phone: "254734567813" },
-                        { name: "Brimin Kipruto", phone: "254745678924" },
-                        { name: "Hyvin Jepkemoi", phone: "254756789035" }
-                    ],
-                    funds: 31200,
-                    projects: 3
-                },
-                nandi_central: {
-                    id: "VK-005",
-                    name: "Nandi Central Collective",
-                    members: [
-                        { name: "Amos Kipruto", phone: "254712345602" },
-                        { name: "Peruth Chemutai", phone: "254723456713" },
-                        { name: "Ferguson Rotich", phone: "254734567824" },
-                        { name: "Beatrice Chepkoech", phone: "254745678935" },
-                        { name: "Timothy Cheruiyot", phone: "254756789046" }
-                    ],
-                    funds: 49800,
-                    projects: 5
-                }
-            };
-            
-            // Show auth modal
-            authButton.addEventListener('click', function() {
-                authModal.classList.add('active');
-            });
-            
-            // Close auth modal
-            closeAuth.addEventListener('click', function() {
-                authModal.classList.remove('active');
-            });
-            
-            // Switch between login/signup tabs
-            authTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-tab');
-                    
-                    // Update active tab
-                    authTabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Show correct form
-                    loginForm.classList.remove('active');
-                    signupForm.classList.remove('active');
-                    document.getElementById(`${tabName}-form`).classList.add('active');
-                    
-                    // Update footer text
-                    if (tabName === 'login') {
-                        authFooterText.innerHTML = `Don't have an account? <span class="switch-auth" data-target="signup">Sign Up</span>`;
-                    } else {
-                        authFooterText.innerHTML = `Already have an account? <span class="switch-auth" data-target="login">Login</span>`;
-                    }
-                });
-            });
-            
-            // Switch auth forms
-            switchAuth.forEach(link => {
-                link.addEventListener('click', function() {
-                    const target = this.getAttribute('data-target');
-                    
-                    // Update active tab
-                    authTabs.forEach(t => t.classList.remove('active'));
-                    document.querySelector(`.auth-tab[data-tab="${target}"]`).classList.add('active');
-                    
-                    // Show correct form
-                    loginForm.classList.remove('active');
-                    signupForm.classList.remove('active');
-                    document.getElementById(`${target}-form`).classList.add('active');
-                    
-                    // Update footer text
-                    if (target === 'login') {
-                        authFooterText.innerHTML = `Don't have an account? <span class="switch-auth" data-target="signup">Sign Up</span>`;
-                    } else {
-                        authFooterText.innerHTML = `Already have an account? <span class="switch-auth" data-target="login">Login</span>`;
-                    }
-                });
-            });
-            
-            // Handle login
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const phone = document.getElementById('login-phone').value;
-                const password = document.getElementById('login-password').value;
-                
-                // Simple validation
-                if (!phone || !password) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                // In a real app, you would send this to your backend
-                // For demo, we'll simulate a login
-                simulateLogin(phone, password);
-            });
-            
-            // Handle signup
-            signupForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('signup-name').value;
-                const phone = document.getElementById('signup-phone').value;
-                const region = document.getElementById('signup-region').value;
-                const password = document.getElementById('signup-password').value;
-                const confirm = document.getElementById('signup-confirm').value;
-                
-                // Validation
-                if (!name || !phone || !region || !password || !confirm) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                if (password !== confirm) {
-                    alert('Passwords do not match');
-                    return;
-                }
-                
-                if (password.length < 6) {
-                    alert('Password must be at least 6 characters');
-                    return;
-                }
-                
-                // In a real app, you would send this to your backend
-                // For demo, we'll simulate signup
-                simulateSignup(name, phone, region, password);
-            });
-            
-            // Simulate login (for demo)
-            function simulateLogin(phone, password) {
-                // For demo, we'll just create a user
-                const user = {
-                    name: "Demo Farmer",
-                    phone: phone,
-                    region: "nandi_central"
-                };
-                
-                setCurrentUser(user);
-                authModal.classList.remove('active');
-                
-                // Show success message
-                showNotification(`Welcome back, ${user.name}!`);
-            }
-            
-            // Simulate signup (for demo)
-            function simulateSignup(name, phone, region, password) {
-                const user = {
-                    name: name,
-                    phone: phone,
-                    region: region
-                };
-                
-                setCurrentUser(user);
-                authModal.classList.remove('active');
-                
-                // Show success message
-                showNotification(`Account created! Welcome to Kaburwo, ${name}`);
-                
-                // Render Vikoba group
-                renderVikobaGroup();
-            }
-            
-            // Set current user
-            function setCurrentUser(user) {
-                currentUser = user;
-                
-                // Show user profile
-                userProfile.classList.remove('hidden');
-                userName.textContent = user.name;
-                userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
-                authButton.classList.add('hidden');
-                
-                // Save to localStorage for demo
-                localStorage.setItem('currentUser', JSON.stringify(user));
-            }
-            
-            // Render Vikoba group
-            function renderVikobaGroup() {
-                if (!currentUser || !currentUser.region) return;
-                
-                const group = vikobaGroups[currentUser.region];
-                if (!group) return;
-                
-                // Add badge to group name
-                const regionName = regions[currentUser.region];
-                
-                // Create group HTML
-                const groupHTML = `
-                    <div class="vikoba-card relative">
-                        <div class="vikoba-badge">${regionName}</div>
-                        <div class="vikoba-header">
-                            <h3 class="text-lg font-bold">${group.name}</h3>
-                            <p class="text-sm opacity-90">${group.id} | ${group.members.length}/5 members</p>
-                        </div>
-                        <div class="vikoba-members">
-                            ${group.members.map(member => `
-                                <div class="member-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=${member.name.split(' ').join('+')}&background=random" alt="${member.name}">
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="vikoba-stats">
-                            <div class="vikoba-stat">
-                                <div class="vikoba-stat-value">KES ${group.funds.toLocaleString()}</div>
-                                <div class="text-gray-600">Group Funds</div>
-                            </div>
-                            <div class="vikoba-stat">
-                                <div class="vikoba-stat-value">${group.projects}</div>
-                                <div class="text-gray-600">Projects</div>
-                            </div>
-                        </div>
-                        <div class="vikoba-actions">
-                            <div class="vikoba-btn">
-                                <i class="fas fa-comment mr-1"></i> Chat
-                            </div>
-                            <div class="vikoba-btn">
-                                <i class="fas fa-eye mr-1"></i> View
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                vikobaContainer.innerHTML = groupHTML;
-            }
-            
-            // Create Vikoba group handler
-            createVikobaBtn.addEventListener('click', function() {
-                if (!currentUser) {
-                    authModal.classList.add('active');
-                    return;
-                }
-                
-                // Only allow creating new groups if not in one
-                const regionName = regions[currentUser.region];
-                showNotification(`You're already in the ${regionName} Vikoba group`);
-            });
-            
-            // Show notification
-            function showNotification(message) {
-                const notification = document.createElement('div');
-                notification.className = "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50";
-                notification.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        ${message}
-                    </div>
-                `;
-                document.body.appendChild(notification);
-                
-                // Remove after 3 seconds
-                setTimeout(() => {
-                    notification.remove();
-                }, 3000);
-            }
-            
-            // Check if user is logged in from localStorage
-            function checkLoggedIn() {
-                const savedUser = localStorage.getItem('currentUser');
-                if (savedUser) {
-                    currentUser = JSON.parse(savedUser);
-                    setCurrentUser(currentUser);
-                    renderVikobaGroup();
-                }
-            }
-            
-            // Initialize
-            checkLoggedIn();
-            
-            // DOM elements for disease detection
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const sendButton = document.getElementById('send-button');
             const languageSelector = document.getElementById('language-selector');
             const modelStatus = document.getElementById('model-status');
+            const retryButton = document.getElementById('retry-connection');
+            const retryFullButton = document.getElementById('retry-full');
             const connectionStatus = document.getElementById('connection-status');
+            const connectionError = document.getElementById('connection-error');
+            const analysisSection = document.getElementById('analysis-section');
             
             // Single image elements
             const imageUpload = document.getElementById('image-upload');
@@ -1510,15 +1039,25 @@
                 
                 while (attempts < maxAttempts && !connected) {
                     try {
-                        // Simulate connection check (in a real app, this would be a fetch request)
-                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        const response = await fetch('/health');
                         
-                        // For demo, we'll assume connection is successful
-                        modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span><span class="text-sm">Model status: Connected and ready</span>';
-                        connectionStatus.className = "connection-status bg-green-100 text-green-800";
-                        connectionStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Model connected successfully!';
-                        modelAvailable = true;
-                        connected = true;
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.status === "available") {
+                                modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span><span class="text-sm">Model status: Connected and ready</span>';
+                                connectionStatus.className = "connection-status bg-green-100 text-green-800";
+                                connectionStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Model connected successfully!';
+                                modelAvailable = true;
+                                retryButton.classList.add('hidden');
+                                connectionError.classList.add('hidden');
+                                analysisSection.classList.remove('hidden');
+                                connected = true;
+                            } else {
+                                throw new Error(data.message || 'Model not ready');
+                            }
+                        } else {
+                            throw new Error('Health check failed');
+                        }
                     } catch (error) {
                         attempts++;
                         if (attempts < maxAttempts) {
@@ -1532,25 +1071,17 @@
                     // If all attempts fail
                     modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Model status: Connection failed</span>';
                     connectionStatus.className = "connection-status bg-red-100 text-red-800";
-                    connectionStatus.innerHTML = `
-                        <i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model
-                        <button id="retry-connection-btn" class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Retry</button>
-                    `;
+                    connectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model';
                     modelAvailable = false;
-
-                    // Add event listener to the retry button we just created
-                    const retryBtn = document.getElementById('retry-connection-btn');
-                    if (retryBtn) {
-                        retryBtn.addEventListener('click', checkModelConnection);
-                    }
+                    retryButton.classList.remove('hidden');
+                    connectionError.classList.remove('hidden');
+                    analysisSection.classList.add('hidden');
                 }
                 
-                // Hide status after 5 seconds if connected
-                if (connected) {
-                    setTimeout(() => {
-                        connectionStatus.classList.add('hidden');
-                    }, 5000);
-                }
+                // Hide status after 5 seconds if connected, 10 seconds if failed
+                setTimeout(() => {
+                    connectionStatus.classList.add('hidden');
+                }, connected ? 5000 : 10000);
             }
             
             // Helper function to create a chat message element
@@ -1654,18 +1185,18 @@
                     connectionStatus.className = "connection-status bg-blue-100 text-blue-800";
                     connectionStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing image...';
                     
-                    // Simulate analysis (in a real app, this would be a fetch request)
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    // Send the image to your model endpoint
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
                     
-                    // Simulate response
-                    const diseaseClasses = ['cescospora_leaf_sport', 'coffee_canker', 'coffee_leaf_rust', 'healthy', 'nematodes', 'phoma_leaf_sport', 'red_spider_mite'];
-                    const randomDisease = diseaseClasses[Math.floor(Math.random() * diseaseClasses.length)];
-                    const confidence = (Math.random() * 0.5 + 0.5).toFixed(2); // 0.5 to 1.0
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `Model returned status ${response.status}`);
+                    }
                     
-                    const result = {
-                        predicted_class: randomDisease,
-                        confidence: confidence
-                    };
+                    const result = await response.json();
                     
                     // Hide status
                     setTimeout(() => {
@@ -1689,34 +1220,34 @@
             
             // Function to send batch images to your model
             async function predictBatchImages(imageFiles) {
+                const formData = new FormData();
+                imageFiles.forEach(file => formData.append('images', file));
+                
                 try {
                     // Show connection status
                     connectionStatus.classList.remove('hidden');
                     connectionStatus.className = "connection-status bg-blue-100 text-blue-800";
                     connectionStatus.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing ${imageFiles.length} images...`;
                     
-                    // Simulate analysis
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    // Send the images to your model endpoint
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
                     
-                    // Simulate response
-                    const results = [];
-                    const diseaseClasses = ['cescospora_leaf_sport', 'coffee_canker', 'coffee_leaf_rust', 'healthy', 'nematodes', 'phoma_leaf_sport', 'red_spider_mite'];
-                    
-                    for (let i = 0; i < imageFiles.length; i++) {
-                        const randomDisease = diseaseClasses[Math.floor(Math.random() * diseaseClasses.length)];
-                        const confidence = (Math.random() * 0.5 + 0.5).toFixed(2); // 0.5 to 1.0
-                        results.push({
-                            predicted_class: randomDisease,
-                            confidence: confidence
-                        });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `Model returned status ${response.status}`);
                     }
+                    
+                    const result = await response.json();
                     
                     // Hide status
                     setTimeout(() => {
                         connectionStatus.classList.add('hidden');
                     }, 3000);
                     
-                    return results;
+                    return result;
                 } catch (error) {
                     console.error('Batch prediction failed:', error);
                     connectionStatus.className = "connection-status bg-red-100 text-red-800";
@@ -1764,7 +1295,7 @@
                     vikobaShareBtn.classList.add('hidden');
                 } else {
                     // Handle response format - single image returns an object
-                    const prediction = response;
+                    const prediction = response.prediction || response;
                     const diseaseClass = prediction.predicted_class;
                     
                     if (!diseaseClass) {
@@ -1804,7 +1335,7 @@
                 // Reset button
                 analyzeButton.innerHTML = originalText;
                 analyzeButton.disabled = !modelAvailable;
-            }
+            });
             
             // Batch image upload handling
             imageUploadMulti.addEventListener('change', function(e) {
@@ -1872,13 +1403,24 @@
                 if (response.error) {
                     analysisTextMulti.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
                 } else {
+                    // The response should be an object with 'results' array
+                    let results = [];
+                    if (response.results && Array.isArray(response.results)) {
+                        results = response.results;
+                    } else if (Array.isArray(response)) {
+                        results = response;
+                    } else {
+                        // If it's a single result in batch mode
+                        results = [response];
+                    }
+                    
                     // Process each result
-                    response.forEach((result, index) => {
+                    results.forEach((result, index) => {
                         const file = uploadedFilesMulti[index];
                         if (!file) return;
                         
                         // Handle both formats: result.prediction or direct result
-                        const prediction = result;
+                        const prediction = result.prediction || result;
                         const diseaseClass = prediction.predicted_class;
                         
                         if (!diseaseClass) {
@@ -1915,7 +1457,7 @@
                     // Add summary
                     const summary = document.createElement('div');
                     summary.className = 'mt-3 pt-3 border-t border-blue-200 font-medium';
-                    summary.textContent = `Processed ${response.length} images`;
+                    summary.textContent = `Processed ${results.length} images`;
                     analysisTextMulti.appendChild(summary);
                 }
                 
@@ -1933,6 +1475,10 @@
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleSendMessage();
             });
+            
+            // Retry connection buttons
+            retryButton.addEventListener('click', checkModelConnection);
+            retryFullButton.addEventListener('click', checkModelConnection);
             
             // Vikoba share button
             vikobaShareBtn.addEventListener('click', function() {
@@ -1966,4 +1512,5 @@
         });
     </script>
 </body>
+
 </html>
