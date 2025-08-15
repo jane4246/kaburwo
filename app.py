@@ -11,7 +11,9 @@ from datetime import datetime
 # Initialize Flask
 app = Flask(__name__)
 CORS(app)
-app.secret_key = 'your_secret_key_here'  # Needed for session management
+
+# Load TFLite model
+MODEL_PATH = os.path.join(os.getcwd(), "coffee_disease.tflite")
 
 # Initialize Vikoba database
 def init_vikoba_db():
