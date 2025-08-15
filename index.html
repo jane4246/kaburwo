@@ -17,6 +17,7 @@
             --phoma: #FF9800;
             --mite: #F44336;
             --cescospora: #2196F3;
+            --vikoba: #3a7bd5;
         }
         
         body {
@@ -155,6 +156,7 @@
         .nematodes { background-color: #f3e8fd; color: #7e22ce; }
         .phoma { background-color: #fffbeb; color: #a16207; }
         .mite { background-color: #fee2e2; color: #b91c1c; }
+        .vikoba-tag { background-color: #e0f7fa; color: #006064; }
         
         .disease-description {
             background-color: #f8fafc;
@@ -214,6 +216,252 @@
             border-radius: 0.5rem;
             margin-top: 1rem;
         }
+        
+        /* Vikoba styles */
+        .vikoba-gradient {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+        }
+        
+        .vikoba-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .vikoba-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .vikoba-header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 15px;
+        }
+        
+        .vikoba-members {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e0f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: -10px;
+            border: 2px solid white;
+            overflow: hidden;
+        }
+        
+        .member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .more-members {
+            background-color: #00796b;
+            color: white;
+            font-size: 0.8rem;
+        }
+        
+        .vikoba-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .vikoba-stat {
+            text-align: center;
+        }
+        
+        .vikoba-stat-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #3a7bd5;
+        }
+        
+        .vikoba-actions {
+            display: flex;
+            gap: 8px;
+            padding: 0 15px 15px;
+        }
+        
+        .vikoba-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .vikoba-btn:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        
+        .create-vikoba {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: rgba(58, 123, 213, 0.05);
+            border: 2px dashed rgba(58, 123, 213, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .create-vikoba:hover {
+            background: rgba(58, 123, 213, 0.1);
+            border-color: #3a7bd5;
+        }
+        
+        .vikoba-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .vikoba-tab {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        
+        .vikoba-tab h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vikoba-tab h3 i {
+            margin-right: 10px;
+        }
+        
+        .vikoba-training-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        
+        .training-header {
+            height: 120px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .training-content {
+            padding: 20px;
+        }
+        
+        .training-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            border-radius: 4px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #047857, #065f46);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .vikoba-share-btn {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        
+        .vikoba-share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(58, 123, 213, 0.3);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -248,193 +496,406 @@
 
     <!-- Main Content -->
     <main class="flex-1 container mx-auto py-6 px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Chat Panel -->
-            <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col">
-                <div class="p-4 border-b">
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-comments text-emerald-600 mr-2"></i>
-                        Coffee Chat Assistant
-                    </h2>
-                    <p class="text-sm text-gray-500 mt-1">Get expert advice</p>
-                </div>
-                
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                    <div class="flex justify-start">
-                        <div class="chat-bubble bot-bubble">
-                            <div class="font-medium">Greetings of the day</div>
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <div class="tab active" data-tab="disease">Disease Detection</div>
+            <div class="tab" data-tab="vikoba">Vikoba Groups</div>
+        </div>
+        
+        <!-- Disease Detection Tab -->
+        <div id="disease-tab" class="tab-content active">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chat Panel -->
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col">
+                    <div class="p-4 border-b">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-comments text-emerald-600 mr-2"></i>
+                            Coffee Chat Assistant
+                        </h2>
+                        <p class="text-sm text-gray-500 mt-1">Get expert advice</p>
+                    </div>
+                    
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                        <div class="flex justify-start">
+                            <div class="chat-bubble bot-bubble">
+                                <div class="font-medium">Greetings of the day</div>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-white border-t">
+                        <div class="flex items-center space-x-2">
+                            <input id="chat-input" type="text" placeholder="Ask about coffee diseases..." 
+                                   class="flex-1 p-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
+                            <button id="send-button" class="p-3 rounded-full text-white bg-gradient-to-r from-emerald-600 to-emerald-800 shadow-lg hover:opacity-90 transition-opacity">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="p-4 bg-white border-t">
-                    <div class="flex items-center space-x-2">
-                        <input id="chat-input" type="text" placeholder="Ask about coffee diseases..." 
-                               class="flex-1 p-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
-                        <button id="send-button" class="p-3 rounded-full text-white bg-gradient-to-r from-emerald-600 to-emerald-800 shadow-lg hover:opacity-90 transition-opacity">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                <!-- Image Analysis Panel -->
+                <div class="bg-white rounded-xl shadow-xl p-6 flex flex-col">
+                    <div class="pb-4 border-b">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-leaf text-emerald-600 mr-2"></i>
+                            Coffee Disease Image Analysis
+                        </h2>
+                        <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases using our AI model</p>
+                        
+                        <!-- Model Status -->
+                        <div class="mt-3 flex items-center">
+                            <div id="model-status" class="flex items-center">
+                                <span class="w-3 h-3 rounded-full bg-gray-400 mr-2"></span>
+                                <span class="text-sm">Model status: Checking...</span>
+                            </div>
+                            <button id="retry-connection" class="ml-4 text-sm text-emerald-600 hover:underline hidden">
+                                <i class="fas fa-sync-alt mr-1"></i> Retry connection
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Connection Error Banner -->
+                    <div id="connection-error" class="hidden mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
+                            <div>
+                                <h3 class="font-bold text-red-700">Model Connection Failed</h3>
+                                <p class="text-sm text-red-600 mt-1">
+                                    Unable to connect to the disease detection model. This could be due to:
+                                </p>
+                                <ul class="list-disc list-inside text-sm text-red-600 mt-2 pl-4">
+                                    <li>Server starting up (cold start on Render)</li>
+                                    <li>Model loading taking longer than expected</li>
+                                    <li>Network connectivity issues</li>
+                                </ul>
+                                <div class="mt-3">
+                                    <button id="retry-full" class="retry-btn">
+                                        <i class="fas fa-sync-alt mr-2"></i> Retry Connection
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cold Start Information -->
+                        <div class="cold-start-info mt-4">
+                            <h4 class="font-bold text-amber-800 flex items-center">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                About Render Cold Starts
+                            </h4>
+                            <p class="text-sm text-amber-700 mt-2">
+                                If you're using Render's free tier, your server might take 30-60 seconds to start up after 
+                                being idle. This is normal behavior. The model will be available shortly.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div id="analysis-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <!-- Single Image Upload -->
+                        <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50 shadow-sm">
+                            <h3 class="font-semibold text-lg text-emerald-800 mb-3 flex items-center">
+                                <i class="fas fa-image mr-2"></i>
+                                Single Image Analysis
+                            </h3>
+                            
+                            <div class="upload-area rounded-xl p-6 text-center cursor-pointer mb-4" id="image-upload-area-single">
+                                <input type="file" id="image-upload" accept="image/*" class="hidden">
+                                <div id="image-preview" class="hidden">
+                                    <img alt="Uploaded photo" class="max-h-64 mx-auto rounded-lg shadow-md">
+                                </div>
+                                <div id="image-upload-placeholder" class="flex flex-col items-center">
+                                    <i class="fas fa-cloud-upload-alt text-emerald-500 text-4xl mb-3"></i>
+                                    <span class="text-emerald-700 font-medium">Upload a single coffee leaf image</span>
+                                    <span class="text-emerald-500 text-sm mt-1">Click to browse files</span>
+                                </div>
+                            </div>
+                            
+                            <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <i class="fas fa-search mr-2"></i> Analyze with Model
+                            </button>
+                            
+                            <div id="analysis-result" class="hidden mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+                                <h3 class="font-bold text-emerald-800 mb-2 flex items-center">
+                                    <i class="fas fa-clipboard-list mr-2"></i>
+                                    Analysis Results:
+                                </h3>
+                                <div id="analysis-text" class="text-gray-700"></div>
+                                <!-- Vikoba share button -->
+                                <div class="vikoba-share-btn hidden" id="vikoba-share-btn">
+                                    <i class="fas fa-share-alt mr-2"></i> Share with Vikoba Group
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Batch Image Upload -->
+                        <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-blue-50 shadow-sm">
+                            <h3 class="font-semibold text-lg text-blue-800 mb-3 flex items-center">
+                                <i class="fas fa-layer-group mr-2"></i>
+                                Batch Image Analysis
+                            </h3>
+                            
+                            <div class="mb-4">
+                                <div class="upload-area rounded-xl p-4 text-center cursor-pointer mb-3" id="image-upload-area-multi">
+                                    <input type="file" id="image-upload-multi" accept="image/*" multiple class="hidden">
+                                    <div class="flex flex-col items-center py-4">
+                                        <i class="fas fa-images text-blue-500 text-3xl mb-2"></i>
+                                        <span class="text-blue-700 font-medium">Upload multiple coffee leaf images</span>
+                                        <span class="text-blue-500 text-sm mt-1">Click to browse files</span>
+                                    </div>
+                                </div>
+                                
+                                <div id="preview-grid-multi" class="preview-grid mt-3 hidden"></div>
+                            </div>
+                            
+                            <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i class="fas fa-tasks mr-2"></i> Analyze All with Model
+                            </button>
+                            
+                            <div id="analysis-result-multi" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100 max-h-60 overflow-y-auto">
+                                <h3 class="font-bold text-blue-800 mb-3 flex items-center">
+                                    <i class="fas fa-list-check mr-2"></i>
+                                    Batch Results
+                                </h3>
+                                <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Disease Information - Showing all 7 classes -->
+                    <div class="mt-8 pt-4 border-t">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-book-medical mr-2 text-emerald-600"></i>
+                            Coffee Disease Guide
+                        </h3>
+                        <div class="disease-grid">
+                            <div class="disease-card cescospora">
+                                <div class="font-bold text-lg disease-tag cescospora">Cercospora Leaf Spot</div>
+                                <p class="text-sm mt-2">Fungal infection causing small, dark spots on leaves that can merge into larger lesions.</p>
+                            </div>
+                            <div class="disease-card canker">
+                                <div class="font-bold text-lg disease-tag canker">Coffee Canker</div>
+                                <p class="text-sm mt-2">Bacterial disease causing sunken lesions on stems and branches, leading to dieback.</p>
+                            </div>
+                            <div class="disease-card rust">
+                                <div class="font-bold text-lg disease-tag rust">Coffee Leaf Rust</div>
+                                <p class="text-sm mt-2">Fungal disease causing orange powdery spots on leaves. Reduces photosynthesis and yield.</p>
+                            </div>
+                            <div class="disease-card healthy">
+                                <div class="font-bold text-lg disease-tag healthy">Healthy</div>
+                                <p class="text-sm mt-2">Normal coffee plant with vibrant green leaves and no signs of disease or stress.</p>
+                            </div>
+                            <div class="disease-card nematodes">
+                                <div class="font-bold text-lg disease-tag nematodes">Nematodes</div>
+                                <p class="text-sm mt-2">Microscopic worms attacking roots, causing stunted growth and reduced nutrient uptake.</p>
+                         </div>
+                            <div class="disease-card phoma">
+                                <div class="font-bold text-lg disease-tag phoma">Phoma Leaf Spot</div>
+                                <p class="text-sm mt-2">Fungal disease causing irregular brown spots with yellow halos on leaves.</p>
+                            </div>
+                            <div class="disease-card mite">
+                                <div class="font-bold text-lg disease-tag mite">Red Spider Mite</div>
+                                <p class="text-sm mt-2">Tiny pests causing yellow stippling on leaves, leading to defoliation in severe cases.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Image Analysis Panel -->
-            <div class="bg-white rounded-xl shadow-xl p-6 flex flex-col">
-                <div class="pb-4 border-b">
+        </div>
+        
+        <!-- Vikoba Groups Tab -->
+        <div id="vikoba-tab" class="tab-content">
+            <div class="bg-white rounded-xl shadow-xl p-6">
+                <div class="flex justify-between items-center">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-leaf text-emerald-600 mr-2"></i>
-                        Coffee Disease Image Analysis
+                        <i class="fas fa-users text-blue-500 mr-2"></i>
+                        Vikoba Groups
                     </h2>
-                    <p class="text-sm text-gray-500 mt-1">Upload images of coffee leaves to detect diseases using our AI model</p>
-                    
-                    <!-- Model Status -->
-                    <div class="mt-3 flex items-center">
-                        <div id="model-status" class="flex items-center">
-                            <span class="w-3 h-3 rounded-full bg-gray-400 mr-2"></span>
-                            <span class="text-sm">Model status: Checking...</span>
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Create New Vikoba
+                    </button>
+                </div>
+                <p class="text-gray-600 mt-2">Join farmer groups for collaboration, funding, and shared learning</p>
+                
+                <div class="vikoba-container">
+                    <!-- Vikoba Group 1 -->
+                    <div class="vikoba-card">
+                        <div class="vikoba-header">
+                            <h3 class="text-lg font-bold">Green Growers</h3>
+                            <p class="text-sm opacity-90">VK-001 | 4/5 members</p>
                         </div>
-                        <button id="retry-connection" class="ml-4 text-sm text-emerald-600 hover:underline hidden">
-                            <i class="fas fa-sync-alt mr-1"></i> Retry connection
-                        </button>
+                        <div class="vikoba-members">
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar more-members">
+                                +1
+                            </div>
+                        </div>
+                        <div class="vikoba-stats">
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">KES 23,500</div>
+                                <div class="text-gray-600">Group Funds</div>
+                            </div>
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">3</div>
+                                <div class="text-gray-600">Projects</div>
+                            </div>
+                        </div>
+                        <div class="vikoba-actions">
+                            <div class="vikoba-btn">
+                                <i class="fas fa-comment mr-1"></i> Chat
+                            </div>
+                            <div class="vikoba-btn">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vikoba Group 2 -->
+                    <div class="vikoba-card">
+                        <div class="vikoba-header">
+                            <h3 class="text-lg font-bold">Harvest Heroes</h3>
+                            <p class="text-sm opacity-90">VK-002 | 5/5 members</p>
+                        </div>
+                        <div class="vikoba-members">
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/19.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/23.jpg" alt="Member">
+                            </div>
+                            <div class="member-avatar">
+                                <img src="https://randomuser.me/api/portraits/men/64.jpg" alt="Member">
+                            </div>
+                        </div>
+                        <div class="vikoba-stats">
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">KES 42,300</div>
+                                <div class="text-gray-600">Group Funds</div>
+                            </div>
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">5</div>
+                                <div class="text-gray-600">Projects</div>
+                            </div>
+                        </div>
+                        <div class="vikoba-actions">
+                            <div class="vikoba-btn">
+                                <i class="fas fa-comment mr-1"></i> Chat
+                            </div>
+                            <div class="vikoba-btn">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Create New Vikoba -->
+                    <div class="vikoba-card">
+                        <div class="create-vikoba">
+                            <i class="fas fa-plus-circle text-blue-500 text-5xl mb-4"></i>
+                            <h3 class="text-xl font-bold text-blue-500 mb-2">Create New Vikoba</h3>
+                            <p class="text-gray-600 text-center">Start a new farmer group for collaboration and funding</p>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Connection Error Banner -->
-                <div id="connection-error" class="hidden mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
-                    <div class="flex items-start">
-                        <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
-                        <div>
-                            <h3 class="font-bold text-red-700">Model Connection Failed</h3>
-                            <p class="text-sm text-red-600 mt-1">
-                                Unable to connect to the disease detection model. This could be due to:
-                            </p>
-                            <ul class="list-disc list-inside text-sm text-red-600 mt-2 pl-4">
-                                <li>Server starting up (cold start on Render)</li>
-                                <li>Model loading taking longer than expected</li>
-                                <li>Network connectivity issues</li>
-                            </ul>
-                            <div class="mt-3">
-                                <button id="retry-full" class="retry-btn">
-                                    <i class="fas fa-sync-alt mr-2"></i> Retry Connection
+                <!-- Training Section -->
+                <div class="vikoba-tab">
+                    <h3><i class="fas fa-graduation-cap"></i> Group Training Programs</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div class="vikoba-training-card">
+                            <div class="training-header">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <div class="training-content">
+                                <h4 class="font-bold text-lg">Crop Rotation Techniques</h4>
+                                <div class="training-meta">
+                                    <span><i class="fas fa-clock mr-1"></i> 45 min</span>
+                                    <span><i class="fas fa-users mr-1"></i> Group Training</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Learn sustainable crop rotation methods to improve soil health and yield.</p>
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Group Progress</span>
+                                        <span>65%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">
+                                    <i class="fas fa-play-circle mr-2"></i> Continue Training
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="vikoba-training-card">
+                            <div class="training-header">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="training-content">
+                                <h4 class="font-bold text-lg">Efficient Irrigation Systems</h4>
+                                <div class="training-meta">
+                                    <span><i class="fas fa-clock mr-1"></i> 30 min</span>
+                                    <span><i class="fas fa-users mr-1"></i> Group Training</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">Master water conservation techniques and modern irrigation methods.</p>
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Group Progress</span>
+                                        <span>40%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: 40%"></div>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">
+                                    <i class="fas fa-play-circle mr-2"></i> Start Training
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Cold Start Information -->
-                    <div class="cold-start-info mt-4">
-                        <h4 class="font-bold text-amber-800 flex items-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            About Render Cold Starts
-                        </h4>
-                        <p class="text-sm text-amber-700 mt-2">
-                            If you're using Render's free tier, your server might take 30-60 seconds to start up after 
-                            being idle. This is normal behavior. The model will be available shortly.
-                        </p>
-                    </div>
                 </div>
                 
-                <div id="analysis-section" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <!-- Single Image Upload -->
-                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-emerald-50 shadow-sm">
-                        <h3 class="font-semibold text-lg text-emerald-800 mb-3 flex items-center">
-                            <i class="fas fa-image mr-2"></i>
-                            Single Image Analysis
-                        </h3>
-                        
-                        <div class="upload-area rounded-xl p-6 text-center cursor-pointer mb-4" id="image-upload-area-single">
-                            <input type="file" id="image-upload" accept="image/*" class="hidden">
-                            <div id="image-preview" class="hidden">
-                                <img alt="Uploaded photo" class="max-h-64 mx-auto rounded-lg shadow-md">
+                <!-- Funding Section -->
+                <div class="vikoba-tab">
+                    <h3><i class="fas fa-money-bill-wave"></i> Group Funding Opportunities</h3>
+                    <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-hand-holding-usd text-blue-600 text-xl"></i>
                             </div>
-                            <div id="image-upload-placeholder" class="flex flex-col items-center">
-                                <i class="fas fa-cloud-upload-alt text-emerald-500 text-4xl mb-3"></i>
-                                <span class="text-emerald-700 font-medium">Upload a single coffee leaf image</span>
-                                <span class="text-emerald-500 text-sm mt-1">Click to browse files</span>
-                            </div>
-                        </div>
-                        
-                        <button id="analyze-button" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            <i class="fas fa-search mr-2"></i> Analyze with Model
-                        </button>
-                        
-                        <div id="analysis-result" class="hidden mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
-                            <h3 class="font-bold text-emerald-800 mb-2 flex items-center">
-                                <i class="fas fa-clipboard-list mr-2"></i>
-                                Analysis Results:
-                            </h3>
-                            <div id="analysis-text" class="text-gray-700"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Batch Image Upload -->
-                    <div class="border rounded-xl p-4 bg-gradient-to-br from-white to-blue-50 shadow-sm">
-                        <h3 class="font-semibold text-lg text-blue-800 mb-3 flex items-center">
-                            <i class="fas fa-layer-group mr-2"></i>
-                            Batch Image Analysis
-                        </h3>
-                        
-                        <div class="mb-4">
-                            <div class="upload-area rounded-xl p-4 text-center cursor-pointer mb-3" id="image-upload-area-multi">
-                                <input type="file" id="image-upload-multi" accept="image/*" multiple class="hidden">
-                                <div class="flex flex-col items-center py-4">
-                                    <i class="fas fa-images text-blue-500 text-3xl mb-2"></i>
-                                    <span class="text-blue-700 font-medium">Upload multiple coffee leaf images</span>
-                                    <span class="text-blue-500 text-sm mt-1">Click to browse files</span>
+                            <div>
+                                <h4 class="font-bold text-lg">Agricultural Development Fund</h4>
+                                <p class="text-gray-600 mt-2">Apply for group funding to implement sustainable farming practices and disease management.</p>
+                                <div class="flex mt-4">
+                                    <div class="mr-6">
+                                        <div class="text-blue-600 font-bold">KES 100,000</div>
+                                        <div class="text-sm text-gray-500">Max Funding</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-blue-600 font-bold">15 Days Left</div>
+                                        <div class="text-sm text-gray-500">Application Deadline</div>
+                                    </div>
                                 </div>
+                                <button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                    Apply as Vikoba Group
+                                </button>
                             </div>
-                            
-                            <div id="preview-grid-multi" class="preview-grid mt-3 hidden"></div>
-                        </div>
-                        
-                        <button id="analyze-button-multi" class="analyze-btn w-full py-3 rounded-full text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i class="fas fa-tasks mr-2"></i> Analyze All with Model
-                        </button>
-                        
-                        <div id="analysis-result-multi" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100 max-h-60 overflow-y-auto">
-                            <h3 class="font-bold text-blue-800 mb-3 flex items-center">
-                                <i class="fas fa-list-check mr-2"></i>
-                                Batch Results
-                            </h3>
-                            <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Disease Information - Showing all 7 classes -->
-                <div class="mt-8 pt-4 border-t">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-3 flex items-center">
-                        <i class="fas fa-book-medical mr-2 text-emerald-600"></i>
-                        Coffee Disease Guide
-                    </h3>
-                    <div class="disease-grid">
-                        <div class="disease-card cescospora">
-                            <div class="font-bold text-lg disease-tag cescospora">Cercospora Leaf Spot</div>
-                            <p class="text-sm mt-2">Fungal infection causing small, dark spots on leaves that can merge into larger lesions.</p>
-                        </div>
-                        <div class="disease-card canker">
-                            <div class="font-bold text-lg disease-tag canker">Coffee Canker</div>
-                            <p class="text-sm mt-2">Bacterial disease causing sunken lesions on stems and branches, leading to dieback.</p>
-                        </div>
-                        <div class="disease-card rust">
-                            <div class="font-bold text-lg disease-tag rust">Coffee Leaf Rust</div>
-                            <p class="text-sm mt-2">Fungal disease causing orange powdery spots on leaves. Reduces photosynthesis and yield.</p>
-                        </div>
-                        <div class="disease-card healthy">
-                            <div class="font-bold text-lg disease-tag healthy">Healthy</div>
-                            <p class="text-sm mt-2">Normal coffee plant with vibrant green leaves and no signs of disease or stress.</p>
-                        </div>
-                        <div class="disease-card nematodes">
-                            <div class="font-bold text-lg disease-tag nematodes">Nematodes</div>
-                            <p class="text-sm mt-2">Microscopic worms attacking roots, causing stunted growth and reduced nutrient uptake.</p>
-                     </div>
-                        <div class="disease-card phoma">
-                            <div class="font-bold text-lg disease-tag phoma">Phoma Leaf Spot</div>
-                            <p class="text-sm mt-2">Fungal disease causing irregular brown spots with yellow halos on leaves.</p>
-                        </div>
-                        <div class="disease-card mite">
-                            <div class="font-bold text-lg disease-tag mite">Red Spider Mite</div>
-                            <p class="text-sm mt-2">Tiny pests causing yellow stippling on leaves, leading to defoliation in severe cases.</p>
                         </div>
                     </div>
                 </div>
@@ -488,11 +949,17 @@
             const analysisResultMulti = document.getElementById('analysis-result-multi');
             const analysisTextMulti = document.getElementById('analysis-text-multi');
             
+            // Vikoba elements
+            const vikobaShareBtn = document.getElementById('vikoba-share-btn');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
             // State variables
             let language = 'en';
             let uploadedImageFile = null;
             let uploadedFilesMulti = [];
             let modelAvailable = false;
+            let currentDiseaseResult = null;
             
             // Language-specific content
             const initialMessages = {
@@ -541,6 +1008,23 @@
                 "phoma_leaf_sport",
                 "red_spider_mite"
             ];
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show the selected tab content
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
             
             // Check model connection with retry logic
             async function checkModelConnection() {
@@ -808,6 +1292,7 @@
                 
                 if (response.error) {
                     analysisText.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
+                    vikobaShareBtn.classList.add('hidden');
                 } else {
                     // Handle response format - single image returns an object
                     const prediction = response.prediction || response;
@@ -815,10 +1300,18 @@
                     
                     if (!diseaseClass) {
                         analysisText.innerHTML = `<div class="text-red-600">Error: Invalid response from model</div>`;
+                        vikobaShareBtn.classList.add('hidden');
                     } else {
                         const confidence = prediction.confidence;
                         const diseaseStyle = getDiseaseClassStyle(diseaseClass);
                         const displayName = getDiseaseDisplayName(diseaseClass);
+                        
+                        // Store result for sharing
+                        currentDiseaseResult = {
+                            disease: displayName,
+                            confidence: confidence,
+                            image: imagePreviewImg.src
+                        };
                         
                         // Display result
                         analysisText.innerHTML = `
@@ -831,6 +1324,9 @@
                                 <p class="text-sm mt-1">Apply appropriate treatment based on the detected disease. Remove affected leaves to prevent spread.</p>
                             </div>
                         `;
+                        
+                        // Show Vikoba share button
+                        vikobaShareBtn.classList.remove('hidden');
                     }
                 }
                 
@@ -983,6 +1479,32 @@
             // Retry connection buttons
             retryButton.addEventListener('click', checkModelConnection);
             retryFullButton.addEventListener('click', checkModelConnection);
+            
+            // Vikoba share button
+            vikobaShareBtn.addEventListener('click', function() {
+                // Switch to Vikoba tab
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelector('.tab[data-tab="vikoba"]').classList.add('active');
+                
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById('vikoba-tab').classList.add('active');
+                
+                // Show success message
+                const notification = document.createElement('div');
+                notification.className = "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50";
+                notification.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Disease result shared with your Vikoba group!
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            });
             
             // Initialize
             addMessage('bot', initialMessages[language]);
