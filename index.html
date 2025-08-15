@@ -8,7 +8,463 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* All previous CSS styles */
+         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
+        :root {
+            --rust: #B7410E;
+            --canker: #8B4513;
+            --healthy: #4CAF50;
+            --nematodes: #9C27B0;
+            --phoma: #FF9800;
+            --mite: #F44336;
+            --cescospora: #2196F3;
+            --vikoba: #3a7bd5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            min-height: 100vh;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #065f46, #047857);
+        }
+        
+        .chat-bubble {
+            border-radius: 20px;
+            padding: 12px 18px;
+            max-width: 80%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+        }
+        
+        .user-bubble {
+            background: linear-gradient(135deg, #047857, #065f46);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-bubble {
+            background: white;
+            color: #1f2937;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+            align-items: start;
+        }
+        
+        .preview-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+        
+        .preview-item img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .preview-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .result-badge {
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            text-align: center;
+            min-height: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .upload-area {
+            transition: all 0.3s ease;
+            border: 2px dashed #a7f3d0;
+            background-color: #f0fdf4;
+        }
+        
+        .upload-area:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(5, 150, 105, 0.15);
+            border-color: #047857;
+            background-color: #ecfdf5;
+        }
+        
+        .analyze-btn {
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
+            background: linear-gradient(135deg, #047857, #065f46);
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(5, 150, 105, 0.3);
+            opacity: 0.95;
+        }
+        
+        .analyze-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .disease-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .disease-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .cescospora { background-color: #dbeafe; color: #1d4ed8; }
+        .canker { background-color: #ede9fe; color: #5b21b6; }
+        .rust { background-color: #ffedd5; color: #9a3412; }
+        .healthy { background-color: #dcfce7; color: #166534; }
+        .nematodes { background-color: #f3e8fd; color: #7e22ce; }
+        .phoma { background-color: #fffbeb; color: #a16207; }
+        .mite { background-color: #fee2e2; color: #b91c1c; }
+        .vikoba-tag { background-color: #e0f7fa; color: #006064; }
+        
+        .disease-description {
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #047857;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .disease-card {
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .disease-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .retry-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .retry-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3);
+        }
+        
+        .cold-start-info {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        /* Vikoba styles */
+        .vikoba-gradient {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+        }
+        
+        .vikoba-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .vikoba-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .vikoba-header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 15px;
+        }
+        
+        .vikoba-members {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e0f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: -10px;
+            border: 2px solid white;
+            overflow: hidden;
+        }
+        
+        .member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .more-members {
+            background-color: #00796b;
+            color: white;
+            font-size: 0.8rem;
+        }
+        
+        .vikoba-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .vikoba-stat {
+            text-align: center;
+        }
+        
+        .vikoba-stat-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #3a7bd5;
+        }
+        
+        .vikoba-actions {
+            display: flex;
+            gap: 8px;
+            padding: 0 15px 15px;
+        }
+        
+        .vikoba-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .vikoba-btn:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        
+        .create-vikoba {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: rgba(58, 123, 213, 0.05);
+            border: 2px dashed rgba(58, 123, 213, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .create-vikoba:hover {
+            background: rgba(58, 123, 213, 0.1);
+            border-color: #3a7bd5;
+        }
+        
+        .vikoba-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .vikoba-tab {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        
+        .vikoba-tab h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vikoba-tab h3 i {
+            margin-right: 10px;
+        }
+        
+        .vikoba-training-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        
+        .training-header {
+            height: 120px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .training-content {
+            padding: 20px;
+        }
+        
+        .training-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            border-radius: 4px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #047857, #065f46);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .vikoba-share-btn {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        
+        .vikoba-share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(58, 123, 213, 0.3);
+        }
+    </style>
         /* New Auth Modal Styles */
         .auth-modal {
             position: fixed;
