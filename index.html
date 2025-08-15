@@ -1394,20 +1394,13 @@
             // Initialize
             checkLoggedIn();
             
-            // All other JavaScript from your original file remains here
-            // (disease detection, chat, etc. functionality)
-            
             // DOM elements for disease detection
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const sendButton = document.getElementById('send-button');
             const languageSelector = document.getElementById('language-selector');
             const modelStatus = document.getElementById('model-status');
-            const retryButton = document.getElementById('retry-connection');
-            const retryFullButton = document.getElementById('retry-full');
             const connectionStatus = document.getElementById('connection-status');
-            const connectionError = document.getElementById('connection-error');
-            const analysisSection = document.getElementById('analysis-section');
             
             // Single image elements
             const imageUpload = document.getElementById('image-upload');
@@ -1525,9 +1518,6 @@
                         connectionStatus.className = "connection-status bg-green-100 text-green-800";
                         connectionStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Model connected successfully!';
                         modelAvailable = true;
-                        retryButton.classList.add('hidden');
-                        connectionError.classList.add('hidden');
-                        analysisSection.classList.remove('hidden');
                         connected = true;
                     } catch (error) {
                         attempts++;
@@ -1542,17 +1532,25 @@
                     // If all attempts fail
                     modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Model status: Connection failed</span>';
                     connectionStatus.className = "connection-status bg-red-100 text-red-800";
-                    connectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model';
+                    connectionStatus.innerHTML = `
+                        <i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model
+                        <button id="retry-connection-btn" class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Retry</button>
+                    `;
                     modelAvailable = false;
-                    retryButton.classList.remove('hidden');
-                    connectionError.classList.remove('hidden');
-                    analysisSection.classList.add('hidden');
+
+                    // Add event listener to the retry button we just created
+                    const retryBtn = document.getElementById('retry-connection-btn');
+                    if (retryBtn) {
+                        retryBtn.addEventListener('click', checkModelConnection);
+                    }
                 }
                 
-                // Hide status after 5 seconds if connected, 10 seconds if failed
-                setTimeout(() => {
-                    connectionStatus.classList.add('hidden');
-                }, connected ? 5000 : 10000);
+                // Hide status after 5 seconds if connected
+                if (connected) {
+                    setTimeout(() => {
+                        connectionStatus.classList.add('hidden');
+                    }, 5000);
+                }
             }
             
             // Helper function to create a chat message element
@@ -1806,7 +1804,7 @@
                 // Reset button
                 analyzeButton.innerHTML = originalText;
                 analyzeButton.disabled = !modelAvailable;
-            });
+            }
             
             // Batch image upload handling
             imageUploadMulti.addEventListener('change', function(e) {
@@ -1935,10 +1933,6 @@
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleSendMessage();
             });
-            
-            // Retry connection buttons
-            retryButton.addEventListener('click', checkModelConnection);
-            retryFullButton.addEventListener('click', checkModelConnection);
             
             // Vikoba share button
             vikobaShareBtn.addEventListener('click', function() {
