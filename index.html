@@ -630,14 +630,6 @@
             font-weight: 500;
         }
         
-        /* Demo image */
-        .demo-image {
-            width: 100%;
-            border-radius: 0.5rem;
-            margin: 1rem 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .grid-cols-1.lg\:grid-cols-2 {
@@ -765,7 +757,6 @@
         <div class="tabs">
             <div class="tab active" data-tab="disease">Disease Detection</div>
             <div class="tab" data-tab="vikoba">Vikoba Groups</div>
-            <div class="tab" data-tab="help">Help & Support</div>
         </div>
         
         <!-- Disease Detection Tab -->
@@ -778,7 +769,7 @@
                             <i class="fas fa-comments text-emerald-600 mr-2"></i>
                             Coffee Chat Assistant
                         </h2>
-                        <p class="text-sm text-gray-500 mt-1">Get expert advice on coffee diseases</p>
+                        <p class="text-sm text-gray-500 mt-1">Get expert advice</p>
                     </div>
                     
                     <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 min-h-[300px]">
@@ -827,6 +818,7 @@
                             </h3>
                             
                             <div class="upload-area rounded-xl p-6 text-center cursor-pointer mb-4" id="image-upload-area-single">
+                                <input type="file" id="image-upload" accept="image/*" class="hidden">
                                 <div id="image-preview" class="hidden">
                                     <img alt="Uploaded photo" class="max-h-64 mx-auto rounded-lg shadow-md">
                                 </div>
@@ -846,18 +838,9 @@
                                     <i class="fas fa-clipboard-list mr-2"></i>
                                     Analysis Results:
                                 </h3>
-                                <div id="analysis-text" class="text-gray-700">
-                                    <div class="font-bold text-lg rust disease-tag">Coffee Leaf Rust</div>
-                                    <div class="flex items-center my-2">
-                                        <div class="text-sm text-gray-600">Confidence: 92.5%</div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <div class="font-medium text-emerald-700">Recommended Action:</div>
-                                        <p class="text-sm mt-1">Apply copper-based fungicides. Remove affected leaves to prevent spread. Ensure proper plant spacing for air circulation.</p>
-                                    </div>
-                                </div>
+                                <div id="analysis-text" class="text-gray-700"></div>
                                 <!-- Vikoba share button -->
-                                <div class="vikoba-share-btn" id="vikoba-share-btn">
+                                <div class="vikoba-share-btn hidden" id="vikoba-share-btn">
                                     <i class="fas fa-share-alt"></i> Share with Vikoba Group
                                 </div>
                             </div>
@@ -872,6 +855,7 @@
                             
                             <div class="mb-4">
                                 <div class="upload-area rounded-xl p-4 text-center cursor-pointer mb-3" id="image-upload-area-multi">
+                                    <input type="file" id="image-upload-multi" accept="image/*" multiple class="hidden">
                                     <div class="flex flex-col items-center py-4">
                                         <i class="fas fa-images text-blue-500 text-3xl mb-2"></i>
                                         <span class="text-blue-700 font-medium">Upload multiple coffee leaf images</span>
@@ -891,26 +875,7 @@
                                     <i class="fas fa-list-check mr-2"></i>
                                     Batch Results
                                 </h3>
-                                <div id="analysis-text-multi" class="text-sm text-gray-700">
-                                    <div class="flex items-center py-2 border-b border-blue-100">
-                                        <div class="font-medium flex-1 truncate mr-2">leaf-1.jpg</div>
-                                        <div class="font-semibold disease-tag rust">Coffee Leaf Rust</div>
-                                        <div class="text-sm text-gray-500 ml-2">92%</div>
-                                    </div>
-                                    <div class="flex items-center py-2 border-b border-blue-100">
-                                        <div class="font-medium flex-1 truncate mr-2">leaf-2.jpg</div>
-                                        <div class="font-semibold disease-tag healthy">Healthy</div>
-                                        <div class="text-sm text-gray-500 ml-2">98%</div>
-                                    </div>
-                                    <div class="flex items-center py-2 border-b border-blue-100">
-                                        <div class="font-medium flex-1 truncate mr-2">leaf-3.jpg</div>
-                                        <div class="font-semibold disease-tag cescospora">Cercospora Leaf Spot</div>
-                                        <div class="text-sm text-gray-500 ml-2">87%</div>
-                                    </div>
-                                    <div class="mt-3 pt-3 border-t border-blue-200 font-medium">
-                                        Processed 3 images
-                                    </div>
-                                </div>
+                                <div id="analysis-text-multi" class="text-sm text-gray-700"></div>
                             </div>
                         </div>
                     </div>
@@ -959,14 +924,11 @@
         <!-- Vikoba Groups Tab -->
         <div id="vikoba-tab" class="tab-content">
             <div class="bg-white rounded-xl shadow-xl p-6">
-                <div class="flex justify-between items-center flex-wrap gap-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                            <i class="fas fa-users text-blue-500 mr-2"></i>
-                            Vikoba Groups
-                        </h2>
-                        <p class="text-gray-600 mt-1">Collaborate with farmers in your region</p>
-                    </div>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-users text-blue-500 mr-2"></i>
+                        Vikoba Groups
+                    </h2>
                     <button id="create-vikoba" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
                         <i class="fas fa-plus mr-2"></i> Create New Vikoba
                     </button>
@@ -986,48 +948,6 @@
                     
                     <div id="vikoba-container" class="mt-6">
                         <!-- Vikoba group will be dynamically inserted here -->
-                        <div class="vikoba-card relative">
-                            <div class="vikoba-badge">Nandi Central</div>
-                            <div class="vikoba-header">
-                                <h3 class="text-lg font-bold">Nandi Central Collective</h3>
-                                <p class="text-sm opacity-90">VK-005 | 5/5 members</p>
-                            </div>
-                            <div class="vikoba-members">
-                                <div class="member-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Amos+Kipruto&background=random" alt="Amos Kipruto">
-                                </div>
-                                <div class="member-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Peruth+Chemutai&background=random" alt="Peruth Chemutai">
-                                </div>
-                                <div class="member-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Ferguson+Rotich&background=random" alt="Ferguson Rotich">
-                                </div>
-                                <div class="member-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Beatrice+Chepkoech&background=random" alt="Beatrice Chepkoech">
-                                </div>
-                                <div class="member-avatar">
-                                    <img src="https://ui-avatars.com/api/?name=Timothy+Cheruiyot&background=random" alt="Timothy Cheruiyot">
-                                </div>
-                            </div>
-                            <div class="vikoba-stats">
-                                <div class="vikoba-stat">
-                                    <div class="vikoba-stat-value">KES 49,800</div>
-                                    <div class="text-gray-600">Group Funds</div>
-                                </div>
-                                <div class="vikoba-stat">
-                                    <div class="vikoba-stat-value">5</div>
-                                    <div class="text-gray-600">Projects</div>
-                                </div>
-                            </div>
-                            <div class="vikoba-actions">
-                                <div class="vikoba-btn">
-                                    <i class="fas fa-comment mr-1"></i> Chat
-                                </div>
-                                <div class="vikoba-btn">
-                                    <i class="fas fa-eye mr-1"></i> View
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 
@@ -1100,8 +1020,8 @@
                             <div>
                                 <h4 class="font-bold text-lg">Agricultural Development Fund</h4>
                                 <p class="text-gray-600 mt-2">Apply for group funding to implement sustainable farming practices and disease management.</p>
-                                <div class="flex mt-4 flex-wrap gap-4">
-                                    <div>
+                                <div class="flex mt-4">
+                                    <div class="mr-6">
                                         <div class="text-blue-600 font-bold">KES 100,000</div>
                                         <div class="text-sm text-gray-500">Max Funding</div>
                                     </div>
@@ -1113,88 +1033,6 @@
                                 <button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
                                     Apply as Vikoba Group
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Help & Support Tab -->
-        <div id="help-tab" class="tab-content">
-            <div class="bg-white rounded-xl shadow-xl p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-question-circle text-blue-500 mr-2"></i>
-                    Help & Support
-                </h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-blue-50 p-6 rounded-xl">
-                        <h3 class="font-bold text-lg text-blue-700 mb-3">
-                            <i class="fas fa-camera mr-2"></i> Taking Good Photos
-                        </h3>
-                        <ul class="list-disc pl-5 space-y-2 text-gray-700">
-                            <li>Take photos in natural daylight</li>
-                            <li>Place leaf on a plain dark background</li>
-                            <li>Get close enough to show disease details</li>
-                            <li>Capture both sides of the leaf</li>
-                            <li>Avoid shadows on the leaf surface</li>
-                        </ul>
-                        <img src="https://images.unsplash.com/photo-1592409065737-a253f29069d0?q=80&w=500&auto=format&fit=crop" alt="Coffee leaf photography" class="demo-image">
-                    </div>
-                    
-                    <div class="bg-emerald-50 p-6 rounded-xl">
-                        <h3 class="font-bold text-lg text-emerald-700 mb-3">
-                            <i class="fas fa-leaf mr-2"></i> Identifying Diseases
-                        </h3>
-                        <ul class="list-disc pl-5 space-y-2 text-gray-700">
-                            <li>Examine leaves regularly for early detection</li>
-                            <li>Look for spots, discoloration, or powdery substances</li>
-                            <li>Check for curling or wilting leaves</li>
-                            <li>Inspect stems and branches for lesions</li>
-                            <li>Monitor plant growth and yield changes</li>
-                        </ul>
-                        <div class="mt-4">
-                            <h4 class="font-medium text-emerald-700 mb-2">Common Symptoms:</h4>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="disease-tag rust">Rust-colored spots</span>
-                                <span class="disease-tag cescospora">Dark leaf spots</span>
-                                <span class="disease-tag mite">Yellow stippling</span>
-                                <span class="disease-tag canker">Stem lesions</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-amber-50 p-6 rounded-xl md:col-span-2">
-                        <h3 class="font-bold text-lg text-amber-700 mb-3">
-                            <i class="fas fa-headset mr-2"></i> Contact Support
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-white p-4 rounded-lg shadow-sm">
-                                <div class="text-amber-600 text-2xl mb-2">
-                                    <i class="fas fa-phone"></i>
-                                </div>
-                                <h4 class="font-bold mb-1">Phone Support</h4>
-                                <p class="text-sm text-gray-600">+254 700 123 456</p>
-                                <p class="text-xs text-gray-500 mt-1">Mon-Fri, 8am-5pm</p>
-                            </div>
-                            
-                            <div class="bg-white p-4 rounded-lg shadow-sm">
-                                <div class="text-amber-600 text-2xl mb-2">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <h4 class="font-bold mb-1">Email Support</h4>
-                                <p class="text-sm text-gray-600">support@kaburwo.co.ke</p>
-                                <p class="text-xs text-gray-500 mt-1">Response within 24 hours</p>
-                            </div>
-                            
-                            <div class="bg-white p-4 rounded-lg shadow-sm">
-                                <div class="text-amber-600 text-2xl mb-2">
-                                    <i class="fas fa-comments"></i>
-                                </div>
-                                <h4 class="font-bold mb-1">Community Forum</h4>
-                                <p class="text-sm text-gray-600">Join farmer discussions</p>
-                                <a href="#" class="text-amber-600 text-xs mt-1 block">Visit Forum →</a>
                             </div>
                         </div>
                     </div>
@@ -1244,23 +1082,74 @@
                 nandi_central: "Nandi Central"
             };
             
-            // Chat elements
-            const chatMessages = document.getElementById('chat-messages');
-            const chatInput = document.getElementById('chat-input');
-            const sendButton = document.getElementById('send-button');
-            
-            // Tabs
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            // Image elements
-            const imageUploadAreaSingle = document.getElementById('image-upload-area-single');
-            const imageUploadAreaMulti = document.getElementById('image-upload-area-multi');
-            const analyzeButton = document.getElementById('analyze-button');
-            const analyzeButtonMulti = document.getElementById('analyze-button-multi');
-            const analysisResult = document.getElementById('analysis-result');
-            const analysisResultMulti = document.getElementById('analysis-result-multi');
-            const vikobaShareBtn = document.getElementById('vikoba-share-btn');
+            // Sample Vikoba groups data
+            const vikobaGroups = {
+                nandi_north: {
+                    id: "VK-001",
+                    name: "Nandi North Growers",
+                    members: [
+                        { name: "Kipchoge Keino", phone: "254712345678" },
+                        { name: "Pamela Jelimo", phone: "254723456789" },
+                        { name: "David Rudisha", phone: "254734567890" },
+                        { name: "Eliud Kipchoge", phone: "254745678901" },
+                        { name: "Vivian Cheruiyot", phone: "254756789012" }
+                    ],
+                    funds: 42300,
+                    projects: 3
+                },
+                nandi_south: {
+                    id: "VK-002",
+                    name: "Nandi South Farmers",
+                    members: [
+                        { name: "Samuel Wanjiru", phone: "254712345679" },
+                        { name: "Catherine Ndereba", phone: "254723456780" },
+                        { name: "Paul Tergat", phone: "254734567891" },
+                        { name: "Tegla Loroupe", phone: "254745678902" },
+                        { name: "John Ngugi", phone: "254756789013" }
+                    ],
+                    funds: 38500,
+                    projects: 2
+                },
+                nandi_east: {
+                    id: "VK-003",
+                    name: "Nandi East Cooperative",
+                    members: [
+                        { name: "Asbel Kiprop", phone: "254712345680" },
+                        { name: "Faith Kipyegon", phone: "254723456791" },
+                        { name: "Wilson Kipsang", phone: "254734567802" },
+                        { name: "Edna Kiplagat", phone: "254745678913" },
+                        { name: "Geoffrey Kamworor", phone: "254756789024" }
+                    ],
+                    funds: 56700,
+                    projects: 4
+                },
+                nandi_west: {
+                    id: "VK-004",
+                    name: "Nandi West Producers",
+                    members: [
+                        { name: "Hellen Obiri", phone: "254712345691" },
+                        { name: "Conseslus Kipruto", phone: "254723456802" },
+                        { name: "Janeth Jepkosgei", phone: "254734567813" },
+                        { name: "Brimin Kipruto", phone: "254745678924" },
+                        { name: "Hyvin Jepkemoi", phone: "254756789035" }
+                    ],
+                    funds: 31200,
+                    projects: 3
+                },
+                nandi_central: {
+                    id: "VK-005",
+                    name: "Nandi Central Collective",
+                    members: [
+                        { name: "Amos Kipruto", phone: "254712345602" },
+                        { name: "Peruth Chemutai", phone: "254723456713" },
+                        { name: "Ferguson Rotich", phone: "254734567824" },
+                        { name: "Beatrice Chepkoech", phone: "254745678935" },
+                        { name: "Timothy Cheruiyot", phone: "254756789046" }
+                    ],
+                    funds: 49800,
+                    projects: 5
+                }
+            };
             
             // Show auth modal
             authButton.addEventListener('click', function() {
@@ -1330,7 +1219,8 @@
                     return;
                 }
                 
-                // Simulate login
+                // In a real app, you would send this to your backend
+                // For demo, we'll simulate a login
                 simulateLogin(phone, password);
             });
             
@@ -1359,162 +1249,10 @@
                     return;
                 }
                 
-                // Simulate signup
+                // In a real app, you would send this to your backend
+                // For demo, we'll simulate signup
                 simulateSignup(name, phone, region, password);
             });
-            
-            // Tab switching
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    // Add active class to clicked tab
-                    tab.classList.add('active');
-                    
-                    // Hide all tab contents
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Show the selected tab content
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                });
-            });
-            
-            // Image upload area click handlers
-            imageUploadAreaSingle.addEventListener('click', () => {
-                alert("In a real application, this would open a file dialog to select an image");
-                // For demo purposes, show a preview
-                const preview = imageUploadAreaSingle.querySelector('#image-preview');
-                const placeholder = imageUploadAreaSingle.querySelector('#image-upload-placeholder');
-                placeholder.classList.add('hidden');
-                preview.classList.remove('hidden');
-                preview.querySelector('img').src = "https://images.unsplash.com/photo-1592409065737-a253f29069d0?q=80&w=500&auto=format&fit=crop";
-            });
-            
-            imageUploadAreaMulti.addEventListener('click', () => {
-                alert("In a real application, this would open a file dialog to select multiple images");
-                // For demo purposes, show a preview grid
-                const previewGrid = document.getElementById('preview-grid-multi');
-                previewGrid.classList.remove('hidden');
-                
-                // Clear previous
-                previewGrid.innerHTML = '';
-                
-                // Add demo images
-                for (let i = 0; i < 3; i++) {
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'preview-item';
-                    previewItem.innerHTML = `
-                        <img src="https://images.unsplash.com/photo-1592409065737-a253f29069d0?q=80&w=500&auto=format&fit=crop" alt="Coffee leaf">
-                        <div class="text-xs text-gray-600 truncate max-w-full">leaf-${i+1}.jpg</div>
-                        <div class="result-badge bg-gray-100 text-gray-800">Pending</div>
-                    `;
-                    previewGrid.appendChild(previewItem);
-                }
-            });
-            
-            // Analyze buttons
-            analyzeButton.addEventListener('click', function() {
-                // Show loading state
-                const originalText = analyzeButton.innerHTML;
-                analyzeButton.innerHTML = '<div class="spinner mr-2"></div> Analyzing...';
-                analyzeButton.disabled = true;
-                
-                // Simulate analysis
-                setTimeout(() => {
-                    analysisResult.classList.remove('hidden');
-                    analyzeButton.innerHTML = originalText;
-                    analyzeButton.disabled = false;
-                }, 1500);
-            });
-            
-            analyzeButtonMulti.addEventListener('click', function() {
-                // Show loading state
-                const originalText = analyzeButtonMulti.innerHTML;
-                analyzeButtonMulti.innerHTML = '<div class="spinner mr-2"></div> Processing...';
-                analyzeButtonMulti.disabled = true;
-                
-                // Update badges in preview grid
-                const badges = document.querySelectorAll('#preview-grid-multi .result-badge');
-                badges.forEach(badge => {
-                    badge.textContent = "Processing...";
-                    badge.className = "result-badge bg-blue-100 text-blue-800";
-                });
-                
-                // Simulate analysis
-                setTimeout(() => {
-                    analysisResultMulti.classList.remove('hidden');
-                    analyzeButtonMulti.innerHTML = originalText;
-                    analyzeButtonMulti.disabled = false;
-                    
-                    // Update badges with demo results
-                    const results = [
-                        {disease: "Coffee Leaf Rust", confidence: "92%", class: "rust"},
-                        {disease: "Healthy", confidence: "98%", class: "healthy"},
-                        {disease: "Cercospora Leaf Spot", confidence: "87%", class: "cescospora"}
-                    ];
-                    
-                    badges.forEach((badge, index) => {
-                        if (results[index]) {
-                            badge.textContent = results[index].disease;
-                            badge.className = `result-badge ${results[index].class}`;
-                        }
-                    });
-                }, 2000);
-            });
-            
-            // Vikoba share button
-            vikobaShareBtn.addEventListener('click', function() {
-                // Switch to Vikoba tab
-                tabs.forEach(t => t.classList.remove('active'));
-                document.querySelector('.tab[data-tab="vikoba"]').classList.add('active');
-                
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.getElementById('vikoba-tab').classList.add('active');
-                
-                // Show success message
-                showNotification(`Disease result shared with your Vikoba group!`);
-            });
-            
-            // Handle sending chat messages
-            function handleSendMessage() {
-                const userInput = chatInput.value.trim();
-                if (userInput) {
-                    addMessage('user', userInput);
-                    chatInput.value = '';
-                    
-                    // Simulate bot response
-                    setTimeout(() => {
-                        const responses = [
-                            "Coffee leaf rust appears as yellow-orange powdery spots on the undersides of leaves. It's caused by the fungus Hemileia vastatrix.",
-                            "For coffee leaf rust, I recommend removing affected leaves and applying copper-based fungicides. Ensure proper plant spacing for air circulation.",
-                            "Healthy coffee leaves should be vibrant green without spots or discoloration. Regular monitoring helps detect issues early.",
-                            "The best time to apply fungicides is during the rainy season when humidity is high. Apply every 2-3 weeks for maximum effectiveness."
-                        ];
-                        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                        addMessage('bot', randomResponse);
-                    }, 1000);
-                }
-            }
-            
-            sendButton.addEventListener('click', handleSendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleSendMessage();
-            });
-            
-            // Helper function to add a message to the chat
-            function addMessage(role, content) {
-                const messageContainer = document.createElement('div');
-                messageContainer.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-                
-                const bubble = document.createElement('div');
-                bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'bot-bubble'}`;
-                bubble.textContent = content;
-                
-                messageContainer.appendChild(bubble);
-                chatMessages.appendChild(messageContainer);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
             
             // Simulate login (for demo)
             function simulateLogin(phone, password) {
@@ -1545,6 +1283,9 @@
                 
                 // Show success message
                 showNotification(`Account created! Welcome to Kaburwo, ${name}`);
+                
+                // Render Vikoba group
+                renderVikobaGroup();
             }
             
             // Set current user
@@ -1556,7 +1297,71 @@
                 userName.textContent = user.name;
                 userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
                 authButton.classList.add('hidden');
+                
+                // Save to localStorage for demo
+                localStorage.setItem('currentUser', JSON.stringify(user));
             }
+            
+            // Render Vikoba group
+            function renderVikobaGroup() {
+                if (!currentUser || !currentUser.region) return;
+                
+                const group = vikobaGroups[currentUser.region];
+                if (!group) return;
+                
+                // Add badge to group name
+                const regionName = regions[currentUser.region];
+                
+                // Create group HTML
+                const groupHTML = `
+                    <div class="vikoba-card relative">
+                        <div class="vikoba-badge">${regionName}</div>
+                        <div class="vikoba-header">
+                            <h3 class="text-lg font-bold">${group.name}</h3>
+                            <p class="text-sm opacity-90">${group.id} | ${group.members.length}/5 members</p>
+                        </div>
+                        <div class="vikoba-members">
+                            ${group.members.map(member => `
+                                <div class="member-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=${member.name.split(' ').join('+')}&background=random" alt="${member.name}">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="vikoba-stats">
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">KES ${group.funds.toLocaleString()}</div>
+                                <div class="text-gray-600">Group Funds</div>
+                            </div>
+                            <div class="vikoba-stat">
+                                <div class="vikoba-stat-value">${group.projects}</div>
+                                <div class="text-gray-600">Projects</div>
+                            </div>
+                        </div>
+                        <div class="vikoba-actions">
+                            <div class="vikoba-btn">
+                                <i class="fas fa-comment mr-1"></i> Chat
+                            </div>
+                            <div class="vikoba-btn">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                vikobaContainer.innerHTML = groupHTML;
+            }
+            
+            // Create Vikoba group handler
+            createVikobaBtn.addEventListener('click', function() {
+                if (!currentUser) {
+                    authModal.classList.add('active');
+                    return;
+                }
+                
+                // Only allow creating new groups if not in one
+                const regionName = regions[currentUser.region];
+                showNotification(`You're already in the ${regionName} Vikoba group`);
+            });
             
             // Show notification
             function showNotification(message) {
@@ -1576,8 +1381,594 @@
                 }, 3000);
             }
             
-            // Add initial chat message
-            addMessage('bot', "Hello! I'm your coffee disease expert. I can help you identify and manage common coffee plant diseases. How can I help you today?");
+            // Check if user is logged in from localStorage
+            function checkLoggedIn() {
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    setCurrentUser(currentUser);
+                    renderVikobaGroup();
+                }
+            }
+            
+            // Initialize
+            checkLoggedIn();
+            
+            // All other JavaScript from your original file remains here
+            // (disease detection, chat, etc. functionality)
+            
+            // DOM elements for disease detection
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            const languageSelector = document.getElementById('language-selector');
+            const modelStatus = document.getElementById('model-status');
+            const retryButton = document.getElementById('retry-connection');
+            const retryFullButton = document.getElementById('retry-full');
+            const connectionStatus = document.getElementById('connection-status');
+            const connectionError = document.getElementById('connection-error');
+            const analysisSection = document.getElementById('analysis-section');
+            
+            // Single image elements
+            const imageUpload = document.getElementById('image-upload');
+            const imageUploadAreaSingle = document.getElementById('image-upload-area-single');
+            const imagePreview = document.getElementById('image-preview');
+            const imageUploadPlaceholder = document.getElementById('image-upload-placeholder');
+            const analyzeButton = document.getElementById('analyze-button');
+            const analysisResult = document.getElementById('analysis-result');
+            const analysisText = document.getElementById('analysis-text');
+            const imagePreviewImg = imagePreview.querySelector('img');
+            
+            // Multi image elements
+            const imageUploadMulti = document.getElementById('image-upload-multi');
+            const imageUploadAreaMulti = document.getElementById('image-upload-area-multi');
+            const previewGridMulti = document.getElementById('preview-grid-multi');
+            const analyzeButtonMulti = document.getElementById('analyze-button-multi');
+            const analysisResultMulti = document.getElementById('analysis-result-multi');
+            const analysisTextMulti = document.getElementById('analysis-text-multi');
+            
+            // Vikoba elements
+            const vikobaShareBtn = document.getElementById('vikoba-share-btn');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // State variables
+            let language = 'en';
+            let uploadedImageFile = null;
+            let uploadedFilesMulti = [];
+            let modelAvailable = false;
+            let currentDiseaseResult = null;
+            
+            // Language-specific content
+            const initialMessages = {
+                en: "Hello! I'm your coffee disease expert. I can help you identify and manage common coffee plant diseases. How can I help you today?",
+                nd: "Takwenya! Anendet ng'amotioot nebo kawek. Amuchii aboruun tuguuk che iyaei asi iguiye myanwogikab kawek ak inai olekiriptoi simanam myanwogik. Tos mii kiy ne imeche atoretin rani?"
+            };
+            
+            const localResponses = {
+                en: {
+                    chlorosis: {
+                        triggers: ['what causes coffee leaves to turn yellow?', 'yellow leaves', 'why are my coffee leaves yellow?', 'leaves turning yellow'],
+                        response: 'Disease/Condition Name: **Chlorosis**. Description: Chlorosis is a condition where leaves don\'t produce enough chlorophyll, the green pigment that helps the plant make food. This is usually caused by a **lack of nutrients**, poor soil drainage, or over-watering. Symptoms: Look for leaves that are entirely pale yellow or have green veins with yellow between them. Treatment: Check your soil drainage and consider using a balanced fertilizer that contains micronutrients like iron and magnesium.',
+                    },
+                    anthracnose: {
+                        triggers: ['why are there black spots on my coffee cherries?', 'black spots on cherries', 'what are the black spots on my coffee?'],
+                        response: 'Disease/Condition Name: **Anthracnose**. Description: This is a fungal disease that causes sunken black spots on coffee cherries, leaves, and stems. It can cause cherries to drop prematurely. Symptoms: Dark, sunken lesions on cherries, often with a ring pattern. Treatment: Prune and destroy affected parts of the plant. Apply a copper-based fungicide, and ensure the plants have good air circulation.',
+                    },
+                    wilting: {
+                        triggers: ['what does it mean if the leaves are curling or wilting?', 'leaves are wilting', 'curling leaves', 'drooping leaves'],
+                        response: 'Disease/Condition Name: **Root Rot or Water Stress**. Description: Leaf curling and wilting are often symptoms of either a lack of water (water stress) or too much water, which leads to Root Rot. Root Rot is a fungal disease that damages the roots, preventing them from absorbing water and nutrients. Symptoms: Leaves curl inward, droop, and may turn brown. The plant may appear weak and yellow. Treatment: If the soil is dry, water thoroughly. If the soil is waterlogged, improve drainage. You may need to remove and replant the tree if the root damage is severe.',
+                    },
+                    low_yield: {
+                        triggers: ['my coffee plant is not producing many cherries. what could be the problem?', 'low coffee production', 'few cherries on my tree', 'not many cherries'],
+                        response: 'Disease/Condition Name: **Poor Pollination or Nutrient Deficiency**. Description: Low cherry production can be due to several factors. It could be poor pollination, a lack of essential nutrients like potassium and phosphorus, or incorrect pruning that removes new growth. Symptoms: Few flowers or cherries on the tree. Treatment: Ensure there are enough pollinators (e.g., bees). Use a fertilizer high in potassium and phosphorus. Follow a proper pruning schedule to encourage new, fruit-bearing branches.',
+                    },
+                },
+                nd: {
+                    chlorosis: {
+                        triggers: ['tos nee neyae sokeekab kawek koek pisalyaa/bisaliin?', 'bisalyaa sokeek', 'pisaliik sakeek', 'bisaliin sokeek'],
+                        response: 'Myondo: **chlorosis** ako imuchi koek kabarunetab myando kityo. Tagunet: chlorosis kotakunee sakeek che makonyalileen kou ole maktaat kotugu. Kito ne yae kobiit chlorosis ko rerunetab keturek anan makutiikab kawek eng ng\'ung\'unyeek. Kabarunoiik che konin inai ile chlorosis: Ngotko nyalileen tikitik chebo sokeek lakini bisalyaa kimasta ake, ngotkowalak sokot komugul koek bisalyaa. Kanyaiseet: Riib beek matkotolil eng kapkelyenuutab minutik, machei kora ketes keturek che imuche kotes iron ak magnesium',
+                    },
+                    anthracnose: {
+                        triggers: ['tos nee neyaei kosich matundekab kawek tukun che tuen?', 'konam tukun che tuen logoeek', 'tuen logoek', 'tindoi tugun che tuen', 'kotuekitu'],
+                        response: 'Myondo:**Anthracnose**. Tagunet: ikerei tisonook che tueen eng logoekab kawek anan ko eng sakekab kawek anan ko ketit nebo kawek kora. Yaei myoni kobutyo logoekab kawek kora eng ketit amakonyo. Kabarunoik:tisook chetueen chemii logoek ako chopei kiy neu maringoit. Kanyaiseet:til kimasweek tugul che katiny myondo akiwirte. Kararan keisto ketinotok tugul ak kekol ake netili. Kinfoi kericheck chetindoi coper. Akichop mbaret kolapkeiit asi komuut koristo ne tilil minutik.',
+                    },
+                },
+            };
+            
+            // Your model's class labels
+            const modelClasses = [
+                "cescospora_leaf_sport",
+                "coffee_canker",
+                "coffee_leaf_rust",
+                "healthy",
+                "nematodes",
+                "phoma_leaf_sport",
+                "red_spider_mite"
+            ];
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show the selected tab content
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Check model connection with retry logic
+            async function checkModelConnection() {
+                connectionStatus.classList.remove('hidden');
+                connectionStatus.className = "connection-status bg-yellow-100 text-yellow-800";
+                connectionStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Connecting to model...';
+                
+                // Try multiple times to account for cold starts
+                let attempts = 0;
+                const maxAttempts = 5;
+                let connected = false;
+                
+                while (attempts < maxAttempts && !connected) {
+                    try {
+                        // Simulate connection check (in a real app, this would be a fetch request)
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        
+                        // For demo, we'll assume connection is successful
+                        modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span><span class="text-sm">Model status: Connected and ready</span>';
+                        connectionStatus.className = "connection-status bg-green-100 text-green-800";
+                        connectionStatus.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Model connected successfully!';
+                        modelAvailable = true;
+                        retryButton.classList.add('hidden');
+                        connectionError.classList.add('hidden');
+                        analysisSection.classList.remove('hidden');
+                        connected = true;
+                    } catch (error) {
+                        attempts++;
+                        if (attempts < maxAttempts) {
+                            // Wait 2 seconds before next attempt
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                        }
+                    }
+                }
+                
+                if (!connected) {
+                    // If all attempts fail
+                    modelStatus.innerHTML = '<span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span><span class="text-sm">Model status: Connection failed</span>';
+                    connectionStatus.className = "connection-status bg-red-100 text-red-800";
+                    connectionStatus.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> Failed to connect to model';
+                    modelAvailable = false;
+                    retryButton.classList.remove('hidden');
+                    connectionError.classList.remove('hidden');
+                    analysisSection.classList.add('hidden');
+                }
+                
+                // Hide status after 5 seconds if connected, 10 seconds if failed
+                setTimeout(() => {
+                    connectionStatus.classList.add('hidden');
+                }, connected ? 5000 : 10000);
+            }
+            
+            // Helper function to create a chat message element
+            function createMessageElement(role, content) {
+                const messageContainer = document.createElement('div');
+                messageContainer.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+                
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'bot-bubble'}`;
+                
+                // Convert markdown to HTML
+                const htmlContent = content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+                bubble.innerHTML = htmlContent;
+                messageContainer.appendChild(bubble);
+                return messageContainer;
+            }
+            
+            // Add a message to the chat
+            function addMessage(role, content) {
+                const messageElement = createMessageElement(role, content);
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Get bot response
+            function getBotResponse(userInput) {
+                const lowerInput = userInput.toLowerCase().trim();
+                let botResponse = "I'm still learning about coffee diseases. Can you ask about something else? We're constantly improving!";
+                
+                const responses = localResponses[language];
+                if (responses) {
+                    for (const key in responses) {
+                        if (responses[key].triggers.some(trigger => lowerInput.includes(trigger.toLowerCase()))) {
+                            botResponse = responses[key].response;
+                            break;
+                        }
+                    }
+                }
+                
+                setTimeout(() => addMessage('bot', botResponse), 500);
+            }
+            
+            // Handle sending a message
+            function handleSendMessage() {
+                const userInput = chatInput.value.trim();
+                if (userInput) {
+                    addMessage('user', userInput);
+                    chatInput.value = '';
+                    getBotResponse(userInput);
+                }
+            }
+            
+            // Handle language change
+            languageSelector.addEventListener('change', function(e) {
+                language = e.target.value;
+                chatMessages.innerHTML = '';
+                addMessage('bot', initialMessages[language]);
+            });
+            
+            // Function to get disease class styling
+            function getDiseaseClassStyle(diseaseClass) {
+                const classMap = {
+                    'cescospora_leaf_sport': 'cescospora',
+                    'coffee_canker': 'canker',
+                    'coffee_leaf_rust': 'rust',
+                    'healthy': 'healthy',
+                    'nematodes': 'nematodes',
+                    'phoma_leaf_sport': 'phoma',
+                    'red_spider_mite': 'mite'
+                };
+                
+                return classMap[diseaseClass] || 'healthy';
+            }
+            
+            // Function to get disease display name
+            function getDiseaseDisplayName(diseaseClass) {
+                const nameMap = {
+                    'cescospora_leaf_sport': 'Cercospora Leaf Spot',
+                    'coffee_canker': 'Coffee Canker',
+                    'coffee_leaf_rust': 'Coffee Leaf Rust',
+                    'healthy': 'Healthy',
+                    'nematodes': 'Nematodes',
+                    'phoma_leaf_sport': 'Phoma Leaf Spot',
+                    'red_spider_mite': 'Red Spider Mite'
+                };
+                
+                return nameMap[diseaseClass] || diseaseClass;
+            }
+            
+            // Function to send image to your model
+            async function predictImage(imageFile) {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+                
+                try {
+                    // Show connection status
+                    connectionStatus.classList.remove('hidden');
+                    connectionStatus.className = "connection-status bg-blue-100 text-blue-800";
+                    connectionStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing image...';
+                    
+                    // Simulate analysis (in a real app, this would be a fetch request)
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Simulate response
+                    const diseaseClasses = ['cescospora_leaf_sport', 'coffee_canker', 'coffee_leaf_rust', 'healthy', 'nematodes', 'phoma_leaf_sport', 'red_spider_mite'];
+                    const randomDisease = diseaseClasses[Math.floor(Math.random() * diseaseClasses.length)];
+                    const confidence = (Math.random() * 0.5 + 0.5).toFixed(2); // 0.5 to 1.0
+                    
+                    const result = {
+                        predicted_class: randomDisease,
+                        confidence: confidence
+                    };
+                    
+                    // Hide status
+                    setTimeout(() => {
+                        connectionStatus.classList.add('hidden');
+                    }, 3000);
+                    
+                    return result;
+                } catch (error) {
+                    console.error('Prediction failed:', error);
+                    connectionStatus.className = "connection-status bg-red-100 text-red-800";
+                    connectionStatus.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> ${error.message || 'Prediction failed'}`;
+                    
+                    // Hide status after 5 seconds
+                    setTimeout(() => {
+                        connectionStatus.classList.add('hidden');
+                    }, 5000);
+                    
+                    return { error: error.message };
+                }
+            }
+            
+            // Function to send batch images to your model
+            async function predictBatchImages(imageFiles) {
+                try {
+                    // Show connection status
+                    connectionStatus.classList.remove('hidden');
+                    connectionStatus.className = "connection-status bg-blue-100 text-blue-800";
+                    connectionStatus.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing ${imageFiles.length} images...`;
+                    
+                    // Simulate analysis
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Simulate response
+                    const results = [];
+                    const diseaseClasses = ['cescospora_leaf_sport', 'coffee_canker', 'coffee_leaf_rust', 'healthy', 'nematodes', 'phoma_leaf_sport', 'red_spider_mite'];
+                    
+                    for (let i = 0; i < imageFiles.length; i++) {
+                        const randomDisease = diseaseClasses[Math.floor(Math.random() * diseaseClasses.length)];
+                        const confidence = (Math.random() * 0.5 + 0.5).toFixed(2); // 0.5 to 1.0
+                        results.push({
+                            predicted_class: randomDisease,
+                            confidence: confidence
+                        });
+                    }
+                    
+                    // Hide status
+                    setTimeout(() => {
+                        connectionStatus.classList.add('hidden');
+                    }, 3000);
+                    
+                    return results;
+                } catch (error) {
+                    console.error('Batch prediction failed:', error);
+                    connectionStatus.className = "connection-status bg-red-100 text-red-800";
+                    connectionStatus.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> ${error.message || 'Batch prediction failed'}`;
+                    
+                    // Hide status after 5 seconds
+                    setTimeout(() => {
+                        connectionStatus.classList.add('hidden');
+                    }, 5000);
+                    
+                    return { error: error.message };
+                }
+            }
+            
+            // Single image upload handling
+            imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        uploadedImageFile = file;
+                        imageUploadPlaceholder.classList.add('hidden');
+                        imagePreview.classList.remove('hidden');
+                        imagePreviewImg.src = reader.result;
+                        analyzeButton.disabled = !modelAvailable;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Single image analysis
+            analyzeButton.addEventListener('click', async function() {
+                if (!uploadedImageFile || !modelAvailable) return;
+                
+                // Show loading state
+                const originalText = analyzeButton.innerHTML;
+                analyzeButton.innerHTML = '<div class="spinner mr-2"></div> Analyzing...';
+                analyzeButton.disabled = true;
+                
+                // Call your model
+                const response = await predictImage(uploadedImageFile);
+                
+                if (response.error) {
+                    analysisText.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
+                    vikobaShareBtn.classList.add('hidden');
+                } else {
+                    // Handle response format - single image returns an object
+                    const prediction = response;
+                    const diseaseClass = prediction.predicted_class;
+                    
+                    if (!diseaseClass) {
+                        analysisText.innerHTML = `<div class="text-red-600">Error: Invalid response from model</div>`;
+                        vikobaShareBtn.classList.add('hidden');
+                    } else {
+                        const confidence = prediction.confidence;
+                        const diseaseStyle = getDiseaseClassStyle(diseaseClass);
+                        const displayName = getDiseaseDisplayName(diseaseClass);
+                        
+                        // Store result for sharing
+                        currentDiseaseResult = {
+                            disease: displayName,
+                            confidence: confidence,
+                            image: imagePreviewImg.src
+                        };
+                        
+                        // Display result
+                        analysisText.innerHTML = `
+                            <div class="font-bold text-lg ${diseaseStyle} disease-tag">${displayName}</div>
+                            <div class="flex items-center my-2">
+                                <div class="text-sm text-gray-600">Confidence: ${parseFloat(confidence) * 100}%</div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="font-medium text-emerald-700">Recommended Action:</div>
+                                <p class="text-sm mt-1">Apply appropriate treatment based on the detected disease. Remove affected leaves to prevent spread.</p>
+                            </div>
+                        `;
+                        
+                        // Show Vikoba share button
+                        vikobaShareBtn.classList.remove('hidden');
+                    }
+                }
+                
+                analysisResult.classList.remove('hidden');
+                
+                // Reset button
+                analyzeButton.innerHTML = originalText;
+                analyzeButton.disabled = !modelAvailable;
+            });
+            
+            // Batch image upload handling
+            imageUploadMulti.addEventListener('change', function(e) {
+                uploadedFilesMulti = Array.from(e.target.files);
+                previewGridMulti.innerHTML = '';
+                
+                if (uploadedFilesMulti.length === 0) {
+                    previewGridMulti.classList.add('hidden');
+                    analyzeButtonMulti.disabled = true;
+                    return;
+                }
+                
+                previewGridMulti.classList.remove('hidden');
+                analyzeButtonMulti.disabled = !modelAvailable;
+                
+                uploadedFilesMulti.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        
+                        // Create unique ID for result display
+                        const resultId = `result-${Date.now()}-${index}`;
+                        
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" alt="${file.name}">
+                            <div class="text-xs text-gray-600 truncate max-w-full">${file.name}</div>
+                            <div id="${resultId}" class="result-badge bg-yellow-100 text-yellow-800">Pending</div>
+                        `;
+                        
+                        // Store result ID on file object
+                        file.resultId = resultId;
+                        
+                        previewGridMulti.appendChild(previewItem);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+            
+            // Batch image analysis
+            analyzeButtonMulti.addEventListener('click', async function() {
+                if (uploadedFilesMulti.length === 0 || !modelAvailable) return;
+                
+                // Show loading state
+                const originalText = analyzeButtonMulti.innerHTML;
+                analyzeButtonMulti.innerHTML = '<div class="spinner mr-2"></div> Processing...';
+                analyzeButtonMulti.disabled = true;
+                
+                // Clear previous results
+                analysisTextMulti.innerHTML = '';
+                analysisResultMulti.classList.remove('hidden');
+                
+                // Show status for each file
+                uploadedFilesMulti.forEach(file => {
+                    const badge = document.getElementById(file.resultId);
+                    if (badge) {
+                        badge.textContent = 'Processing...';
+                        badge.className = 'result-badge bg-blue-100 text-blue-800';
+                    }
+                });
+                
+                // Call your model with batch images
+                const response = await predictBatchImages(uploadedFilesMulti);
+                
+                if (response.error) {
+                    analysisTextMulti.innerHTML = `<div class="text-red-600">Error: ${response.error}</div>`;
+                } else {
+                    // Process each result
+                    response.forEach((result, index) => {
+                        const file = uploadedFilesMulti[index];
+                        if (!file) return;
+                        
+                        // Handle both formats: result.prediction or direct result
+                        const prediction = result;
+                        const diseaseClass = prediction.predicted_class;
+                        
+                        if (!diseaseClass) {
+                            const badge = document.getElementById(file.resultId);
+                            if (badge) {
+                                badge.textContent = 'Error';
+                                badge.className = 'result-badge bg-red-100 text-red-800';
+                            }
+                            return;
+                        }
+                        
+                        const confidence = prediction.confidence;
+                        const diseaseStyle = getDiseaseClassStyle(diseaseClass);
+                        const displayName = getDiseaseDisplayName(diseaseClass);
+                        
+                        // Update badge for this file
+                        const badge = document.getElementById(file.resultId);
+                        if (badge) {
+                            badge.textContent = `${displayName} (${parseFloat(confidence) * 100}%)`;
+                            badge.className = `result-badge ${diseaseStyle}`;
+                        }
+                        
+                        // Add to results list
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'flex items-center py-2 border-b border-blue-100 last:border-0';
+                        resultItem.innerHTML = `
+                            <div class="font-medium flex-1 truncate mr-2">${file.name}</div>
+                            <div class="font-semibold disease-tag ${diseaseStyle}">${displayName}</div>
+                            <div class="text-sm text-gray-500 ml-2">${parseFloat(confidence) * 100}%</div>
+                        `;
+                        analysisTextMulti.appendChild(resultItem);
+                    });
+                    
+                    // Add summary
+                    const summary = document.createElement('div');
+                    summary.className = 'mt-3 pt-3 border-t border-blue-200 font-medium';
+                    summary.textContent = `Processed ${response.length} images`;
+                    analysisTextMulti.appendChild(summary);
+                }
+                
+                // Reset button
+                analyzeButtonMulti.innerHTML = originalText;
+                analyzeButtonMulti.disabled = !modelAvailable;
+            });
+            
+            // Click handlers for upload areas
+            imageUploadAreaSingle.addEventListener('click', () => imageUpload.click());
+            imageUploadAreaMulti.addEventListener('click', () => imageUploadMulti.click());
+            
+            // Chat input event listeners
+            sendButton.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSendMessage();
+            });
+            
+            // Retry connection buttons
+            retryButton.addEventListener('click', checkModelConnection);
+            retryFullButton.addEventListener('click', checkModelConnection);
+            
+            // Vikoba share button
+            vikobaShareBtn.addEventListener('click', function() {
+                // Switch to Vikoba tab
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelector('.tab[data-tab="vikoba"]').classList.add('active');
+                
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById('vikoba-tab').classList.add('active');
+                
+                // Show success message
+                const notification = document.createElement('div');
+                notification.className = "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50";
+                notification.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Disease result shared with your Vikoba group!
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            });
+            
+            // Initialize
+            addMessage('bot', initialMessages[language]);
+            checkModelConnection();
         });
     </script>
 </body>
